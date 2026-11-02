@@ -82,7 +82,92 @@ function Exchange({ addition }: { addition: boolean }) {
   );
 }
 
+function FactHelp({ problem, reveal }: { problem: Problem; reveal: boolean }) {
+  const multiplying = problem.gameId === "multiplication";
+  const groupCount = multiplying ? problem.a : problem.b;
+  const perGroup = multiplying ? problem.b : problem.result;
+  const showItems = multiplying || reveal;
+  const groupLabel = groupCount === 1 ? "gruppo" : "gruppi";
+  const repeated = Array.from({ length: groupCount }, () => perGroup).join(" + ");
+  const groupsDescription = showItems
+    ? `${groupCount} ${groupLabel} da ${perGroup}.`
+    : `${problem.a} ${problem.a === 1 ? "oggetto" : "oggetti"} da dividere in ${groupCount} ${groupCount === 1 ? "gruppo uguale" : "gruppi uguali"}.`;
+
+  return (
+    <div className="calculation-guide">
+      <p className="guide-intro">
+        {multiplying ? "Raggruppa e conta, un gruppo alla volta." : "Dividi in parti uguali, un gruppo alla volta."}
+      </p>
+      <ol className="calculation-steps">
+        <li>
+          <h3>
+            {multiplying ? `${problem.a} ${groupLabel} da ${problem.b}` : `Hai ${problem.a} ${problem.a === 1 ? "oggetto" : "oggetti"}`}
+          </h3>
+          <p>
+            {multiplying
+              ? "Conta i pallini di ogni gruppo e poi sommali tutti."
+              : `Mettili in ${problem.b} ${problem.b === 1 ? "gruppo uguale" : "gruppi uguali"}: quanti ne finiscono in ciascuno?`}
+          </p>
+          <div className="fact-groups" role="img" aria-label={groupsDescription}>
+            {Array.from({ length: groupCount }, (_, groupIndex) => (
+              <span className="fact-group" key={groupIndex}>
+                {showItems ? (
+                  Array.from({ length: perGroup }, (_, dotIndex) => <span className="unit-dot" key={dotIndex} />)
+                ) : (
+                  <span className="fact-group-unknown" aria-hidden="true">
+                    ?
+                  </span>
+                )}
+              </span>
+            ))}
+          </div>
+        </li>
+        <li>
+          <h3>{multiplying ? "Somma tutti i gruppi" : "Aiutati con la moltiplicazione"}</h3>
+          {reveal ? (
+            <p>
+              {multiplying
+                ? `${repeated} = ${problem.result}.`
+                : `${problem.b} \u00d7 ${problem.result} = ${problem.a}: ogni gruppo ha ${problem.result} oggetti.`}
+            </p>
+          ) : (
+            <p>
+              {multiplying
+                ? `Quanti pallini ci sono in tutto? Prova a sommare ${groupCount === 1 ? "il gruppo" : "i gruppi"}.`
+                : `Cerca il numero che, moltiplicato per ${problem.b}, d\u00e0 ${problem.a}.`}
+            </p>
+          )}
+          <div className="count-prompt">
+            <ArrowDown size={19} aria-hidden="true" />
+            <p>
+              {reveal ? (
+                <>
+                  <strong>
+                    {equation(problem)} = {problem.result}
+                  </strong>
+                  <br />
+                  {multiplying
+                    ? `${problem.a} \u00d7 ${problem.b} = ${problem.result}.`
+                    : `${problem.b} \u00d7 ${problem.result} = ${problem.a}.`}
+                </>
+              ) : multiplying ? (
+                "Conta tutti i pallini: quanti sono?"
+              ) : (
+                "Quanti oggetti in ogni gruppo?"
+              )}
+            </p>
+          </div>
+        </li>
+      </ol>
+    </div>
+  );
+}
+
 export function CalculationHelp({ problem, reveal = false }: { problem: Problem; reveal?: boolean }) {
+  if (problem.gameId === "multiplication" || problem.gameId === "division") {
+    return <FactHelp problem={problem} reveal={reveal} />;
+  }
+
   const model = calculationModel(problem);
   return (
     <div className="calculation-guide">

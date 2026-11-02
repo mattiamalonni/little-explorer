@@ -1,5 +1,5 @@
-export type Operation = "addition" | "subtraction";
-export type GameId = Operation | "mixed";
+export type Operation = "addition" | "subtraction" | "multiplication" | "division";
+export type GameId = Operation | "mixed" | "all";
 export type Limit = 10 | 20 | 100;
 export type Game = {
   id: GameId;
@@ -11,6 +11,7 @@ export type Game = {
 
 export const ROUND_LENGTH = 6;
 export const limits: Limit[] = [10, 20, 100];
+export const OPERATIONS: Operation[] = ["addition", "subtraction", "multiplication", "division"];
 export const games: Game[] = [
   {
     id: "addition",
@@ -27,11 +28,32 @@ export const games: Game[] = [
     example: ["8", "\u2212", "3"],
   },
   {
+    id: "multiplication",
+    title: "Quante volte?",
+    subtitle: "Moltiplicazioni",
+    description: "Raggruppa i numeri e scopri quanti sono in tutto.",
+    example: ["3", "\u00d7", "4"],
+  },
+  {
+    id: "division",
+    title: "In parti uguali",
+    subtitle: "Divisioni",
+    description: "Distribuisci gli oggetti e scopri quanto tocca a ciascuno.",
+    example: ["12", "\u00f7", "3"],
+  },
+  {
     id: "mixed",
     title: "Un po\u2019 pi\u00f9, un po\u2019 meno!",
     subtitle: "Modalit\u00e0 mista",
     description: "Tre addizioni e tre sottrazioni, tutte mescolate.",
     example: ["+", "?", "\u2212"],
+  },
+  {
+    id: "all",
+    title: "Tutti insieme!",
+    subtitle: "Tutte le operazioni",
+    description: "Addizioni, sottrazioni, moltiplicazioni e divisioni in un unico gioco.",
+    example: ["+", "\u00d7", "\u00f7"],
   },
 ];
 
@@ -51,8 +73,35 @@ export type Round = {
   answers: Answer[];
 };
 
+const operationsByGame: Record<GameId, readonly Operation[]> = {
+  addition: ["addition"],
+  subtraction: ["subtraction"],
+  multiplication: ["multiplication"],
+  division: ["division"],
+  mixed: ["addition", "subtraction"],
+  all: OPERATIONS,
+};
+
+const operationSigns: Record<Operation, string> = {
+  addition: "+",
+  subtraction: "\u2212",
+  multiplication: "\u00d7",
+  division: "\u00f7",
+};
+
+const operationWords: Record<Operation, string> = {
+  addition: "pi\u00f9",
+  subtraction: "meno",
+  multiplication: "per",
+  division: "diviso",
+};
+
 export function getGame(id: string) {
   return games.find((game) => game.id === id);
+}
+
+export function operationSign(operation: Operation): string {
+  return operationSigns[operation];
 }
 
 function shuffle<T>(values: readonly T[], random: () => number): T[] {
@@ -64,46 +113,137 @@ function shuffle<T>(values: readonly T[], random: () => number): T[] {
   return result;
 }
 
-export function createProblems(gameId: GameId, limit: Limit): Problem[] {
-  if (!getGame(gameId) || !limits.includes(limit)) {
-    throw new Error("Gioco o livello non valido.");
-  }
-  if (gameId === "mixed") {
-    return [...createProblems("addition", limit), ...createProblems("subtraction", limit)];
-  }
+function pick<T>(values: readonly T[], count: number, random: () => number): T[] {
+  return shuffle(values, random).slice(0, count);
+}
+
+function pickRoundProblems(
+  problems: readonly Problem[],
+  count: number,
+  random: () => number,
+  preferNonTrivial = false,
+): Problem[] {
+  if (!preferNonTrivial) return pick(problems, count, random);
+
+  const preferred = problems.filter((problem) => problem.a > 1 && problem.b > 1 && problem.result > 1);
+  const selected = pick(preferred, Math.min(count, preferred.length), random);
+  const selectedIds = new Set(selected.map((problem) => problem.id));
+  return shuffle(
+    [
+      ...selected,
+      ...pick(
+        problems.filter((problem) => !selectedIds.has(problem.id)),
+        count - selected.length,
+        random,
+      ),
+    ],
+    random,
+  );
+}
+
+function createOperationProblems(operation: Operation, limit: Limit): Problem[] {
   const problems: Problem[] = [];
+
+  if (operation === "multiplication" || operation === "division") {
+    const maxFactor = Math.min(limit, 10);
+    for (let first = 1; first <= maxFactor; first++) {
+      const secondLimit = operation === "multiplication" ? first : maxFactor;
+      for (let second = 1; second <= secondLimit; second++) {
+        if (operation === "multiplication") {
+          const result = first * second;
+          if (result <= limit) {
+            problems.push({
+              id: `multiplication-${first}-${second}`,
+              a: first,
+              b: second,
+              gameId: operation,
+              result,
+            });
+          }
+        } else {
+          const dividend = first * second;
+          if (dividend <= limit) {
+            problems.push({
+              id: `division-${dividend}-${first}`,
+              a: dividend,
+              b: first,
+              gameId: operation,
+              result: second,
+            });
+          }
+        }
+      }
+    }
+    return problems;
+  }
+
   for (let a = 1; a <= limit; a++) {
     for (let b = 1; b <= a; b++) {
-      const result = gameId === "addition" ? a + b : a - b;
+      const result = operation === "addition" ? a + b : a - b;
       if (result <= limit) {
-        problems.push({ id: `${gameId}-${a}-${b}`, a, b, gameId, result });
+        problems.push({ id: `${operation}-${a}-${b}`, a, b, gameId: operation, result });
       }
     }
   }
   return problems;
 }
 
+export function createProblems(gameId: GameId, limit: Limit): Problem[] {
+  if (!getGame(gameId) || !limits.includes(limit)) {
+    throw new Error("Gioco o livello non valido.");
+  }
+  return operationsByGame[gameId].flatMap((operation) => createOperationProblems(operation, limit));
+}
+
 export function createRound(gameId: GameId, limit: Limit, previous?: Round, random: () => number = Math.random): Round {
   const problems = createProblems(gameId, limit);
-  const pool =
-    gameId === "mixed"
-      ? shuffle(
-          [
-            ...shuffle(
-              problems.filter((problem) => problem.gameId === "addition"),
-              random,
-            ).slice(0, ROUND_LENGTH / 2),
-            ...shuffle(
-              problems.filter((problem) => problem.gameId === "subtraction"),
-              random,
-            ).slice(0, ROUND_LENGTH / 2),
-          ],
+  let pool: Problem[];
+
+  if (gameId === "mixed") {
+    pool = shuffle(
+      [
+        ...pick(
+          problems.filter((problem) => problem.gameId === "addition"),
+          ROUND_LENGTH / 2,
           random,
-        )
-      : shuffle(problems, random);
+        ),
+        ...pick(
+          problems.filter((problem) => problem.gameId === "subtraction"),
+          ROUND_LENGTH / 2,
+          random,
+        ),
+      ],
+      random,
+    );
+  } else if (gameId === "all") {
+    const picks = OPERATIONS.flatMap((operation) =>
+      pickRoundProblems(
+        problems.filter((problem) => problem.gameId === operation),
+        1,
+        random,
+        operation === "multiplication" || operation === "division",
+      ),
+    );
+    const pickedIds = new Set(picks.map((problem) => problem.id));
+    pool = shuffle(
+      [
+        ...picks,
+        ...pick(
+          problems.filter((problem) => !pickedIds.has(problem.id)),
+          ROUND_LENGTH - picks.length,
+          random,
+        ),
+      ],
+      random,
+    );
+  } else {
+    pool = pickRoundProblems(problems, ROUND_LENGTH, random, gameId === "multiplication" || gameId === "division");
+  }
+
   if (previous?.gameId === gameId && previous.limit === limit && pool[0].id === previous.questions[0]?.id) {
     [pool[0], pool[1]] = [pool[1], pool[0]];
   }
+
   const questions = pool.slice(0, ROUND_LENGTH).map((problem) => {
     const nearby = Array.from({ length: limit + 1 }, (_, index) => index).filter(
       (value) => value !== problem.result && Math.abs(value - problem.result) <= 10,
@@ -130,11 +270,11 @@ export function scoreRound(answers: readonly Answer[]): number {
 }
 
 export function equation(problem: Problem): string {
-  return `${problem.a} ${problem.gameId === "addition" ? "+" : "\u2212"} ${problem.b}`;
+  return `${problem.a} ${operationSign(problem.gameId)} ${problem.b}`;
 }
 
 export function spokenProblem(problem: Problem): string {
-  return `${problem.a} ${problem.gameId === "addition" ? "pi\u00f9" : "meno"} ${problem.b}. Quanto fa?`;
+  return `${problem.a} ${operationWords[problem.gameId]} ${problem.b}. Quanto fa?`;
 }
 
 export function calculationModel(problem: Problem) {
@@ -164,7 +304,27 @@ export function calculationModel(problem: Problem) {
   };
 }
 
+function repeatedAddition(groups: number, value: number): string {
+  return Array.from({ length: groups }, () => value).join(" + ");
+}
+
 export function explain(problem: Problem, reveal = false): string {
+  if (problem.gameId === "multiplication") {
+    const groupLabel = problem.a === 1 ? "gruppo" : "gruppi";
+    const repeated = repeatedAddition(problem.a, problem.b);
+    return reveal
+      ? `${problem.a} ${groupLabel} da ${problem.b}. ${repeated} = ${problem.result}.`
+      : `${problem.a} ${groupLabel} da ${problem.b}. Somma un gruppo alla volta: quanti oggetti in tutto?`;
+  }
+
+  if (problem.gameId === "division") {
+    const groupsLabel = problem.b === 1 ? "gruppo uguale" : "gruppi uguali";
+    const items = problem.a === 1 ? "oggetto" : "oggetti";
+    return reveal
+      ? `Hai ${problem.a} ${items}. Dividi in ${problem.b} ${groupsLabel}: ${problem.result} per gruppo. Infatti ${problem.b} \u00d7 ${problem.result} = ${problem.a}.`
+      : `Hai ${problem.a} ${items}. Dividi in ${problem.b} ${groupsLabel}. Quanti in ogni gruppo? Cerca il numero che moltiplicato per ${problem.b} d\u00e0 ${problem.a}.`;
+  }
+
   const adding = problem.gameId === "addition";
   const verb = adding ? "Aggiungi" : "Togli";
   const tens = Math.floor(problem.b / 10) * 10;

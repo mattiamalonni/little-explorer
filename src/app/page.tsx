@@ -16,8 +16,9 @@ const worlds = [
     href: "/math",
     kicker: "MATH",
     title: "Little Math",
-    description: "Addizioni e sottrazioni fino a 100, con blocchi da contare e passaggi spiegati un pezzetto alla volta.",
-    games: "3 giochi",
+    description:
+      "Addizioni, sottrazioni, moltiplicazioni e divisioni fino a 100, con blocchi da contare e passaggi spiegati un pezzetto alla volta.",
+    games: "6 giochi",
   },
   {
     id: "italian",

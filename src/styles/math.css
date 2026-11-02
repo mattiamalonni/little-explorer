@@ -321,8 +321,17 @@
 .subject-math .art-subtraction {
   background-color: #e2eee8;
 }
+.subject-math .art-multiplication {
+  background-color: #f8ecd0;
+}
+.subject-math .art-division {
+  background-color: #dfeaf4;
+}
 .subject-math .art-mixed {
   background-color: #ede8f5;
+}
+.subject-math .art-all {
+  background-color: #e5eedb;
 }
 .subject-math .number-blocks {
   display: flex;
@@ -358,6 +367,18 @@
   transform: rotate(11deg);
 }
 .subject-math .art-subtraction .number-blocks > span:first-child {
+  color: var(--green);
+  border-color: #a8c8b7;
+}
+.subject-math .art-multiplication .number-blocks > span:first-child {
+  color: #9a6b24;
+  border-color: #d8bb78;
+}
+.subject-math .art-division .number-blocks > span:first-child {
+  color: #3f7291;
+  border-color: #a5c7da;
+}
+.subject-math .art-all .number-blocks > span:first-child {
   color: var(--green);
   border-color: #a8c8b7;
 }
@@ -397,8 +418,17 @@
 .subject-math .label-subtraction {
   color: var(--green);
 }
+.subject-math .label-multiplication {
+  color: #9a6b24;
+}
+.subject-math .label-division {
+  color: #3f7291;
+}
 .subject-math .label-mixed {
   color: #79609a;
+}
+.subject-math .label-all {
+  color: #4f7a45;
 }
 .subject-math .game-card:last-child:nth-child(odd) {
   grid-column: 1 / -1;
@@ -743,6 +773,33 @@
   min-width: 47px;
   font-size: 22px;
   font-variant-numeric: tabular-nums;
+}
+.subject-math .fact-groups {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin: 14px 0;
+}
+.subject-math .fact-group {
+  display: grid;
+  grid-template-columns: repeat(2, 16px);
+  justify-content: center;
+  align-content: start;
+  gap: 7px;
+  min-width: 54px;
+  min-height: 54px;
+  padding: 10px;
+  border: 1px solid #dfe5d6;
+  border-radius: 9px;
+  background: #f6f8f1;
+}
+.subject-math .fact-group-unknown {
+  display: grid;
+  place-items: center;
+  width: 16px;
+  height: 16px;
+  color: #84917e;
+  font-weight: 800;
 }
 .subject-math .second-operand {
   padding-top: 12px;

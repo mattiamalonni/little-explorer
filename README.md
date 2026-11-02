@@ -12,7 +12,7 @@ La home è un hub con tre mondi. Ogni mondo conserva il proprio carattere, i pro
 | `/english`                      | Dashboard di Little English (8 giochi)  |
 | `/english/play/[gameId]`        | Partita                                 |
 | `/english/play/[gameId]/result` | Riepilogo                               |
-| `/math`                         | Dashboard di Little Math (3 giochi)     |
+| `/math`                         | Dashboard di Little Math (6 giochi)     |
 | `/math/play/[gameId]`           | Partita                                 |
 | `/math/play/[gameId]/result`    | Riepilogo                               |
 | `/italian`                      | Dashboard di Little Italiano (8 giochi) |
@@ -143,7 +143,7 @@ Il piano gratuito ElevenLabs non permette usi commerciali; l'app non commerciale
 
 - **English:** `src/features/english/data/games.ts`. Ogni gioco richiede almeno sei parole distinte; colori e numeri usano rappresentazioni CSS, gli altri concetti un'illustrazione locale.
 - **Italiano:** `src/features/italian/data/games.ts`. Ogni voce ha `pattern`, `answer`, tre alternative, `solution`, `spoken` e `note`; i giochi `letters` chiedono gruppi di lettere, i giochi `words` chiedono parole intere.
-- **Math:** `src/features/math/data/games.ts`. Le operazioni sono generate dai limiti 10, 20 e 100; ogni partita ha sei domande e quattro risposte vicine al risultato.
+- **Math:** `src/features/math/data/games.ts`. Addizioni, sottrazioni, moltiplicazioni e divisioni sono generate dai limiti 10, 20 e 100; ogni partita ha sei domande e quattro risposte vicine al risultato.
 
 Dopo aver aggiunto parole inglesi o testi italiani, genera gli audio mancanti prima del deploy.
 

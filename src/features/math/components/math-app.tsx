@@ -29,6 +29,7 @@ import {
   explain,
   games,
   limits,
+  operationSign,
   recordAnswer,
   ROUND_LENGTH,
   scoreRound,
@@ -39,6 +40,22 @@ import {
   type Problem,
   type Round,
 } from "@/features/math/data/games";
+
+const gameStickers: Record<GameId, string> = {
+  addition: "Insieme si cresce!",
+  subtraction: "Una piccola scoperta!",
+  multiplication: "Quante volte insieme!",
+  division: "Tutto in parti uguali!",
+  mixed: "Occhio al segno!",
+  all: "Un po' di tutto!",
+};
+
+const operationPrompts: Record<Problem["gameId"], string> = {
+  addition: "METTI INSIEME E SCOPRI",
+  subtraction: "TOGLI E SCOPRI",
+  multiplication: "RAGGRUPPA E SCOPRI",
+  division: "DIVIDI E SCOPRI",
+};
 
 type PlayContext = {
   round: Round | null;
@@ -173,9 +190,7 @@ function GameArt({ game }: { game: Game }) {
           <span key={i}>{value}</span>
         ))}
       </div>
-      <span className="art-sticker">
-        {game.id === "addition" ? "Insieme si cresce!" : game.id === "mixed" ? "Occhio al segno!" : "Una piccola scoperta!"}
-      </span>
+      <span className="art-sticker">{gameStickers[game.id]}</span>
       <Star className="art-star" size={23} />
     </div>
   );
@@ -263,7 +278,7 @@ export function Dashboard() {
         </span>
         <div>
           <h2 id="surprise-title">Oggi mi lascio sorprendere!</h2>
-          <p>Pi&ugrave;, meno o tutti e due? Scegliamo un gioco per te.</p>
+          <p>Pi&ugrave;, meno, per o diviso? Scegliamo un gioco per te.</p>
         </div>
         <button
           className="button button-primary"
@@ -348,14 +363,14 @@ function QuestionCard({ round, game }: { round: Round; game: Game }) {
         <span style={{ width: `${(index / ROUND_LENGTH) * 100}%` }} />
       </div>
       <div className="question-heading">
-        <span className="eyebrow">{question.gameId === "addition" ? "METTI INSIEME E SCOPRI" : "TOGLI E SCOPRI"}</span>
+        <span className="eyebrow">{operationPrompts[question.gameId]}</span>
         <h1 tabIndex={-1} ref={titleRef}>
           Quanto fa?
         </h1>
       </div>
       <section className={`question-stage art-${question.gameId}`} aria-label="Operazione da risolvere">
         <p className="equation" aria-label={spokenProblem(question)}>
-          {question.a} <span>{question.gameId === "addition" ? "+" : "\u2212"}</span> {question.b} <span>=</span> ?
+          {question.a} <span>{operationSign(question.gameId)}</span> {question.b} <span>=</span> ?
         </p>
         <AudioButton problem={question} />
       </section>
