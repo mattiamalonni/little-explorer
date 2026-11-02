@@ -6,11 +6,7 @@ export function generateStaticParams() {
   return games.map((game) => ({ gameId: game.id }));
 }
 
-export default async function ItalianGamePage({
-  params,
-}: {
-  params: Promise<{ gameId: string }>;
-}) {
+export default async function ItalianGamePage({ params }: { params: Promise<{ gameId: string }> }) {
   const { gameId } = await params;
   const game = games.find((entry) => entry.id === gameId);
   if (!game) notFound();

@@ -111,8 +111,7 @@ svg {
   display: flex;
   flex-direction: column;
   background:
-    radial-gradient(circle at 8% 12%, #eef5e8 0, transparent 28%),
-    radial-gradient(circle at 92% 6%, #fbeee4 0, transparent 24%),
+    radial-gradient(circle at 8% 12%, #eef5e8 0, transparent 28%), radial-gradient(circle at 92% 6%, #fbeee4 0, transparent 24%),
     var(--background);
 }
 .hub-skip {
@@ -182,7 +181,9 @@ svg {
   color: var(--muted);
   font-size: 12px;
   font-weight: 800;
-  transition: background 0.18s, color 0.18s;
+  transition:
+    background 0.18s,
+    color 0.18s;
 }
 .hub-nav a:hover {
   color: var(--green);
@@ -372,7 +373,10 @@ svg {
   border-radius: 20px;
   background: #fff;
   box-shadow: 0 2px 0 #283c3408;
-  transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
+  transition:
+    transform 0.2s,
+    box-shadow 0.2s,
+    border-color 0.2s;
 }
 .hub-world:hover {
   transform: translateY(-5px);
@@ -401,9 +405,7 @@ svg {
   position: relative;
   height: 196px;
   overflow: hidden;
-  background:
-    radial-gradient(#ffffff8c 1px, transparent 1px),
-    var(--world-soft);
+  background: radial-gradient(#ffffff8c 1px, transparent 1px), var(--world-soft);
   background-size: 15px 15px;
 }
 .hub-world-art img {
@@ -569,7 +571,10 @@ svg {
   border-radius: 50%;
   color: var(--world);
   background: var(--world-soft);
-  transition: background 0.18s, color 0.18s, transform 0.18s;
+  transition:
+    background 0.18s,
+    color 0.18s,
+    transform 0.18s;
 }
 .hub-world:hover .hub-world-arrow {
   color: #fff;

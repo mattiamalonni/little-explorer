@@ -3,13 +3,7 @@ import { fileURLToPath } from "node:url";
 
 const api = "https://api.elevenlabs.io";
 
-export const validArguments = [
-  "--voices",
-  "--sample",
-  "--all",
-  "--dry-run",
-  "--confirm",
-];
+export const validArguments = ["--voices", "--sample", "--all", "--dry-run", "--confirm"];
 
 function required(env, name) {
   const value = env[name]?.trim();
@@ -69,29 +63,21 @@ export async function createSpeech(text, env, fetchImpl = fetch) {
     fetchImpl,
   );
   const audio = Buffer.from(await response.arrayBuffer());
-  if (
-    !response.headers.get("content-type")?.startsWith("audio/") ||
-    !isMp3(audio)
-  ) {
+  if (!response.headers.get("content-type")?.startsWith("audio/") || !isMp3(audio)) {
     throw new Error("ElevenLabs non ha restituito un MP3 valido. Nessun file salvato.");
   }
   return audio;
 }
 
 function isMp3(bytes) {
-  return (
-    bytes.length > 3 &&
-    (bytes.subarray(0, 3).toString() === "ID3" ||
-      (bytes[0] === 0xff && (bytes[1] & 0xe0) === 0xe0))
-  );
+  return bytes.length > 3 && (bytes.subarray(0, 3).toString() === "ID3" || (bytes[0] === 0xff && (bytes[1] & 0xe0) === 0xe0));
 }
 
 export function checkArguments(args, help) {
   if (
     args.some((arg) => !validArguments.includes(arg)) ||
     new Set(args).size !== args.length ||
-    args.filter((arg) => ["--voices", "--sample", "--all"].includes(arg))
-      .length !== 1 ||
+    args.filter((arg) => ["--voices", "--sample", "--all"].includes(arg)).length !== 1 ||
     (args.includes("--dry-run") && args.includes("--confirm")) ||
     (args.length > 1 && !args.includes("--all"))
   ) {
@@ -108,42 +94,24 @@ async function listVoices(env, fetchImpl) {
     if (token) query.set("next_page_token", token);
     const response = await request(`/v2/voices?${query}`, key, {}, fetchImpl);
     const data = await response.json();
-    if (
-      !Array.isArray(data.voices) ||
-      data.voices.some((voice) => typeof voice.voice_id !== "string")
-    ) {
+    if (!Array.isArray(data.voices) || data.voices.some((voice) => typeof voice.voice_id !== "string")) {
       throw new Error("Risposta elenco voci ElevenLabs non valida.");
     }
     for (const voice of data.voices) {
-      console.log(
-        `${voice.voice_id}\t${voice.name ?? ""}\t${voice.description ?? ""}`,
-      );
+      console.log(`${voice.voice_id}\t${voice.name ?? ""}\t${voice.description ?? ""}`);
       count++;
     }
-    if (
-      data.has_more &&
-      (!data.next_page_token || data.next_page_token === token)
-    ) {
+    if (data.has_more && (!data.next_page_token || data.next_page_token === token)) {
       throw new Error("Paginazione ElevenLabs non valida.");
     }
     token = data.has_more ? data.next_page_token : undefined;
   } while (token);
   if (!count) {
-    throw new Error(
-      "Nessuna voce trovata: controlla la libreria e i permessi della chiave ElevenLabs.",
-    );
+    throw new Error("Nessuna voce trovata: controlla la libreria e i permessi della chiave ElevenLabs.");
   }
 }
 
-export async function runAudioGenerator({
-  args,
-  help,
-  sample,
-  jobs,
-  directory,
-  env = process.env,
-  fetchImpl = fetch,
-}) {
+export async function runAudioGenerator({ args, help, sample, jobs, directory, env = process.env, fetchImpl = fetch }) {
   if (args.length === 0 || (args.length === 1 && args[0] === "--help")) {
     console.log(help);
     return;
@@ -154,9 +122,7 @@ export async function runAudioGenerator({
     return;
   }
 
-  const selectedJobs = args.includes("--sample")
-    ? [{ text: sample, filename: "sample.mp3" }]
-    : jobs();
+  const selectedJobs = args.includes("--sample") ? [{ text: sample, filename: "sample.mp3" }] : jobs();
   console.log(
     `${selectedJobs.length} file, ${selectedJobs.reduce((sum, job) => sum + job.text.length, 0)} caratteri di testo (non una stima del prezzo).`,
   );
@@ -165,9 +131,7 @@ export async function runAudioGenerator({
     return;
   }
   if (args.includes("--all") && !args.includes("--confirm")) {
-    throw new Error(
-      "Usa --all --confirm per autorizzare il consumo di crediti, oppure --all --dry-run.",
-    );
+    throw new Error("Usa --all --confirm per autorizzare il consumo di crediti, oppure --all --dry-run.");
   }
 
   required(env, "ELEVENLABS_API_KEY");
@@ -183,9 +147,7 @@ export async function runAudioGenerator({
     try {
       const existing = await readFile(destination);
       if (!isMp3(existing)) {
-        throw new Error(
-          `MP3 esistente non valido: ${fileURLToPath(destination)}. Rimuovilo manualmente prima di riprovare.`,
-        );
+        throw new Error(`MP3 esistente non valido: ${fileURLToPath(destination)}. Rimuovilo manualmente prima di riprovare.`);
       }
       console.log(`Già presente: ${job.filename}`);
       continue;

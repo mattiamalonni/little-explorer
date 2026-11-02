@@ -13,11 +13,7 @@ Per l'italiano scegli una voce italiana dalla libreria ElevenLabs.
 Gli audio finiscono in public/audio/italian/.`;
 
 export function vocabularyJobs() {
-  const texts = [
-    ...new Set(
-      games.flatMap((game) => game.entries.map((entry) => entry.spoken)),
-    ),
-  ];
+  const texts = [...new Set(games.flatMap((game) => game.entries.map((entry) => entry.spoken)))];
   const jobs = texts.map((text) => ({
     text,
     filename: audioFilename(text),
@@ -34,8 +30,7 @@ export function main(args, env = process.env, fetchImpl = fetch) {
     env,
     fetchImpl,
     help,
-    sample:
-      "Ciao, piccolo esploratore! Ragno. Foglia. Pesce. Chiave. Acqua. Palla. Perché. Io ho un cane. Bravo!",
+    sample: "Ciao, piccolo esploratore! Ragno. Foglia. Pesce. Chiave. Acqua. Palla. Perché. Io ho un cane. Bravo!",
     jobs: vocabularyJobs,
     directory: new URL("../public/audio/italian/", import.meta.url),
   });
@@ -43,9 +38,7 @@ export function main(args, env = process.env, fetchImpl = fetch) {
 
 if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
   main(process.argv.slice(2)).catch((error) => {
-    console.error(
-      error instanceof Error ? error.message : "Generazione audio fallita.",
-    );
+    console.error(error instanceof Error ? error.message : "Generazione audio fallita.");
     process.exitCode = 1;
   });
 }

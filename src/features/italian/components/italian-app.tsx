@@ -3,13 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import {
-  createContext,
-  useContext,
-  useEffect,
-  useRef,
-  useState,
-} from "react";
+import { createContext, useContext, useEffect, useRef, useState } from "react";
 import {
   ArrowLeft,
   ArrowRight,
@@ -57,15 +51,7 @@ function usePlay() {
   return context;
 }
 
-export function Illustration({
-  asset,
-  className = "",
-  alt = "",
-}: {
-  asset: string;
-  className?: string;
-  alt?: string;
-}) {
+export function Illustration({ asset, className = "", alt = "" }: { asset: string; className?: string; alt?: string }) {
   return (
     <Image
       className={`illustration ${className}`}
@@ -134,9 +120,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
         window.speechSynthesis.cancel();
         window.speechSynthesis.speak(utterance);
       } else {
-        setAudioError(
-          "Audio non disponibile. Riprova premendo Ascolta oppure continua con le parole scritte.",
-        );
+        setAudioError("Audio non disponibile. Riprova premendo Ascolta oppure continua con le parole scritte.");
       }
     }
 
@@ -152,8 +136,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   function answer(selected: string) {
     stopAudio();
     setRound((current) => {
-      if (!current || current.answers.length >= current.questions.length)
-        return current;
+      if (!current || current.answers.length >= current.questions.length) return current;
       const game = games.find((entry) => entry.id === current.gameId);
       const entry = current.questions[current.answers.length].entry;
       if (!game) return current;
@@ -179,11 +162,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
       </a>
       <header className="site-header">
         <div className="header-inner">
-          <Link
-            href="/"
-            className="brand"
-            aria-label="Little Explorer, tutti i mondi"
-          >
+          <Link href="/" className="brand" aria-label="Little Explorer, tutti i mondi">
             <span className="brand-mark">
               <Sprout size={25} strokeWidth={2.4} />
             </span>
@@ -222,11 +201,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
       {audioError && (
         <div className="audio-notice" role="status">
           {audioError}
-          <button
-            className="icon-button"
-            onClick={() => setAudioError("")}
-            aria-label="Chiudi avviso"
-          >
+          <button className="icon-button" onClick={() => setAudioError("")} aria-label="Chiudi avviso">
             <X size={18} />
           </button>
         </div>
@@ -237,18 +212,13 @@ export function AppShell({ children }: { children: React.ReactNode }) {
           <Sprout size={16} /> Un po&apos; di italiano, un mondo di scoperte.
         </span>
         <span>
-          Fatto per imparare, con <Heart size={13} />{" "}
-          <span className="footer-divider">/</span>{" "}
-          <a
-            href="https://github.com/jdecked/twemoji"
-            target="_blank"
-            rel="noreferrer"
-          >
+          Fatto per imparare, con <Heart size={13} /> <span className="footer-divider">/</span>{" "}
+          <a href="https://github.com/jdecked/twemoji" target="_blank" rel="noreferrer">
             Twemoji
           </a>
           {" e "}
-          <a href="/illustrations/ATTRIBUTION.md">illustrazioni originali</a>{" "}
-          <span className="footer-divider">/</span>{" "}
+          {/* oxlint-disable-next-line nextjs/no-html-link-for-pages */}
+          <a href="/illustrations/ATTRIBUTION.md">illustrazioni originali</a> <span className="footer-divider">/</span>{" "}
           <span title="Gli MP3 locali sono opzionali; in loro assenza viene usata la voce italiana del dispositivo.">
             Audio: voce del dispositivo o elevenlabs.io
           </span>
@@ -366,16 +336,8 @@ export function Dashboard() {
           <span className="welcome-letter letter-a">gn</span>
           <span className="welcome-letter letter-b">gl</span>
           <span className="welcome-letter letter-c">sc</span>
-          <Star
-            className="welcome-star star-one"
-            size={24}
-            fill="currentColor"
-          />
-          <Star
-            className="welcome-star star-two"
-            size={16}
-            fill="currentColor"
-          />
+          <Star className="welcome-star star-one" size={24} fill="currentColor" />
+          <Star className="welcome-star star-two" size={16} fill="currentColor" />
           <span className="orbit" />
         </div>
       </section>
@@ -406,8 +368,7 @@ export function Dashboard() {
                 <p>{game.description}</p>
                 <div className="game-card-bottom">
                   <span>
-                    <Clock3 size={14} /> 6 domande{" "}
-                    <span className="meta-dot">/</span> 2 min
+                    <Clock3 size={14} /> 6 domande <span className="meta-dot">/</span> 2 min
                   </span>
                   <span className="play-arrow">
                     <ArrowRight size={20} />
@@ -440,13 +401,7 @@ export function Dashboard() {
   );
 }
 
-function AudioButton({
-  text,
-  compact = false,
-}: {
-  text: string;
-  compact?: boolean;
-}) {
+function AudioButton({ text, compact = false }: { text: string; compact?: boolean }) {
   const { speak, sound } = usePlay();
   return (
     <button
@@ -482,36 +437,17 @@ function PatternText({ text }: { text: string }) {
 
 function QuestionVisual({ entry, game }: { entry: Entry; game: Game }) {
   return (
-    <div
-      className={`question-visual ${
-        game.mode === "words" ? "words-visual" : "letters-visual"
-      }`}
-    >
-      {entry.image && (
-        <Illustration asset={entry.image} className="question-image" />
-      )}
+    <div className={`question-visual ${game.mode === "words" ? "words-visual" : "letters-visual"}`}>
+      {entry.image && <Illustration asset={entry.image} className="question-image" />}
       {entry.color && (
-        <span
-          className="color-swatch"
-          style={{ backgroundColor: entry.color }}
-          role="img"
-          aria-label={entry.solution}
-        />
+        <span className="color-swatch" style={{ backgroundColor: entry.color }} role="img" aria-label={entry.solution} />
       )}
       {entry.number !== undefined && (
-        <span
-          className="number-pill"
-          role="img"
-          aria-label={String(entry.number)}
-        >
+        <span className="number-pill" role="img" aria-label={String(entry.number)}>
           {entry.number}
         </span>
       )}
-      <span
-        className={`pattern-text ${
-          game.mode === "words" ? "sentence-pattern" : "word-pattern"
-        }`}
-      >
+      <span className={`pattern-text ${game.mode === "words" ? "sentence-pattern" : "word-pattern"}`}>
         <PatternText text={entry.pattern} />
       </span>
       {entry.hint && <span className="pattern-hint">{entry.hint}</span>}
@@ -526,10 +462,7 @@ export function PlayGame({ game }: { game: Game }) {
   const [typed, setTyped] = useState("");
   const nextLock = useRef(false);
   const titleRef = useRef<HTMLHeadingElement>(null);
-  const activeRound =
-    round?.gameId === game.id && round.answers.length < round.questions.length
-      ? round
-      : null;
+  const activeRound = round?.gameId === game.id && round.answers.length < round.questions.length ? round : null;
   const questionIndex = activeRound?.answers.length ?? 0;
 
   useEffect(() => {
@@ -564,9 +497,7 @@ export function PlayGame({ game }: { game: Game }) {
   }
 
   const question = activeRound.questions[questionIndex];
-  const correct = selected
-    ? isAnswerCorrect(game, question.entry, selected)
-    : false;
+  const correct = selected ? isAnswerCorrect(game, question.entry, selected) : false;
 
   function nextQuestion() {
     if (!selected || nextLock.current) return;
@@ -574,19 +505,13 @@ export function PlayGame({ game }: { game: Game }) {
     answer(selected);
     setSelected(null);
     setTyped("");
-    if (questionIndex === activeRound!.questions.length - 1)
-      router.push(`/italian/play/${game.id}/result`);
+    if (questionIndex === activeRound!.questions.length - 1) router.push(`/italian/play/${game.id}/result`);
   }
 
   return (
     <main id="main" className={`game-page page-width theme-${game.id}`}>
       <div className="game-toolbar">
-        <Link
-          className="back-link"
-          href="/italian"
-          aria-label="Tutti i giochi"
-          title="Tutti i giochi"
-        >
+        <Link className="back-link" href="/italian" aria-label="Tutti i giochi" title="Tutti i giochi">
           <ArrowLeft size={17} /> <span>Tutti i giochi</span>
         </Link>
         <span className="game-toolbar-title">{game.title}</span>
@@ -610,11 +535,7 @@ export function PlayGame({ game }: { game: Game }) {
           {game.prompt}
         </h1>
       </div>
-      <div
-        className={`question-stage ${
-          game.mode === "words" ? "sentence-stage" : "letter-stage"
-        }`}
-      >
+      <div className={`question-stage ${game.mode === "words" ? "sentence-stage" : "letter-stage"}`}>
         <QuestionVisual entry={question.entry} game={game} />
         <AudioButton text={question.entry.spoken} />
       </div>
@@ -635,9 +556,7 @@ export function PlayGame({ game }: { game: Game }) {
           <input
             id="word-answer"
             name="answer"
-            className={`write-answer-input ${
-              selected ? (correct ? "input-correct" : "input-wrong") : ""
-            }`}
+            className={`write-answer-input ${selected ? (correct ? "input-correct" : "input-wrong") : ""}`}
             value={typed}
             onChange={(event) => setTyped(event.target.value)}
             disabled={!!selected}
@@ -650,11 +569,7 @@ export function PlayGame({ game }: { game: Game }) {
             placeholder="Scrivi qui…"
             aria-describedby="word-answer-help"
           />
-          <button
-            type="submit"
-            className="button button-primary write-answer-submit"
-            disabled={!!selected || !typed.trim()}
-          >
+          <button type="submit" className="button button-primary write-answer-submit" disabled={!!selected || !typed.trim()}>
             <Check size={18} /> Controlla
           </button>
         </div>
@@ -666,17 +581,9 @@ export function PlayGame({ game }: { game: Game }) {
       </form>
       <div className="feedback-space">
         {selected ? (
-          <div
-            className={`answer-feedback ${
-              correct ? "feedback-correct" : "feedback-wrong"
-            }`}
-          >
+          <div className={`answer-feedback ${correct ? "feedback-correct" : "feedback-wrong"}`}>
             <div role="status">
-              <strong>
-                {correct
-                  ? "Sì! Proprio così!"
-                  : "Quasi! Guarda come si scrive."}
-              </strong>
+              <strong>{correct ? "Sì! Proprio così!" : "Quasi! Guarda come si scrive."}</strong>
               <span className="feedback-line">
                 <b className="feedback-solution">{question.entry.solution}</b>
                 <span className="feedback-note">{question.entry.note}</span>
@@ -702,23 +609,13 @@ export function Results({ game }: { game: Game }) {
   const { round, start } = usePlay();
   const router = useRouter();
   const [filter, setFilter] = useState<"all" | "review">("all");
-  if (
-    !round ||
-    round.gameId !== game.id ||
-    round.answers.length !== round.questions.length
-  ) {
+  if (!round || round.gameId !== game.id || round.answers.length !== round.questions.length) {
     return (
       <main id="main" className="empty-state page-width">
         <Illustration asset="seedling" />
         <h1>Una nuova avventura?</h1>
-        <p>
-          Qui non conserviamo le partite. Le parole imparate restano con te.
-        </p>
-        <Link
-          className="button button-primary"
-          href={`/italian/play/${game.id}`}
-          onClick={() => start(game.id)}
-        >
+        <p>Qui non conserviamo le partite. Le parole imparate restano con te.</p>
+        <Link className="button button-primary" href={`/italian/play/${game.id}`} onClick={() => start(game.id)}>
           Giochiamo <ArrowRight size={18} />
         </Link>
         <Link className="back-link" href="/italian">
@@ -744,17 +641,9 @@ export function Results({ game }: { game: Game }) {
         </div>
         <span className="eyebrow">AVVENTURA COMPLETATA</span>
         <h1>
-          {score === 6
-            ? "Bravissimo! Tutte giuste!"
-            : score >= 3
-              ? "Ben fatto, esploratore!"
-              : "Ogni parola è un nuovo inizio!"}
+          {score === 6 ? "Bravissimo! Tutte giuste!" : score >= 3 ? "Ben fatto, esploratore!" : "Ogni parola è un nuovo inizio!"}
         </h1>
-        <p>
-          {score === 6
-            ? "Sei parole, sei piccole conquiste."
-            : "Anche dagli errori nascono nuove scoperte."}
-        </p>
+        <p>{score === 6 ? "Sei parole, sei piccole conquiste." : "Anche dagli errori nascono nuove scoperte."}</p>
         <div className="score-line">
           <span>
             <Check size={20} /> <strong>{score}</strong> risposte giuste
@@ -767,21 +656,11 @@ export function Results({ game }: { game: Game }) {
       <section className="review-section" aria-labelledby="review-title">
         <div className="review-heading">
           <h2 id="review-title">Le tue parole</h2>
-          <div
-            className="segmented-control"
-            role="group"
-            aria-label="Filtra risposte"
-          >
-            <button
-              aria-pressed={filter === "all"}
-              onClick={() => setFilter("all")}
-            >
+          <div className="segmented-control" role="group" aria-label="Filtra risposte">
+            <button aria-pressed={filter === "all"} onClick={() => setFilter("all")}>
               Tutte (6)
             </button>
-            <button
-              aria-pressed={filter === "review"}
-              onClick={() => setFilter("review")}
-            >
+            <button aria-pressed={filter === "review"} onClick={() => setFilter("review")}>
               Da ripassare ({review.length})
             </button>
           </div>
@@ -797,10 +676,7 @@ export function Results({ game }: { game: Game }) {
               return (
                 <div className="review-row" key={entry.entry.id}>
                   {entry.entry.image ? (
-                    <Illustration
-                      asset={entry.entry.image}
-                      className="small-word-art"
-                    />
+                    <Illustration asset={entry.entry.image} className="small-word-art" />
                   ) : (
                     <span className="review-badge" aria-hidden="true">
                       {entry.entry.answer}
@@ -810,11 +686,7 @@ export function Results({ game }: { game: Game }) {
                     <strong>{entry.entry.solution}</strong>
                     <span>{entry.entry.note}</span>
                   </div>
-                  <div
-                    className={`review-answer ${
-                      isCorrect ? "is-correct" : "is-wrong"
-                    }`}
-                  >
+                  <div className={`review-answer ${isCorrect ? "is-correct" : "is-wrong"}`}>
                     {isCorrect ? (
                       <>
                         <Check size={17} />
@@ -823,8 +695,7 @@ export function Results({ game }: { game: Game }) {
                     ) : (
                       <>
                         <span>
-                          La tua risposta:{" "}
-                          <s className="review-selected">{entry.selected}</s>
+                          La tua risposta: <s className="review-selected">{entry.selected}</s>
                         </span>
                         <ChevronRight size={15} />
                         <strong>{entry.expected}</strong>

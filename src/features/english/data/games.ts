@@ -1,12 +1,4 @@
-export type GameId =
-  | "colors"
-  | "animals"
-  | "objects"
-  | "verbs"
-  | "food"
-  | "weather"
-  | "nature"
-  | "numbers";
+export type GameId = "colors" | "animals" | "objects" | "verbs" | "food" | "weather" | "nature" | "numbers";
 
 export type Word = {
   english: string;
@@ -424,10 +416,7 @@ export type Round = {
   answers: Answer[];
 };
 
-export function shuffle<Value>(
-  values: readonly Value[],
-  random = Math.random,
-): Value[] {
+export function shuffle<Value>(values: readonly Value[], random = Math.random): Value[] {
   const result = [...values];
   for (let index = result.length - 1; index > 0; index--) {
     const target = Math.floor(random() * (index + 1));
@@ -436,11 +425,7 @@ export function shuffle<Value>(
   return result;
 }
 
-export function createRound(
-  gameId: GameId,
-  previous?: Round,
-  random = Math.random,
-): Round {
+export function createRound(gameId: GameId, previous?: Round, random = Math.random): Round {
   const game = games.find((entry) => entry.id === gameId);
   if (!game) throw new Error("Unknown game");
   const words = shuffle(game.words, random).slice(0, 6);
@@ -467,7 +452,5 @@ export function createRound(
 }
 
 export function scoreRound(answers: Answer[]) {
-  return answers.filter(
-    (answer) => answer.word.english === answer.selected.english,
-  ).length;
+  return answers.filter((answer) => answer.word.english === answer.selected.english).length;
 }

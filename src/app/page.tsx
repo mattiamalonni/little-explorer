@@ -1,15 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-import {
-  ArrowRight,
-  BookOpen,
-  Clock3,
-  Dices,
-  Heart,
-  Sparkles,
-  Sprout,
-  Star,
-} from "lucide-react";
+import { ArrowRight, BookOpen, Clock3, Dices, Heart, Sparkles, Sprout, Star } from "lucide-react";
 
 const worlds = [
   {
@@ -17,8 +8,7 @@ const worlds = [
     href: "/english",
     kicker: "ENGLISH",
     title: "Little English",
-    description:
-      "Colori, animali, oggetti, azioni, cibi e numeri: le prime parole inglesi con illustrazioni e pronuncia.",
+    description: "Colori, animali, oggetti, azioni, cibi e numeri: le prime parole inglesi con illustrazioni e pronuncia.",
     games: "8 giochi",
   },
   {
@@ -26,8 +16,7 @@ const worlds = [
     href: "/math",
     kicker: "MATH",
     title: "Little Math",
-    description:
-      "Addizioni e sottrazioni fino a 100, con blocchi da contare e passaggi spiegati un pezzetto alla volta.",
+    description: "Addizioni e sottrazioni fino a 100, con blocchi da contare e passaggi spiegati un pezzetto alla volta.",
     games: "3 giochi",
   },
   {
@@ -35,8 +24,7 @@ const worlds = [
     href: "/italian",
     kicker: "ITALIANO",
     title: "Little Italiano",
-    description:
-      "GN, GLI, SC, CH, CU, doppie e accenti: i suoni dell'italiano diventano piccoli giochi da scoprire.",
+    description: "GN, GLI, SC, CH, CU, doppie e accenti: i suoni dell'italiano diventano piccoli giochi da scoprire.",
     games: "8 giochi",
   },
 ] as const;
@@ -45,23 +33,9 @@ function WorldArt({ id }: { id: (typeof worlds)[number]["id"] }) {
   if (id === "english") {
     return (
       <div className="hub-world-art" aria-hidden="true">
-        <Image
-          className="art-lion"
-          src="/illustrations/lion.svg"
-          alt=""
-          width={104}
-          height={104}
-          unoptimized
-        />
+        <Image className="art-lion" src="/illustrations/lion.svg" alt="" width={104} height={104} unoptimized />
         <span className="hub-world-glyph">Aa</span>
-        <Image
-          className="art-book"
-          src="/illustrations/book.svg"
-          alt=""
-          width={73}
-          height={73}
-          unoptimized
-        />
+        <Image className="art-book" src="/illustrations/book.svg" alt="" width={73} height={73} unoptimized />
         <span className="hub-world-sticker">hello, explorer!</span>
       </div>
     );
@@ -85,24 +59,10 @@ function WorldArt({ id }: { id: (typeof worlds)[number]["id"] }) {
 
   return (
     <div className="hub-world-art" aria-hidden="true">
-      <Image
-        className="art-spider"
-        src="/illustrations/spider.svg"
-        alt=""
-        width={92}
-        height={92}
-        unoptimized
-      />
+      <Image className="art-spider" src="/illustrations/spider.svg" alt="" width={92} height={92} unoptimized />
       <span className="hub-world-glyph">gn</span>
       <span className="hub-world-glyph glyph-two">gl</span>
-      <Image
-        className="art-mountain"
-        src="/illustrations/mountain.svg"
-        alt=""
-        width={82}
-        height={82}
-        unoptimized
-      />
+      <Image className="art-mountain" src="/illustrations/mountain.svg" alt="" width={82} height={82} unoptimized />
       <span className="hub-world-sticker">suoni e lettere</span>
     </div>
   );
@@ -144,10 +104,7 @@ export default function HubPage() {
               <br />
               <span>esploratore!</span>
             </h1>
-            <p>
-              Scegli un mondo e comincia a scoprire. Parole, numeri e suoni ti
-              aspettano, un piccolo passo alla volta.
-            </p>
+            <p>Scegli un mondo e comincia a scoprire. Parole, numeri e suoni ti aspettano, un piccolo passo alla volta.</p>
             <div className="hub-hero-meta">
               <span>
                 <BookOpen size={15} /> 19 giochi
@@ -163,14 +120,7 @@ export default function HubPage() {
           <div className="hub-hero-art" aria-hidden="true">
             <span className="hub-orbit" />
             <span className="hub-bubble">Pronto a esplorare?</span>
-            <Image
-              className="hub-rocket"
-              src="/illustrations/rocket.svg"
-              alt=""
-              width={172}
-              height={172}
-              unoptimized
-            />
+            <Image className="hub-rocket" src="/illustrations/rocket.svg" alt="" width={172} height={172} unoptimized />
             <span className="hub-tile hub-tile-a">A</span>
             <span className="hub-tile hub-tile-b">1</span>
             <span className="hub-tile hub-tile-c">gn</span>
@@ -191,11 +141,7 @@ export default function HubPage() {
           </div>
           <div className="hub-grid">
             {worlds.map((world) => (
-              <Link
-                key={world.id}
-                href={world.href}
-                className={`hub-world hub-world-${world.id}`}
-              >
+              <Link key={world.id} href={world.href} className={`hub-world hub-world-${world.id}`}>
                 <WorldArt id={world.id} />
                 <div className="hub-world-body">
                   <span className="hub-world-kicker">{world.kicker}</span>
@@ -236,7 +182,8 @@ export default function HubPage() {
           <a href="https://github.com/jdecked/twemoji" target="_blank" rel="noreferrer">
             Twemoji
           </a>{" "}
-          e <a href="/illustrations/ATTRIBUTION.md">illustrazioni originali</a> /{" "}
+          e {/* oxlint-disable-next-line nextjs/no-html-link-for-pages */}
+          <a href="/illustrations/ATTRIBUTION.md">illustrazioni originali</a> /{" "}
           <a href="https://elevenlabs.io" target="_blank" rel="noreferrer">
             Audio: elevenlabs.io
           </a>

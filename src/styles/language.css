@@ -1737,8 +1737,8 @@
     top: 0;
   }
   .subject-language .welcome-bubble,
-.subject-language .orbit,
-.subject-language .welcome-star {
+  .subject-language .orbit,
+  .subject-language .welcome-star {
     display: none;
   }
   .subject-language .welcome-letter {
@@ -1801,7 +1801,7 @@
     gap: 3px;
   }
   .subject-language .game-card-bottom .meta-dot,
-.subject-language .game-card-bottom > span:first-child svg {
+  .subject-language .game-card-bottom > span:first-child svg {
     display: none;
   }
   .subject-language .game-card-bottom > span:first-child {
@@ -1816,7 +1816,7 @@
     width: 16px;
   }
   .subject-language .art-main,
-.subject-language .art-colors .art-main {
+  .subject-language .art-colors .art-main {
     width: 97px;
     height: 97px;
     left: calc(50% - 48px);
@@ -1872,8 +1872,8 @@
     bottom: 40px;
   }
   .subject-language .art-sticker,
-.subject-language .art-objects .art-sticker,
-.subject-language .art-verbs .art-sticker {
+  .subject-language .art-objects .art-sticker,
+  .subject-language .art-verbs .art-sticker {
     font-size: 9px;
     left: 10px;
     bottom: 10px;
@@ -2233,8 +2233,8 @@
 }
 @media (prefers-reduced-motion: reduce) {
   .subject-language *,
-.subject-language *::before,
-.subject-language *::after {
+  .subject-language *::before,
+  .subject-language *::after {
     animation: none !important;
     transition: none !important;
     scroll-behavior: auto !important;
@@ -2251,4 +2251,3 @@
     font-size: 28px;
   }
 }
-

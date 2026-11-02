@@ -1,12 +1,4 @@
-export type GameId =
-  | "gn"
-  | "gli"
-  | "sc"
-  | "ch"
-  | "cu"
-  | "double-consonants"
-  | "accents"
-  | "h";
+export type GameId = "gn" | "gli" | "sc" | "ch" | "cu" | "double-consonants" | "accents" | "h";
 
 export type Entry = {
   id: string;
@@ -1656,11 +1648,7 @@ export function normalizeAnswer(value: string): string {
     .replace(/^[^\p{L}]+|[^\p{L}]+$/gu, "");
 }
 
-export function isAnswerCorrect(
-  game: Game,
-  entry: Entry,
-  value: string,
-): boolean {
+export function isAnswerCorrect(game: Game, entry: Entry, value: string): boolean {
   const expected = normalizeAnswer(expectedAnswer(game, entry));
   return expected.length > 0 && normalizeAnswer(value) === expected;
 }
@@ -1671,10 +1659,7 @@ export type Round = {
   answers: Answer[];
 };
 
-export function shuffle<Value>(
-  values: readonly Value[],
-  random = Math.random,
-): Value[] {
+export function shuffle<Value>(values: readonly Value[], random = Math.random): Value[] {
   const result = [...values];
   for (let index = result.length - 1; index > 0; index--) {
     const target = Math.floor(random() * (index + 1));
@@ -1683,11 +1668,7 @@ export function shuffle<Value>(
   return result;
 }
 
-export function createRound(
-  gameId: GameId,
-  previous?: Round,
-  random = Math.random,
-): Round {
+export function createRound(gameId: GameId, previous?: Round, random = Math.random): Round {
   const game = games.find((entry) => entry.id === gameId);
   if (!game) throw new Error("Unknown game");
   const entries = shuffle(game.entries, random).slice(0, 6);

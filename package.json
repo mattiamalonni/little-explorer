@@ -3,14 +3,13 @@
   "version": "0.1.0",
   "private": true,
   "type": "module",
-  "engines": {
-    "node": ">=22.18.0"
-  },
   "scripts": {
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint",
+    "lint": "oxlint",
+    "format": "oxfmt",
+    "format:check": "oxfmt --check",
     "audio:generate:english": "node --env-file-if-exists=.env.local --experimental-strip-types scripts/generate-audio-english.mjs",
     "audio:generate:italian": "node --env-file-if-exists=.env.local --experimental-strip-types scripts/generate-audio-italian.mjs"
   },
@@ -25,9 +24,12 @@
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
-    "eslint": "^9",
-    "eslint-config-next": "16.4.3",
+    "oxfmt": "^0.75.0",
+    "oxlint": "^1.90.0",
     "tailwindcss": "^4",
     "typescript": "^5"
+  },
+  "engines": {
+    "node": ">=22.18.0"
   }
 }

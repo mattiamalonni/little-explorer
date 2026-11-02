@@ -12,9 +12,7 @@ Gli MP3 esistenti vengono riutilizzati. Nessuna rigenerazione automatica.
 Gli audio finiscono in public/audio/english/.`;
 
 export function vocabularyJobs() {
-  const words = [
-    ...new Set(games.flatMap((game) => game.words.map((word) => word.english))),
-  ];
+  const words = [...new Set(games.flatMap((game) => game.words.map((word) => word.english)))];
   const jobs = words.map((text) => ({
     text,
     filename: audioFilename(text),
@@ -31,8 +29,7 @@ export function main(args, env = process.env, fetchImpl = fetch) {
     env,
     fetchImpl,
     help,
-    sample:
-      "Hello, little explorer! Tree. Flower. Rainbow. Butterfly. One, two, three. Well done!",
+    sample: "Hello, little explorer! Tree. Flower. Rainbow. Butterfly. One, two, three. Well done!",
     jobs: vocabularyJobs,
     directory: new URL("../public/audio/english/", import.meta.url),
   });
@@ -40,9 +37,7 @@ export function main(args, env = process.env, fetchImpl = fetch) {
 
 if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
   main(process.argv.slice(2)).catch((error) => {
-    console.error(
-      error instanceof Error ? error.message : "Generazione audio fallita.",
-    );
+    console.error(error instanceof Error ? error.message : "Generazione audio fallita.");
     process.exitCode = 1;
   });
 }

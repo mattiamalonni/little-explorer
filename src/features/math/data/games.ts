@@ -83,29 +83,31 @@ export function createProblems(gameId: GameId, limit: Limit): Problem[] {
   return problems;
 }
 
-export function createRound(
-  gameId: GameId,
-  limit: Limit,
-  previous?: Round,
-  random: () => number = Math.random,
-): Round {
+export function createRound(gameId: GameId, limit: Limit, previous?: Round, random: () => number = Math.random): Round {
   const problems = createProblems(gameId, limit);
-  const pool = gameId === "mixed"
-    ? shuffle([
-      ...shuffle(problems.filter((problem) => problem.gameId === "addition"), random).slice(0, ROUND_LENGTH / 2),
-      ...shuffle(problems.filter((problem) => problem.gameId === "subtraction"), random).slice(0, ROUND_LENGTH / 2),
-    ], random)
-    : shuffle(problems, random);
-  if (
-    previous?.gameId === gameId &&
-    previous.limit === limit &&
-    pool[0].id === previous.questions[0]?.id
-  ) {
+  const pool =
+    gameId === "mixed"
+      ? shuffle(
+          [
+            ...shuffle(
+              problems.filter((problem) => problem.gameId === "addition"),
+              random,
+            ).slice(0, ROUND_LENGTH / 2),
+            ...shuffle(
+              problems.filter((problem) => problem.gameId === "subtraction"),
+              random,
+            ).slice(0, ROUND_LENGTH / 2),
+          ],
+          random,
+        )
+      : shuffle(problems, random);
+  if (previous?.gameId === gameId && previous.limit === limit && pool[0].id === previous.questions[0]?.id) {
     [pool[0], pool[1]] = [pool[1], pool[0]];
   }
   const questions = pool.slice(0, ROUND_LENGTH).map((problem) => {
-    const nearby = Array.from({ length: limit + 1 }, (_, index) => index)
-      .filter((value) => value !== problem.result && Math.abs(value - problem.result) <= 10);
+    const nearby = Array.from({ length: limit + 1 }, (_, index) => index).filter(
+      (value) => value !== problem.result && Math.abs(value - problem.result) <= 10,
+    );
     const distractors = shuffle(nearby, random).slice(0, 3);
     return {
       ...problem,
@@ -148,8 +150,17 @@ export function calculationModel(problem: Problem) {
   const resultTens = adding ? aTens + bTens + Number(carry) : workingTens - bTens;
   const resultUnits = adding ? (aUnits + bUnits) % 10 : workingUnits - bUnits;
   return {
-    adding, aTens, aUnits, bTens, bUnits, exchange, carry,
-    workingTens, workingUnits, resultTens, resultUnits,
+    adding,
+    aTens,
+    aUnits,
+    bTens,
+    bUnits,
+    exchange,
+    carry,
+    workingTens,
+    workingUnits,
+    resultTens,
+    resultUnits,
   };
 }
 

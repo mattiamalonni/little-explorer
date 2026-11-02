@@ -6,18 +6,18 @@ La home è un hub con tre mondi. Ogni mondo conserva il proprio carattere, i pro
 
 ## Rotte
 
-| Percorso | Contenuto |
-| --- | --- |
-| `/` | Hub con i tre mondi |
-| `/english` | Dashboard di Little English (8 giochi) |
-| `/english/play/[gameId]` | Partita |
-| `/english/play/[gameId]/result` | Riepilogo |
-| `/math` | Dashboard di Little Math (3 giochi) |
-| `/math/play/[gameId]` | Partita |
-| `/math/play/[gameId]/result` | Riepilogo |
-| `/italian` | Dashboard di Little Italiano (8 giochi) |
-| `/italian/play/[gameId]` | Partita |
-| `/italian/play/[gameId]/result` | Riepilogo |
+| Percorso                        | Contenuto                               |
+| ------------------------------- | --------------------------------------- |
+| `/`                             | Hub con i tre mondi                     |
+| `/english`                      | Dashboard di Little English (8 giochi)  |
+| `/english/play/[gameId]`        | Partita                                 |
+| `/english/play/[gameId]/result` | Riepilogo                               |
+| `/math`                         | Dashboard di Little Math (3 giochi)     |
+| `/math/play/[gameId]`           | Partita                                 |
+| `/math/play/[gameId]/result`    | Riepilogo                               |
+| `/italian`                      | Dashboard di Little Italiano (8 giochi) |
+| `/italian/play/[gameId]`        | Partita                                 |
+| `/italian/play/[gameId]/result` | Riepilogo                               |
 
 Gli URL sono in inglese; l'interfaccia per i bambini resta in italiano. Le partite vivono nello stato React: non ci sono account, database, cookie applicativi o salvataggi persistenti.
 
@@ -82,11 +82,13 @@ Apri http://localhost:3000. Per una porta diversa: `npm run dev -- --port 3001`.
 
 ```bash
 npm run lint
+npm run format
+npm run format:check
 npm run build
 npm start
 ```
 
-Non è presente una suite di test: la verifica avviene con lint, build e controllo manuale delle rotte.
+Non è presente una suite di test: la verifica avviene con lint, controllo della formattazione, build e controllo manuale delle rotte.
 
 ## Illustrazioni
 
