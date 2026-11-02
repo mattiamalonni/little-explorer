@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Nunito, Plus_Jakarta_Sans } from "next/font/google";
 import "./globals.css";
 
@@ -19,6 +19,13 @@ export const metadata: Metadata = {
   },
   description:
     "Un solo posto per imparare giocando: inglese, matematica e italiano con minigiochi per bambini. Senza account e senza salvataggi.",
+};
+
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 1,
+  userScalable: false,
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
