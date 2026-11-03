@@ -250,6 +250,95 @@
   background: #f7efdc;
 }
 
+.gami-account {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 11px;
+  margin-top: 18px;
+  padding: 10px 12px;
+  border: 1px solid #e8decb;
+  border-radius: 13px;
+  background: #fffdf7;
+}
+.gami-account-avatar {
+  width: 38px;
+  height: 38px;
+  flex-shrink: 0;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: #eaf2e8;
+  color: var(--green);
+}
+.gami-account-copy {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  flex: 1;
+  min-width: 90px;
+}
+.gami-account-copy strong {
+  color: var(--ink);
+  font: 800 14px var(--font-nunito);
+  line-height: 1.2;
+}
+.gami-account-actions {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 7px;
+  margin-left: auto;
+}
+.gami-sync {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  color: #6f8a72;
+  font-size: 9px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+.gami-sync.is-saving {
+  color: #8b816a;
+}
+.gami-sync.is-error {
+  color: #a55238;
+}
+.gami-retry {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  min-height: 28px;
+  padding: 5px 9px;
+  border: 1px solid #e3b9aa;
+  border-radius: 999px;
+  background: #fff3ee;
+  color: #9c543e;
+  font-size: 9px;
+  font-weight: 800;
+}
+.gami-retry:hover {
+  background: #ffe9e1;
+}
+.gami-logout {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  min-height: 30px;
+  padding: 6px 11px;
+  border: 1px solid #e6dcc4;
+  border-radius: 999px;
+  background: #fff;
+  color: #776c55;
+  font-size: 9px;
+  font-weight: 800;
+}
+.gami-logout:hover {
+  background: #f7efdc;
+  color: #5d5136;
+}
+
 .gami-level {
   display: flex;
   align-items: center;
@@ -689,6 +778,10 @@
   }
   .gami-level-total {
     margin-left: auto;
+  }
+  .gami-account-actions {
+    width: 100%;
+    margin-left: 49px;
   }
   .gami-reward-stars {
     padding-right: 0;

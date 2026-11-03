@@ -8,7 +8,7 @@ export const validArguments = ["--voices", "--sample", "--all", "--dry-run", "--
 function required(env, name) {
   const value = env[name]?.trim();
   if (!value) {
-    throw new Error(`Configura ${name} in .env.local. Non inserire segreti in chat.`);
+    throw new Error(`Configura ${name} in .env. Non inserire segreti in chat.`);
   }
   return value;
 }

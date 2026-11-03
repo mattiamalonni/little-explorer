@@ -10,10 +10,16 @@
     "lint": "oxlint",
     "format": "oxfmt",
     "format:check": "oxfmt --check",
-    "audio:generate:english": "node --env-file-if-exists=.env.local --experimental-strip-types scripts/generate-audio-english.mjs",
-    "audio:generate:italian": "node --env-file-if-exists=.env.local --experimental-strip-types scripts/generate-audio-italian.mjs"
+    "postinstall": "prisma generate",
+    "db:generate": "prisma generate",
+    "db:push": "prisma db push",
+    "db:migrate": "prisma migrate dev",
+    "db:deploy": "prisma migrate deploy",
+    "audio:generate:english": "node --env-file-if-exists=.env --experimental-strip-types scripts/generate-audio-english.mjs",
+    "audio:generate:italian": "node --env-file-if-exists=.env --experimental-strip-types scripts/generate-audio-italian.mjs"
   },
   "dependencies": {
+    "@prisma/client": "^6.19.3",
     "lucide-react": "^1.57.0",
     "next": "16.4.3",
     "react": "19.3.0",
@@ -26,6 +32,7 @@
     "@types/react-dom": "^19",
     "oxfmt": "^0.75.0",
     "oxlint": "^1.90.0",
+    "prisma": "^6.19.3",
     "tailwindcss": "^4",
     "typescript": "^5"
   },

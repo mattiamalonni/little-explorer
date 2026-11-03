@@ -3,7 +3,7 @@ import { games } from "../src/features/italian/data/games.ts";
 import { audioFilename } from "../src/features/italian/lib/audio.ts";
 import { runAudioGenerator } from "./audio-core.mjs";
 
-const help = `Generazione audio italiano con ElevenLabs (configurazione in .env.local).
+const help = `Generazione audio italiano con ElevenLabs (configurazione in .env).
   --voices              Elenca le voci disponibili nel tuo account
   --sample              Genera solo sample.mp3 (consuma crediti)
   --all --dry-run       Mostra testi e caratteri, senza chiamate API

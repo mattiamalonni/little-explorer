@@ -115,7 +115,7 @@ export default function HubPage() {
                 <BookOpen size={15} /> 19 giochi
               </span>
               <span>
-                <Heart size={15} /> Senza account
+                <Heart size={15} /> Il tuo account
               </span>
               <span>
                 <Clock3 size={15} /> Al tuo ritmo

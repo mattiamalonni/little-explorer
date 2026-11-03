@@ -3,6 +3,7 @@ import { Nunito, Plus_Jakarta_Sans } from "next/font/google";
 import { GamificationProvider } from "@/features/gamification/components/gamification-provider";
 import "./globals.css";
 import "@/styles/gamification.css";
+import "@/styles/auth.css";
 
 const nunito = Nunito({
   variable: "--font-nunito",
@@ -20,7 +21,7 @@ export const metadata: Metadata = {
     template: "%s | Little Explorer",
   },
   description:
-    "Un solo posto per imparare giocando: inglese, matematica e italiano con minigiochi per bambini. Senza account: stelle e progressi restano nel browser.",
+    "Un solo posto per imparare giocando: inglese, matematica e italiano con minigiochi per bambini. Crea il tuo nome: stelle e progressi ti seguono su ogni dispositivo.",
 };
 
 export const viewport: Viewport = {

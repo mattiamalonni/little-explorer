@@ -19,7 +19,7 @@ La home è un hub con tre mondi. Ogni mondo conserva il proprio carattere, i pro
 | `/italian/play/[gameId]`        | Partita                                 |
 | `/italian/play/[gameId]/result` | Riepilogo                               |
 
-Gli URL sono in inglese; l'interfaccia per i bambini resta in italiano. Le partite vivono nello stato React: non ci sono account, database o cookie applicativi. Stelle, livelli e traguardi sono salvati solo nel browser tramite `localStorage`.
+Gli URL sono in inglese; l'interfaccia per i bambini resta in italiano. Le partite vivono nello stato React. Ogni bambino crea un **nome unico** con una password: stelle, livelli e traguardi vengono salvati su PostgreSQL (Neon) e restano legati al suo account.
 
 ## Struttura
 
@@ -28,10 +28,17 @@ src/
   app/
     page.tsx                 hub dei tre mondi
     globals.css              reset, base e stili dell'hub
+    api/
+      auth/                  registrazione, accesso e uscita
+      me/                    sessione e progressi correnti
+      progress/              salvataggio e azzeramento dei progressi
     english/                 rotte di Little English
     math/                    rotte di Little Math
     italian/                 rotte di Little Italiano
   features/
+    auth/
+      components/auth-screen.tsx
+      lib/                   password, sessione e validazione
     english/
       components/english-app.tsx
       data/games.ts
@@ -45,12 +52,18 @@ src/
       data/games.ts
       lib/audio.ts
     gamification/
-      components/            pillola, banner, pannello traguardi, provider React
-      lib/progress.ts        stelle, livelli, badge e persistenza localStorage
+      components/            accesso, pillola, banner, pannello traguardi, provider React
+      lib/progress.ts        stelle, livelli, badge e logica pura
+      lib/db-progress.ts     mappatura tra progressi e database
+  lib/db.ts                  client Prisma condiviso
   styles/
+    auth.css                 stili di accesso e creazione del nome
     gamification.css         stili condivisi di stelle, banner e traguardi
     language.css             stili condivisi English + Italiano, con scope
     math.css                 stili Math, con scope
+prisma/
+  schema.prisma              modelli User, Progress e Session
+  migrations/                migrazioni SQL versionate
 scripts/
   audio-core.mjs             logica comune di generazione audio
   generate-audio-english.mjs
@@ -83,7 +96,15 @@ La gamification è condivisa dai tre mondi e vive sopra i layout delle singole f
 - la **serie di giorni** aumenta giocando in giorni consecutivi;
 - il pannello dei traguardi, aperto dalla pillola nell'header o dal banner in dashboard, mostra livelli, statistiche e badge e permette di azzerare tutto.
 
-Lo stato è gestito da `GamificationProvider` nel layout radice e salvato in `localStorage` con la chiave `little-explorer:progress:v1`. La persistenza è quindi limitata al browser: nessun account, nessuna chiamata di rete e nessun dato condiviso tra dispositivi. Se il browser blocca o cancella lo spazio locale, il gioco continua semplicemente ripartendo da zero.
+Lo stato è gestito da `GamificationProvider` nel layout radice. All'avvio il provider chiama `GET /api/me`: senza sessione valida mostra la schermata di accesso, altrimenti carica i progressi dal database. Ogni partita aggiorna subito lo stato React e invia un `PUT /api/progress` in background; il pannello dei traguardi mostra lo stato del salvataggio e permette di riprovare. L'azzeramento riscrive i progressi iniziali.
+
+## Account e database
+
+- I bambini si registrano con un **nome** (2–24 caratteri) e una **password** (almeno 4). Il nome è unico senza distinzione tra maiuscole e minuscole.
+- Le password sono salvate come hash `scrypt`. La sessione usa un cookie `httpOnly` `little-explorer-session` valido 30 giorni; nel database resta solo l'hash del token.
+- I modelli `User`, `Progress` e `Session` sono definiti in `prisma/schema.prisma`. Ogni utente ha un solo record `Progress`.
+- Le API in `src/app/api` controllano la sessione lato server. `PUT /api/progress` normalizza i dati prima di salvarli, `DELETE /api/progress` li azzera.
+- Se su un browser esistono ancora progressi anonimi in `localStorage` (chiave `little-explorer:progress:v1`), vengono copiati nel nuovo account al momento della registrazione e poi rimossi.
 
 ## Avvio locale
 
@@ -91,6 +112,18 @@ Node.js 22.18 o successivo.
 
 ```bash
 npm install
+cp .env.example .env
+```
+
+Compila in `.env`:
+
+- `DATABASE_URL`: URL PostgreSQL con pooler, usato dall'app;
+- `DIRECT_URL`: URL diretto dello stesso database, usato dalle migrazioni Prisma.
+
+Poi applica lo schema e avvia:
+
+```bash
+npm run db:deploy
 npm run dev
 ```
 
@@ -104,7 +137,16 @@ npm run build
 npm start
 ```
 
-Non è presente una suite di test: la verifica avviene con lint, controllo della formattazione, build e controllo manuale delle rotte.
+Altri comandi utili:
+
+```bash
+npm run db:generate   # rigenera il client Prisma
+npm run db:push       # sincronizza lo schema senza creare una migrazione
+npm run db:migrate    # crea e applica una migrazione in sviluppo
+npm run db:deploy     # applica le migrazioni esistenti
+```
+
+Non è presente una suite di test: la verifica avviene con lint, controllo della formattazione, build e controllo manuale delle rotte e degli endpoint.
 
 ## Illustrazioni
 
@@ -125,7 +167,7 @@ I browser non chiamano mai ElevenLabs. Il pulsante Ascolta è presente in domand
 ### Generare gli audio
 
 1. Crea un account [ElevenLabs](https://elevenlabs.io/) e una chiave API con Text to Speech e lettura voci.
-2. Copia `.env.example` in `.env.local` e compila `ELEVENLABS_API_KEY`, `ELEVENLABS_VOICE_ID` e, se serve, `ELEVENLABS_MODEL_ID`. Non usare prefissi `NEXT_PUBLIC_`: la chiave non deve arrivare al browser.
+2. Copia `.env.example` in `.env` e compila `ELEVENLABS_API_KEY`, `ELEVENLABS_VOICE_ID` e, se serve, `ELEVENLABS_MODEL_ID`. Non usare prefissi `NEXT_PUBLIC_`: la chiave non deve arrivare al browser.
 3. Elenca le voci disponibili:
 
    ```bash
@@ -165,7 +207,7 @@ Dopo aver aggiunto parole inglesi o testi italiani, genera gli audio mancanti pr
 
 ## Deploy su Vercel
 
-Importa il repository su Vercel, seleziona il preset **Next.js** e Node.js 22.x o successivo. Comando build: `npm run build`. Non servono segreti, variabili d'ambiente o database in produzione: le chiavi ElevenLabs servono solo in locale per generare gli MP3.
+Importa il repository su Vercel, seleziona il preset **Next.js** e Node.js 22.x o successivo. Aggiungi `DATABASE_URL` e `DIRECT_URL` alle variabili d'ambiente del progetto e applica le migrazioni con `npm run db:deploy` (una volta, o come passo del comando di build). Comando build: `npm run build`. Le chiavi ElevenLabs servono solo in locale per generare gli MP3.
 
 ## Crediti
 

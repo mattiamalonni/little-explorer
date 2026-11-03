@@ -5,7 +5,7 @@ import { AppShell } from "@/features/math/components/math-app";
 export const metadata: Metadata = {
   title: "Little Math | Piccoli numeri, grandi scoperte",
   description:
-    "Addizioni, sottrazioni, moltiplicazioni e divisioni fino a 100, un piccolo passo alla volta. Minigiochi per bambini, senza account e senza fretta.",
+    "Addizioni, sottrazioni, moltiplicazioni e divisioni fino a 100, un piccolo passo alla volta. Minigiochi per bambini, con i tuoi progressi sempre con te.",
 };
 
 export default function MathLayout({ children }: LayoutProps<"/math">) {

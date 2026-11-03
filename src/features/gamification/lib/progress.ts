@@ -264,7 +264,7 @@ function isRecord(value: unknown): value is Record<string, unknown> {
 
 function toCount(value: unknown): number {
   if (typeof value !== "number" || !Number.isFinite(value) || value <= 0) return 0;
-  return Math.floor(value);
+  return Math.min(1_000_000, Math.floor(value));
 }
 
 function toStringList(value: unknown): string[] {
@@ -272,7 +272,7 @@ function toStringList(value: unknown): string[] {
   return value.filter((entry): entry is string => typeof entry === "string");
 }
 
-function normalizeProgress(value: unknown): Progress {
+export function normalizeProgress(value: unknown): Progress {
   const fallback = createDefaultProgress();
   if (!isRecord(value)) return fallback;
   const correct = isRecord(value.correct) ? value.correct : {};

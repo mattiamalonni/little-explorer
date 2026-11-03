@@ -6,13 +6,18 @@ import {
   BookOpen,
   Calculator,
   Check,
+  Cloud,
+  CloudOff,
   Flame,
   Languages,
   Lock,
+  LogOut,
   Medal,
+  RefreshCw,
   Sparkles,
   Star,
   Trophy,
+  UserRound,
   X,
   type LucideIcon,
 } from "lucide-react";
@@ -27,7 +32,7 @@ const WORLD_STATS: { world: World; label: string; icon: LucideIcon }[] = [
 ];
 
 export function ProgressPanel({ onClose }: { onClose: () => void }) {
-  const { progress, resetProgress } = useGamification();
+  const { progress, resetProgress, user, logout, syncState, retrySave } = useGamification();
   const closeRef = useRef<HTMLButtonElement>(null);
   const [confirmingReset, setConfirmingReset] = useState(false);
   const level = levelForStars(progress.stars);
@@ -73,6 +78,41 @@ export function ProgressPanel({ onClose }: { onClose: () => void }) {
             <X size={21} />
           </button>
         </header>
+
+        <section className="gami-account" aria-label="Il tuo account">
+          <span className="gami-account-avatar" aria-hidden="true">
+            <UserRound size={20} />
+          </span>
+          <div className="gami-account-copy">
+            <span className="gami-eyebrow">IL TUO NOME</span>
+            <strong>{user?.name ?? "Esploratore"}</strong>
+          </div>
+          <div className="gami-account-actions">
+            <span className={`gami-sync is-${syncState}`} role="status">
+              {syncState === "error" ? (
+                <>
+                  <CloudOff size={14} /> Progressi da salvare
+                </>
+              ) : syncState === "saving" ? (
+                <>
+                  <Cloud size={14} /> Salvataggio…
+                </>
+              ) : (
+                <>
+                  <Cloud size={14} /> Progressi salvati
+                </>
+              )}
+            </span>
+            {syncState === "error" && (
+              <button type="button" className="gami-retry" onClick={retrySave}>
+                <RefreshCw size={13} /> Riprova
+              </button>
+            )}
+            <button type="button" className="gami-logout" onClick={() => void logout()}>
+              <LogOut size={14} /> Esci
+            </button>
+          </div>
+        </section>
 
         <section className="gami-level" aria-label={`Livello ${level.number}: ${level.name}`}>
           <span className="gami-level-mark" aria-hidden="true">
@@ -158,7 +198,7 @@ export function ProgressPanel({ onClose }: { onClose: () => void }) {
 
         <footer className="gami-panel-footer">
           <p>
-            <Sparkles size={15} /> I progressi restano solo su questo browser: niente account, niente cloud.
+            <Sparkles size={15} /> Stelle e traguardi sono nel tuo account: li ritrovi su ogni dispositivo.
           </p>
           <div className="gami-reset">
             {confirmingReset ? (
