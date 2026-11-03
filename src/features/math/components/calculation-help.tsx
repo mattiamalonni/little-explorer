@@ -101,7 +101,9 @@ function FactHelp({ problem, reveal }: { problem: Problem; reveal: boolean }) {
       <ol className="calculation-steps">
         <li>
           <h3>
-            {multiplying ? `${problem.a} ${groupLabel} da ${problem.b}` : `Hai ${problem.a} ${problem.a === 1 ? "oggetto" : "oggetti"}`}
+            {multiplying
+              ? `${problem.a} ${groupLabel} da ${problem.b}`
+              : `Hai ${problem.a} ${problem.a === 1 ? "oggetto" : "oggetti"}`}
           </h3>
           <p>
             {multiplying
@@ -128,7 +130,7 @@ function FactHelp({ problem, reveal }: { problem: Problem; reveal: boolean }) {
             <p>
               {multiplying
                 ? `${repeated} = ${problem.result}.`
-                : `${problem.b} \u00d7 ${problem.result} = ${problem.a}: ogni gruppo ha ${problem.result} oggetti.`}
+                : `${problem.b} \u00d7 ${problem.result} = ${problem.a}: ogni gruppo ha ${problem.result} ${problem.result === 1 ? "oggetto" : "oggetti"}.`}
             </p>
           ) : (
             <p>
