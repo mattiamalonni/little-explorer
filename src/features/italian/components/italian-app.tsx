@@ -34,6 +34,10 @@ import {
   type Round,
 } from "@/features/italian/data/games";
 import { audioPath } from "@/features/italian/lib/audio";
+import { ProgressBanner } from "@/features/gamification/components/progress-banner";
+import { ProgressPill } from "@/features/gamification/components/progress-pill";
+import { RoundRewards } from "@/features/gamification/components/round-rewards";
+import { useRoundReward } from "@/features/gamification/components/use-round-reward";
 
 type PlayContext = {
   round: Round | null;
@@ -183,6 +187,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
           </nav>
           <div className="header-right">
             <span className="header-note">Suoni, lettere, meraviglie.</span>
+            <ProgressPill />
             <button
               className="icon-button sound-toggle"
               title={sound ? "Disattiva audio" : "Attiva audio"}
@@ -341,6 +346,8 @@ export function Dashboard() {
           <span className="orbit" />
         </div>
       </section>
+
+      <ProgressBanner world="italian" />
 
       <section className="games-section" aria-labelledby="games-title">
         <div className="section-heading">
@@ -609,7 +616,18 @@ export function Results({ game }: { game: Game }) {
   const { round, start } = usePlay();
   const router = useRouter();
   const [filter, setFilter] = useState<"all" | "review">("all");
-  if (!round || round.gameId !== game.id || round.answers.length !== round.questions.length) {
+  const completed = Boolean(round && round.gameId === game.id && round.answers.length === round.questions.length);
+  const score = round && completed ? scoreRound(round.answers) : 0;
+  const reward = useRoundReward({
+    roundId: round?.id ?? "",
+    world: "italian",
+    gameId: game.id,
+    correct: score,
+    total: round?.questions.length ?? 6,
+    enabled: completed,
+  });
+
+  if (!round || !completed) {
     return (
       <main id="main" className="empty-state page-width">
         <Illustration asset="seedling" />
@@ -624,7 +642,6 @@ export function Results({ game }: { game: Game }) {
       </main>
     );
   }
-  const score = scoreRound(round.answers);
   const review = round.answers.filter((entry) => !entry.correct);
   const visibleAnswers = filter === "review" ? review : round.answers;
 
@@ -653,6 +670,7 @@ export function Results({ game }: { game: Game }) {
           </span>
         </div>
       </section>
+      <RoundRewards reward={reward} />
       <section className="review-section" aria-labelledby="review-title">
         <div className="review-heading">
           <h2 id="review-title">Le tue parole</h2>

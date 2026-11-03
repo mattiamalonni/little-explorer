@@ -1,6 +1,8 @@
 import type { Metadata, Viewport } from "next";
 import { Nunito, Plus_Jakarta_Sans } from "next/font/google";
+import { GamificationProvider } from "@/features/gamification/components/gamification-provider";
 import "./globals.css";
+import "@/styles/gamification.css";
 
 const nunito = Nunito({
   variable: "--font-nunito",
@@ -18,7 +20,7 @@ export const metadata: Metadata = {
     template: "%s | Little Explorer",
   },
   description:
-    "Un solo posto per imparare giocando: inglese, matematica e italiano con minigiochi per bambini. Senza account e senza salvataggi.",
+    "Un solo posto per imparare giocando: inglese, matematica e italiano con minigiochi per bambini. Senza account: stelle e progressi restano nel browser.",
 };
 
 export const viewport: Viewport = {
@@ -31,7 +33,9 @@ export const viewport: Viewport = {
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html lang="it" className={`${nunito.variable} ${jakarta.variable}`} data-scroll-behavior="smooth">
-      <body>{children}</body>
+      <body>
+        <GamificationProvider>{children}</GamificationProvider>
+      </body>
     </html>
   );
 }

@@ -1654,6 +1654,7 @@ export function isAnswerCorrect(game: Game, entry: Entry, value: string): boolea
 }
 
 export type Round = {
+  id: string;
   gameId: GameId;
   questions: Question[];
   answers: Answer[];
@@ -1676,6 +1677,7 @@ export function createRound(gameId: GameId, previous?: Round, random = Math.rand
     [entries[0], entries[1]] = [entries[1], entries[0]];
   }
   return {
+    id: `round-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
     gameId,
     questions: entries.map((entry) => ({
       entry,

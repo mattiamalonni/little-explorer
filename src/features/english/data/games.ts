@@ -411,6 +411,7 @@ export const games: Game[] = [
 export type Question = { word: Word; options: Word[] };
 export type Answer = { word: Word; selected: Word };
 export type Round = {
+  id: string;
   gameId: GameId;
   questions: Question[];
   answers: Answer[];
@@ -433,6 +434,7 @@ export function createRound(gameId: GameId, previous?: Round, random = Math.rand
     [words[0], words[1]] = [words[1], words[0]];
   }
   return {
+    id: `round-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
     gameId,
     questions: words.map((word) => ({
       word,

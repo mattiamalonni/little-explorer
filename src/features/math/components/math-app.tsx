@@ -3,6 +3,10 @@
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { createContext, useContext, useEffect, useRef, useState } from "react";
+import { ProgressBanner } from "@/features/gamification/components/progress-banner";
+import { ProgressPill } from "@/features/gamification/components/progress-pill";
+import { RoundRewards } from "@/features/gamification/components/round-rewards";
+import { useRoundReward } from "@/features/gamification/components/use-round-reward";
 import { CalculationHelp } from "@/features/math/components/calculation-help";
 import {
   ArrowLeft,
@@ -146,6 +150,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
           </nav>
           <div className="header-right">
             <span className="header-note">Piccoli passi, grandi scoperte.</span>
+            <ProgressPill />
             <button
               className="icon-button"
               aria-label={sound ? "Disattiva audio" : "Attiva audio"}
@@ -240,6 +245,7 @@ export function Dashboard() {
           <span className="hero-caption">Un passo alla volta.</span>
         </div>
       </section>
+      <ProgressBanner world="math" />
       <section aria-labelledby="games-title">
         <div className="section-heading">
           <div>
@@ -471,7 +477,18 @@ export function Results({ game }: { game: Game }) {
   useEffect(() => {
     headingRef.current?.focus();
   }, []);
-  if (!round || round.gameId !== game.id || round.answers.length !== ROUND_LENGTH) {
+  const completed = Boolean(round && round.gameId === game.id && round.answers.length === ROUND_LENGTH);
+  const score = round && completed ? scoreRound(round.answers) : 0;
+  const reward = useRoundReward({
+    roundId: round?.id ?? "",
+    world: "math",
+    gameId: game.id,
+    correct: score,
+    total: ROUND_LENGTH,
+    enabled: completed,
+  });
+
+  if (!round || !completed) {
     return (
       <main id="main" className="empty-state page-width">
         <Sprout size={65} />
@@ -488,7 +505,6 @@ export function Results({ game }: { game: Game }) {
       </main>
     );
   }
-  const score = scoreRound(round.answers);
   const review = round.answers.filter(({ question, selected }) => question.result !== selected);
   const visible = filter === "review" ? review : round.answers;
   return (
@@ -522,6 +538,7 @@ export function Results({ game }: { game: Game }) {
           </span>
         </div>
       </section>
+      <RoundRewards reward={reward} />
       <section className="review-section" aria-labelledby="review-title">
         <div className="review-heading">
           <h2 id="review-title">I tuoi calcoli</h2>

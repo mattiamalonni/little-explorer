@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight, BookOpen, Clock3, Dices, Heart, Sparkles, Sprout, Star } from "lucide-react";
+import { ProgressPill } from "@/features/gamification/components/progress-pill";
 
 const worlds = [
   {
@@ -86,11 +87,14 @@ export default function HubPage() {
               <span className="hub-brand-dot">.</span>
             </span>
           </Link>
-          <nav className="hub-nav" aria-label="I tre mondi">
-            <Link href="/english">English</Link>
-            <Link href="/math">Math</Link>
-            <Link href="/italian">Italiano</Link>
-          </nav>
+          <div className="hub-header-tools">
+            <nav className="hub-nav" aria-label="I tre mondi">
+              <Link href="/english">English</Link>
+              <Link href="/math">Math</Link>
+              <Link href="/italian">Italiano</Link>
+            </nav>
+            <ProgressPill />
+          </div>
         </div>
       </header>
 

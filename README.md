@@ -2,7 +2,7 @@
 
 Tre mondi di minigiochi per bambini in un'unica app: **inglese**, **matematica** e **italiano**. Next.js App Router, React e TypeScript.
 
-La home è un hub con tre mondi. Ogni mondo conserva il proprio carattere, i propri giochi e le proprie impostazioni, ma condivide infrastruttura, illustrazioni e stili di base.
+La home è un hub con tre mondi. Ogni mondo conserva il proprio carattere, i propri giochi e le proprie impostazioni, ma condivide infrastruttura, illustrazioni, stili di base e un unico sistema di **stelle, livelli e traguardi**.
 
 ## Rotte
 
@@ -19,7 +19,7 @@ La home è un hub con tre mondi. Ogni mondo conserva il proprio carattere, i pro
 | `/italian/play/[gameId]`        | Partita                                 |
 | `/italian/play/[gameId]/result` | Riepilogo                               |
 
-Gli URL sono in inglese; l'interfaccia per i bambini resta in italiano. Le partite vivono nello stato React: non ci sono account, database, cookie applicativi o salvataggi persistenti.
+Gli URL sono in inglese; l'interfaccia per i bambini resta in italiano. Le partite vivono nello stato React: non ci sono account, database o cookie applicativi. Stelle, livelli e traguardi sono salvati solo nel browser tramite `localStorage`.
 
 ## Struttura
 
@@ -44,7 +44,11 @@ src/
       components/italian-app.tsx
       data/games.ts
       lib/audio.ts
+    gamification/
+      components/            pillola, banner, pannello traguardi, provider React
+      lib/progress.ts        stelle, livelli, badge e persistenza localStorage
   styles/
+    gamification.css         stili condivisi di stelle, banner e traguardi
     language.css             stili condivisi English + Italiano, con scope
     math.css                 stili Math, con scope
 scripts/
@@ -68,6 +72,18 @@ Le tre app originali usavano nomi di classe uguali (`.game-card`, `.dashboard`, 
 - Il layout di English applica `subject-language subject-english`, quello di Italiano `subject-language subject-italian`, quello di Math `subject-math`.
 
 Quando si modifica uno stile condiviso, mantenere il prefisso `.subject-language`. Le differenze di un solo mondo vanno aggiunte come override mirati, ad esempio `.subject-language.subject-english .welcome-letter`.
+
+## Stelle e traguardi
+
+La gamification è condivisa dai tre mondi e vive sopra i layout delle singole feature:
+
+- ogni risposta giusta vale **1 stella**; una partita perfetta aggiunge un **bonus di 3 stelle**;
+- le stelle fanno salire di **livello** (da “Primi passi” a “Leggenda curiosa”);
+- i **traguardi** premiano partite complete, serie perfette, costanza, mondi visitati e risposte corrette per materia;
+- la **serie di giorni** aumenta giocando in giorni consecutivi;
+- il pannello dei traguardi, aperto dalla pillola nell'header o dal banner in dashboard, mostra livelli, statistiche e badge e permette di azzerare tutto.
+
+Lo stato è gestito da `GamificationProvider` nel layout radice e salvato in `localStorage` con la chiave `little-explorer:progress:v1`. La persistenza è quindi limitata al browser: nessun account, nessuna chiamata di rete e nessun dato condiviso tra dispositivi. Se il browser blocca o cancella lo spazio locale, il gioco continua semplicemente ripartendo da zero.
 
 ## Avvio locale
 

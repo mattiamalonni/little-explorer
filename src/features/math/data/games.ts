@@ -67,6 +67,7 @@ export type Problem = {
 export type Question = Problem & { options: number[] };
 export type Answer = { question: Question; selected: number };
 export type Round = {
+  id: string;
   gameId: GameId;
   limit: Limit;
   questions: Question[];
@@ -254,7 +255,13 @@ export function createRound(gameId: GameId, limit: Limit, previous?: Round, rand
       options: shuffle([problem.result, ...distractors], random),
     };
   });
-  return { gameId, limit, questions, answers: [] };
+  return {
+    id: `round-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
+    gameId,
+    limit,
+    questions,
+    answers: [],
+  };
 }
 
 export function recordAnswer(round: Round, questionId: string, selected: number): Round {
