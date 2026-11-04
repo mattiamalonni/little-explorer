@@ -1,4 +1,4 @@
-import { Prisma } from "@prisma/client";
+import { Prisma } from "@/generated/prisma/client";
 import { NextResponse } from "next/server";
 import { createSession } from "@/features/auth/lib/session";
 import { hashPassword } from "@/features/auth/lib/password";

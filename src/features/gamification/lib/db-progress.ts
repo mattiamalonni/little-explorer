@@ -1,4 +1,4 @@
-import type { Progress as ProgressRecord } from "@prisma/client";
+import type { Progress as ProgressRecord } from "@/generated/prisma/client";
 import { createDefaultProgress, type Progress } from "@/features/gamification/lib/progress";
 
 export type ProgressData = {

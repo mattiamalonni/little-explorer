@@ -19,22 +19,24 @@
     "audio:generate:italian": "node --env-file-if-exists=.env --experimental-strip-types scripts/generate-audio-italian.mjs"
   },
   "dependencies": {
-    "@prisma/client": "^6.19.3",
-    "lucide-react": "^1.57.0",
-    "next": "16.4.3",
-    "react": "19.3.0",
-    "react-dom": "19.3.0"
+    "@prisma/adapter-pg": "^7.10.1",
+    "@prisma/client": "^7.10.1",
+    "dotenv": "^18.0.9",
+    "lucide-react": "^1.68.0",
+    "next": "^16.4.5",
+    "react": "^19.3.1",
+    "react-dom": "^19.3.1"
   },
   "devDependencies": {
-    "@tailwindcss/turbopack": "^4",
-    "@types/node": "^20",
+    "@tailwindcss/turbopack": "^4.3.4",
+    "@types/node": "^22.20.5",
     "@types/react": "^19",
     "@types/react-dom": "^19",
-    "oxfmt": "^0.75.0",
-    "oxlint": "^1.90.0",
-    "prisma": "^6.19.3",
-    "tailwindcss": "^4",
-    "typescript": "^5"
+    "oxfmt": "^0.76.0",
+    "oxlint": "^1.91.0",
+    "prisma": "^7.10.1",
+    "tailwindcss": "^4.3.4",
+    "typescript": "^7.0.2"
   },
   "engines": {
     "node": ">=22.18.0"

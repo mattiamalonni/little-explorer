@@ -64,6 +64,8 @@ src/
 prisma/
   schema.prisma              modelli User, Progress e Session
   migrations/                migrazioni SQL versionate
+prisma.config.ts             configurazione Prisma CLI (schema, migrazioni, URL diretto)
+src/generated/prisma/        client Prisma generato (non versionato)
 scripts/
   audio-core.mjs             logica comune di generazione audio
   generate-audio-english.mjs
