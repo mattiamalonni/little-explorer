@@ -12,6 +12,10 @@
   --sun: #c8963e;
   --sky: #5b8ba8;
   --violet: #7a5b9e;
+  /* Shell condiviso da hub e pagine dei mondi: stessa larghezza, gutter e header. */
+  --shell-max: 1180px;
+  --shell-gutter: 48px;
+  --shell-header-height: 88px;
 }
 
 @theme inline {
@@ -126,13 +130,13 @@ svg {
   top: 12px;
 }
 .hub-header {
-  height: 88px;
+  height: var(--shell-header-height);
   border-bottom: 1px solid var(--line);
   background: #ffffffd9;
   backdrop-filter: blur(8px);
 }
 .hub-header-inner {
-  width: min(1180px, calc(100% - 96px));
+  width: min(var(--shell-max), calc(100% - var(--shell-gutter) * 2));
   height: 100%;
   margin: auto;
   display: flex;
@@ -190,7 +194,7 @@ svg {
   background: var(--mint);
 }
 .hub-main {
-  width: min(1180px, calc(100% - 96px));
+  width: min(var(--shell-max), calc(100% - var(--shell-gutter) * 2));
   margin: auto;
   flex: 1;
 }
@@ -634,7 +638,7 @@ svg {
   background: var(--green-dark);
 }
 .hub-footer {
-  width: min(1180px, calc(100% - 96px));
+  width: min(var(--shell-max), calc(100% - var(--shell-gutter) * 2));
   min-height: 84px;
   margin: 34px auto 0;
   border-top: 1px solid var(--line);
@@ -682,13 +686,9 @@ svg {
   }
 }
 @media (max-width: 700px) {
-  .hub-header {
-    height: 76px;
-  }
-  .hub-header-inner,
-  .hub-main,
-  .hub-footer {
-    width: calc(100% - 40px);
+  :root {
+    --shell-gutter: 20px;
+    --shell-header-height: 76px;
   }
   .hub-nav {
     gap: 2px;
@@ -746,6 +746,9 @@ svg {
   }
 }
 @media (max-width: 380px) {
+  :root {
+    --shell-gutter: 14px;
+  }
   .hub-nav a {
     padding-inline: 6px;
     font-size: 10px;

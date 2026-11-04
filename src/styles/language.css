@@ -9,7 +9,7 @@
   object-fit: contain;
 }
 .subject-language .page-width {
-  width: min(1180px, calc(100% - 96px));
+  width: min(var(--shell-max), calc(100% - var(--shell-gutter) * 2));
   margin-inline: auto;
 }
 .subject-language .skip-link {
@@ -24,13 +24,12 @@
   top: 12px;
 }
 .subject-language .site-header {
-  height: 88px;
+  height: var(--shell-header-height);
   border-bottom: 1px solid var(--line);
   background: #fff;
 }
 .subject-language .header-inner {
-  max-width: 1360px;
-  padding-inline: 48px;
+  width: min(var(--shell-max), calc(100% - var(--shell-gutter) * 2));
   height: 100%;
   margin: auto;
   display: flex;
@@ -820,8 +819,7 @@
   color: #be9676;
 }
 .subject-language .site-footer {
-  max-width: 1276px;
-  width: calc(100% - 96px);
+  width: min(var(--shell-max), calc(100% - var(--shell-gutter) * 2));
   margin: 0 auto;
   border-top: 1px solid var(--line);
   min-height: 77px;
@@ -1512,13 +1510,9 @@
 @media (max-width: 1100px) {
   .subject-language .header-inner {
     gap: 36px;
-    padding-inline: 32px;
   }
   .subject-language .header-note {
     display: none;
-  }
-  .subject-language .page-width {
-    width: calc(100% - 64px);
   }
   .subject-language .games-grid {
     gap: 14px;
@@ -1556,9 +1550,6 @@
   .subject-language .play-arrow {
     width: 29px;
     height: 29px;
-  }
-  .subject-language .site-footer {
-    width: calc(100% - 64px);
   }
 }
 @media (max-width: 900px) {
@@ -1641,11 +1632,7 @@
   }
 }
 @media (max-width: 600px) {
-  .subject-language .site-header {
-    height: 72px;
-  }
   .subject-language .header-inner {
-    padding-inline: 20px;
     gap: 12px;
   }
   .subject-language .brand {
@@ -1682,9 +1669,6 @@
   .subject-language .sound-toggle {
     width: 37px;
     height: 37px;
-  }
-  .subject-language .page-width {
-    width: calc(100% - 40px);
   }
   .subject-language .dashboard {
     padding-top: 32px;
@@ -1965,7 +1949,6 @@
     line-height: 1.7;
   }
   .subject-language .site-footer {
-    width: calc(100% - 40px);
     min-height: 65px;
     font-size: 9px;
   }
@@ -2196,12 +2179,6 @@
   }
 }
 @media (max-width: 360px) {
-  .subject-language .page-width {
-    width: calc(100% - 28px);
-  }
-  .subject-language .header-inner {
-    padding-inline: 14px;
-  }
   .subject-language .brand {
     font-size: 21px;
   }
