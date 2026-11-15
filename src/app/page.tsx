@@ -9,8 +9,9 @@ const worlds = [
     href: "/english",
     kicker: "ENGLISH",
     title: "Little English",
-    description: "Colori, animali, oggetti, azioni, cibi e numeri: le prime parole inglesi con illustrazioni e pronuncia.",
-    games: "8 giochi",
+    description:
+      "Colori, animali, oggetti, azioni, cibi, emozioni e numeri: le prime parole inglesi con illustrazioni e pronuncia.",
+    games: "9 giochi",
   },
   {
     id: "math",

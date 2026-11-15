@@ -1,4 +1,4 @@
-export type GameId = "colors" | "animals" | "objects" | "verbs" | "food" | "weather" | "nature" | "numbers";
+export type GameId = "colors" | "animals" | "objects" | "verbs" | "food" | "weather" | "nature" | "emotions" | "numbers";
 
 export type Word = {
   english: string;
@@ -363,6 +363,39 @@ export const games: Game[] = [
       { english: "Waterfall", italian: "Cascata", image: "waterfall" },
       { english: "Ocean", italian: "Oceano", image: "sea" },
       { english: "Cave", italian: "Grotta", image: "cave" },
+    ],
+  },
+  {
+    id: "emotions",
+    title: "Come ti senti?",
+    english: "Feelings",
+    description: "Un sorriso, una sorpresa, un pizzico di coraggio.",
+    prompt: "Quale faccia corrisponde?",
+    label: "Ascolta e senti",
+    words: [
+      { english: "Happy", italian: "Felice", image: "smile" },
+      { english: "Sad", italian: "Triste", image: "sad" },
+      { english: "Angry", italian: "Arrabbiato", image: "angry" },
+      { english: "Scared", italian: "Spaventato", image: "scared" },
+      { english: "Surprised", italian: "Sorpreso", image: "surprised" },
+      { english: "Excited", italian: "Entusiasta", image: "excited" },
+      { english: "Calm", italian: "Calmo", image: "calm" },
+      { english: "Proud", italian: "Orgoglioso", image: "proud" },
+      { english: "Curious", italian: "Curioso", image: "think" },
+      { english: "Silly", italian: "Buffo", image: "silly" },
+      { english: "Worried", italian: "Preoccupato", image: "worried" },
+      { english: "Confused", italian: "Confuso", image: "confused" },
+      { english: "Grumpy", italian: "Scontroso", image: "grumpy" },
+      { english: "Shy", italian: "Timido", image: "shy" },
+      { english: "Bored", italian: "Annoiato", image: "bored" },
+      { english: "Loved", italian: "Amato", image: "loved" },
+      { english: "Sleepy", italian: "Assonnato", image: "sleep" },
+      { english: "Tired", italian: "Stanco", image: "tired" },
+      { english: "Hungry", italian: "Affamato", image: "hungry" },
+      { english: "Thirsty", italian: "Assetato", image: "drink" },
+      { english: "Hot", italian: "Caldo", image: "hot" },
+      { english: "Cold", italian: "Freddo", image: "cold" },
+      { english: "Kind", italian: "Gentile", image: "kiss" },
     ],
   },
   {

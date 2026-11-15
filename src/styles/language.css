@@ -396,6 +396,9 @@
 .subject-language .art-nature {
   background-color: #e8f0df;
 }
+.subject-language .art-emotions {
+  background-color: #f5e9f4;
+}
 .subject-language .card-weather .category-label,
 .subject-language .art-weather .art-spark {
   color: #5685a0;
@@ -403,6 +406,10 @@
 .subject-language .card-nature .category-label,
 .subject-language .art-nature .art-spark {
   color: #66884e;
+}
+.subject-language .card-emotions .category-label,
+.subject-language .art-emotions .art-spark {
+  color: #925f95;
 }
 .subject-language .card-food .category-label,
 .subject-language .art-food .art-spark {

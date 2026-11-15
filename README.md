@@ -9,7 +9,7 @@ La home è un hub con tre mondi. Ogni mondo conserva il proprio carattere, i pro
 | Percorso                        | Contenuto                               |
 | ------------------------------- | --------------------------------------- |
 | `/`                             | Hub con i tre mondi                     |
-| `/english`                      | Dashboard di Little English (8 giochi)  |
+| `/english`                      | Dashboard di Little English (9 giochi)  |
 | `/english/play/[gameId]`        | Partita                                 |
 | `/english/play/[gameId]/result` | Riepilogo                               |
 | `/math`                         | Dashboard di Little Math (6 giochi)     |

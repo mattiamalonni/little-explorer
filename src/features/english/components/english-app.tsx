@@ -267,6 +267,14 @@ function GameArt({ id }: { id: GameId }) {
           <span className="art-sticker">out in nature</span>
         </>
       )}
+      {id === "emotions" && (
+        <>
+          <Illustration asset="smile" className="art-main" />
+          <Illustration asset="surprised" className="art-side" />
+          <span className="art-bubble">How do you feel?</span>
+          <span className="art-sticker">happy or sad?</span>
+        </>
+      )}
     </div>
   );
 }
@@ -458,7 +466,7 @@ export function PlayGame({ game }: { game: Game }) {
   }
 
   const question = activeRound.questions[questionIndex];
-  const visualChoices = ["colors", "objects", "food"].includes(game.id);
+  const visualChoices = ["colors", "objects", "food", "emotions"].includes(game.id);
   const correct = selected?.english === question.word.english;
 
   function nextQuestion() {

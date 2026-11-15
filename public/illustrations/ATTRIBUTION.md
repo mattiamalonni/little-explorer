@@ -114,6 +114,7 @@ schede dei giochi. Nessun servizio di generazione immagini è stato usato.
 | Local filename    | Original upstream filename |
 | ----------------- | -------------------------- |
 | `airplane.svg`    | `2708.svg`                 |
+| `angry.svg`       | `1f620.svg`                |
 | `ant.svg`         | `1f41c.svg`                |
 | `apple.svg`       | `1f34e.svg`                |
 | `avocado.svg`     | `1f951.svg`                |
@@ -132,6 +133,7 @@ schede dei giochi. Nessun servizio di generazione immagini è stato usato.
 | `blueberries.svg` | `1fad0.svg`                |
 | `boat.svg`        | `26f5.svg`                 |
 | `book.svg`        | `1f4d5.svg`                |
+| `bored.svg`       | `1f611.svg`                |
 | `bread.svg`       | `1f35e.svg`                |
 | `broccoli.svg`    | `1f966.svg`                |
 | `bus.svg`         | `1f68c.svg`                |
@@ -139,6 +141,7 @@ schede dei giochi. Nessun servizio di generazione immagini è stato usato.
 | `butterfly.svg`   | `1f98b.svg`                |
 | `cake.svg`        | `1f382.svg`                |
 | `calendar.svg`    | `1f4c5.svg`                |
+| `calm.svg`        | `1f60c.svg`                |
 | `camera.svg`      | `1f4f7.svg`                |
 | `candy.svg`       | `1f36c.svg`                |
 | `car.svg`         | `1f697.svg`                |
@@ -157,6 +160,7 @@ schede dei giochi. Nessun servizio di generazione immagini è stato usato.
 | `coconut.svg`     | `1f965.svg`                |
 | `cold.svg`        | `1f976.svg`                |
 | `computer.svg`    | `1f4bb.svg`                |
+| `confused.svg`    | `1f615.svg`                |
 | `cook.svg`        | `1f373.svg`                |
 | `cookie.svg`      | `1f36a.svg`                |
 | `corn.svg`        | `1f33d.svg`                |
@@ -180,6 +184,7 @@ schede dei giochi. Nessun servizio di generazione immagini è stato usato.
 | `egg.svg`         | `1f95a.svg`                |
 | `elephant.svg`    | `1f418.svg`                |
 | `envelope.svg`    | `2709.svg`                 |
+| `excited.svg`     | `1f929.svg`                |
 | `fire.svg`        | `1f525.svg`                |
 | `fish.svg`        | `1f41f.svg`                |
 | `flamingo.svg`    | `1f9a9.svg`                |
@@ -195,6 +200,7 @@ schede dei giochi. Nessun servizio di generazione immagini è stato usato.
 | `glasses.svg`     | `1f453.svg`                |
 | `goat.svg`        | `1f410.svg`                |
 | `grapes.svg`      | `1f347.svg`                |
+| `grumpy.svg`      | `1f612.svg`                |
 | `guitar.svg`      | `1f3b8.svg`                |
 | `hamster.svg`     | `1f439.svg`                |
 | `hat.svg`         | `1f3a9.svg`                |
@@ -203,6 +209,7 @@ schede dei giochi. Nessun servizio di generazione immagini è stato usato.
 | `horse.svg`       | `1f40e.svg`                |
 | `hot.svg`         | `1f975.svg`                |
 | `house.svg`       | `1f3e0.svg`                |
+| `hungry.svg`      | `1f924.svg`                |
 | `ice-cream.svg`   | `1f368.svg`                |
 | `island.svg`      | `1f3dd.svg`                |
 | `kangaroo.svg`    | `1f998.svg`                |
@@ -218,6 +225,7 @@ schede dei giochi. Nessun servizio di generazione immagini è stato usato.
 | `listen.svg`      | `1f442.svg`                |
 | `lizard.svg`      | `1f98e.svg`                |
 | `look.svg`        | `1f440.svg`                |
+| `loved.svg`       | `1f970.svg`                |
 | `mango.svg`       | `1f96d.svg`                |
 | `map.svg`         | `1f5fa.svg`                |
 | `melon.svg`       | `1f348.svg`                |
@@ -257,6 +265,7 @@ schede dei giochi. Nessun servizio di generazione immagini è stato usato.
 | `popcorn.svg`     | `1f37f.svg`                |
 | `potato.svg`      | `1f954.svg`                |
 | `pretzel.svg`     | `1f968.svg`                |
+| `proud.svg`       | `1f60e.svg`                |
 | `rabbit.svg`      | `1f407.svg`                |
 | `rainbow.svg`     | `1f308.svg`                |
 | `rainy.svg`       | `1f327.svg`                |
@@ -267,8 +276,10 @@ schede dei giochi. Nessun servizio di generazione immagini è stato usato.
 | `rocket.svg`      | `1f680.svg`                |
 | `ruler.svg`       | `1f4cf.svg`                |
 | `run.svg`         | `1f3c3.svg`                |
+| `sad.svg`         | `1f614.svg`                |
 | `salad.svg`       | `1f957.svg`                |
 | `sandwich.svg`    | `1f96a.svg`                |
+| `scared.svg`      | `1f631.svg`                |
 | `scissors.svg`    | `2702.svg`                 |
 | `sea.svg`         | `1f30a.svg`                |
 | `seal.svg`        | `1f9ad.svg`                |
@@ -276,6 +287,8 @@ schede dei giochi. Nessun servizio di generazione immagini è stato usato.
 | `shark.svg`       | `1f988.svg`                |
 | `sheep.svg`       | `1f411.svg`                |
 | `shoe.svg`        | `1f45f.svg`                |
+| `shy.svg`         | `1f633.svg`                |
+| `silly.svg`       | `1f61b.svg`                |
 | `sing.svg`        | `1f3a4.svg`                |
 | `skate.svg`       | `1f6fc.svg`                |
 | `sleep.svg`       | `1f634.svg`                |
@@ -294,11 +307,13 @@ schede dei giochi. Nessun servizio di generazione immagini è stato usato.
 | `strawberry.svg`  | `1f353.svg`                |
 | `sun.svg`         | `2600.svg`                 |
 | `sunny.svg`       | `1f324.svg`                |
+| `surprised.svg`   | `1f62e.svg`                |
 | `swim.svg`        | `1f3ca.svg`                |
 | `teddy-bear.svg`  | `1f9f8.svg`                |
 | `television.svg`  | `1f4fa.svg`                |
 | `think.svg`       | `1f914.svg`                |
 | `tiger.svg`       | `1f405.svg`                |
+| `tired.svg`       | `1f62b.svg`                |
 | `tomato.svg`      | `1f345.svg`                |
 | `toothbrush.svg`  | `1faa5.svg`                |
 | `train.svg`       | `1f686.svg`                |
@@ -314,5 +329,6 @@ schede dei giochi. Nessun servizio di generazione immagini è stato usato.
 | `window.svg`      | `1fa9f.svg`                |
 | `windy.svg`       | `1f32c.svg`                |
 | `wolf.svg`        | `1f43a.svg`                |
+| `worried.svg`     | `1f61f.svg`                |
 | `write.svg`       | `270d.svg`                 |
 | `zebra.svg`       | `1f993.svg`                |
