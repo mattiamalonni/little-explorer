@@ -38,7 +38,7 @@ export async function getSessionUser() {
 
   const session = await prisma.session.findUnique({
     where: { tokenHash: hashToken(token) },
-    include: { user: { include: { progress: true } } },
+    include: { user: { include: { progress: true, settings: true } } },
   });
 
   if (!session) return null;

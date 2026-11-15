@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { createSession } from "@/features/auth/lib/session";
 import { verifyPassword } from "@/features/auth/lib/password";
 import { nameKey, parseCredentials } from "@/features/auth/lib/validation";
+import { gameSettingsFromRecords } from "@/features/gamification/lib/db-settings";
 import { progressFromRecord, progressToRecordData } from "@/features/gamification/lib/db-progress";
 import { createDefaultProgress } from "@/features/gamification/lib/progress";
 import { prisma } from "@/lib/db";
@@ -18,7 +19,7 @@ export async function POST(request: Request) {
   try {
     const user = await prisma.user.findUnique({
       where: { nameKey: nameKey(name) },
-      include: { progress: true },
+      include: { progress: true, settings: true },
     });
 
     if (!user || !verifyPassword(password, user.passwordHash)) {
@@ -43,6 +44,7 @@ export async function POST(request: Request) {
     return NextResponse.json({
       user: { id: user.id, name: user.name },
       progress: progressFromRecord(progress),
+      settings: gameSettingsFromRecords(user.settings),
     });
   } catch (error) {
     console.error("Errore durante l'accesso", error);

@@ -16,6 +16,7 @@ model User {
   updatedAt    DateTime  @updatedAt
   progress     Progress?
   sessions     Session[]
+  settings     GameSetting[]
 }
 
 model Progress {
@@ -34,6 +35,22 @@ model Progress {
   badges          String[] @default([])
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
+}
+
+model GameSetting {
+  id          String   @id @default(cuid())
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  world       String
+  gameId      String
+  selected    String[] @default([])
+  roundLength Int      @default(6)
+  limit       Int?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@unique([userId, world, gameId])
+  @@index([userId])
 }
 
 model Session {

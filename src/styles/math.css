@@ -248,23 +248,6 @@
   font-size: 11px;
   padding-bottom: 4px;
 }
-.subject-math .level-picker {
-  padding: 0;
-  margin: 24px 0;
-  border: 0;
-}
-.subject-math .level-picker legend {
-  padding: 0;
-  margin-bottom: 10px;
-  font-size: 13px;
-  font-weight: 700;
-}
-.subject-math .level-picker p {
-  color: var(--muted);
-  font-size: 11px;
-  margin-top: 9px;
-  line-height: 1.7;
-}
 .subject-math .segmented-control {
   display: inline-flex;
   flex-wrap: wrap;
@@ -1042,14 +1025,6 @@
   color: var(--muted);
   line-height: 1.8;
 }
-.subject-math .ready-state .level-picker {
-  margin: 25px auto;
-}
-.subject-math .ready-state legend {
-  float: left;
-  width: 100%;
-  margin-bottom: 10px;
-}
 .subject-math .result-celebration {
   text-align: center;
   padding: 24px 0 35px;
@@ -1299,9 +1274,6 @@
   }
   .subject-math .section-heading h2 {
     font-size: 24px;
-  }
-  .subject-math .level-picker {
-    margin-block: 21px;
   }
   .subject-math .games-grid {
     grid-template-columns: 1fr;

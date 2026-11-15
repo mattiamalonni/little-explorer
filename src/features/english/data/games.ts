@@ -446,6 +446,9 @@ export type Answer = { word: Word; selected: Word };
 export type Round = {
   id: string;
   gameId: GameId;
+  /** Le voci disponibili per questa partita, usate per rigiocare. */
+  selection: string[];
+  roundLength: number;
   questions: Question[];
   answers: Answer[];
 };
@@ -459,23 +462,35 @@ export function shuffle<Value>(values: readonly Value[], random = Math.random): 
   return result;
 }
 
-export function createRound(gameId: GameId, previous?: Round, random = Math.random): Round {
+export type RoundOptions = {
+  /** Le parole scelte nella schermata pre-gioco. Se assente, si usano tutte. */
+  words?: readonly string[];
+  length?: number;
+};
+
+export function createRound(gameId: GameId, options: RoundOptions = {}, previous?: Round, random = Math.random): Round {
   const game = games.find((entry) => entry.id === gameId);
   if (!game) throw new Error("Unknown game");
-  const words = shuffle(game.words, random).slice(0, 6);
-  if (previous?.questions[0].word.english === words[0].english) {
+  const chosen = options.words ? new Set(options.words) : null;
+  const available = chosen ? game.words.filter((word) => chosen.has(word.english)) : game.words;
+  const pool = available.length >= 4 ? available : game.words;
+  const length = Math.min(Math.max(Math.floor(options.length ?? 6), 1), pool.length);
+  const words = shuffle(pool, random).slice(0, length);
+  if (words.length > 1 && previous?.questions[0]?.word.english === words[0].english) {
     [words[0], words[1]] = [words[1], words[0]];
   }
   return {
     id: `round-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
     gameId,
+    selection: pool.map((word) => word.english),
+    roundLength: length,
     questions: words.map((word) => ({
       word,
       options: shuffle(
         [
           word,
           ...shuffle(
-            game.words.filter((entry) => entry.english !== word.english),
+            pool.filter((entry) => entry.english !== word.english),
             random,
           ).slice(0, 3),
         ],

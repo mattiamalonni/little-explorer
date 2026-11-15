@@ -30,8 +30,9 @@ src/
     globals.css              reset, base e stili dell'hub
     api/
       auth/                  registrazione, accesso e uscita
-      me/                    sessione e progressi correnti
+      me/                    sessione, progressi e preferenze correnti
       progress/              salvataggio e azzeramento dei progressi
+      settings/              salvataggio delle preferenze di gioco
     english/                 rotte di Little English
     math/                    rotte di Little Math
     italian/                 rotte di Little Italiano
@@ -53,16 +54,19 @@ src/
       lib/audio.ts
     gamification/
       components/            accesso, pillola, banner, pannello traguardi, provider React
+      components/game-setup.tsx  schermata pre-gioco condivisa
       lib/progress.ts        stelle, livelli, badge e logica pura
       lib/db-progress.ts     mappatura tra progressi e database
+      lib/game-settings.ts   preferenze di gioco per utente
+      lib/db-settings.ts     mappatura tra preferenze e database
   lib/db.ts                  client Prisma condiviso
   styles/
     auth.css                 stili di accesso e creazione del nome
-    gamification.css         stili condivisi di stelle, banner e traguardi
+    gamification.css         stili condivisi di stelle, banner, traguardi e setup
     language.css             stili condivisi English + Italiano, con scope
     math.css                 stili Math, con scope
 prisma/
-  schema.prisma              modelli User, Progress e Session
+  schema.prisma              modelli User, Progress, GameSetting e Session
   migrations/                migrazioni SQL versionate
 prisma.config.ts             configurazione Prisma CLI (schema, migrazioni, URL diretto)
 src/generated/prisma/        client Prisma generato (non versionato)
@@ -100,11 +104,21 @@ La gamification è condivisa dai tre mondi e vive sopra i layout delle singole f
 
 Lo stato è gestito da `GamificationProvider` nel layout radice. All'avvio il provider chiama `GET /api/me`: senza sessione valida mostra la schermata di accesso, altrimenti carica i progressi dal database. Ogni partita aggiorna subito lo stato React e invia un `PUT /api/progress` in background; il pannello dei traguardi mostra lo stato del salvataggio e permette di riprovare. L'azzeramento riscrive i progressi iniziali.
 
+## Prima di giocare
+
+Ogni partita parte da una schermata di preparazione condivisa, in `src/features/gamification/components/game-setup.tsx`:
+
+- nei giochi con un elenco (inglese e italiano) si scelgono le voci da usare, con le azioni **Tutti** e **Nessuno**; servono almeno quattro voci;
+- si sceglie il numero di domande della partita (4, 6, 8 o 10, oppure tutte le voci selezionate quando sono meno di 10);
+- in Little Math si sceglie anche il limite dei numeri (entro 10, 20 o 100), spostato qui dalla dashboard.
+
+Le preferenze vengono salvate per utente e per gioco nel modello `GameSetting` (`GET` e `PUT /api/settings`) e ricaricate con `GET /api/me`. Il round usa la selezione e la lunghezza salvate; “Giochiamo ancora” riparte con la stessa configurazione.
+
 ## Account e database
 
 - I bambini si registrano con un **nome** (2–24 caratteri) e una **password** (almeno 4). Il nome è unico senza distinzione tra maiuscole e minuscole.
 - Le password sono salvate come hash `scrypt`. La sessione usa un cookie `httpOnly` `little-explorer-session` valido 30 giorni; nel database resta solo l'hash del token.
-- I modelli `User`, `Progress` e `Session` sono definiti in `prisma/schema.prisma`. Ogni utente ha un solo record `Progress`.
+- I modelli `User`, `Progress`, `GameSetting` e `Session` sono definiti in `prisma/schema.prisma`. Ogni utente ha un solo record `Progress` e può avere una preferenza `GameSetting` per ogni gioco.
 - Le API in `src/app/api` controllano la sessione lato server. `PUT /api/progress` normalizza i dati prima di salvarli, `DELETE /api/progress` li azzera.
 - Se su un browser esistono ancora progressi anonimi in `localStorage` (chiave `little-explorer:progress:v1`), vengono copiati nel nuovo account al momento della registrazione e poi rimossi.
 

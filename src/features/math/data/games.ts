@@ -196,21 +196,34 @@ export function createProblems(gameId: GameId, limit: Limit): Problem[] {
   return operationsByGame[gameId].flatMap((operation) => createOperationProblems(operation, limit));
 }
 
-export function createRound(gameId: GameId, limit: Limit, previous?: Round, random: () => number = Math.random): Round {
+export type RoundOptions = {
+  length?: number;
+};
+
+export function createRound(
+  gameId: GameId,
+  limit: Limit,
+  options: RoundOptions = {},
+  previous?: Round,
+  random: () => number = Math.random,
+): Round {
   const problems = createProblems(gameId, limit);
+  const length = Math.min(20, Math.max(1, Math.floor(options.length ?? ROUND_LENGTH)));
   let pool: Problem[];
 
   if (gameId === "mixed") {
+    const additionCount = Math.ceil(length / 2);
+    const subtractionCount = length - additionCount;
     pool = shuffle(
       [
         ...pick(
           problems.filter((problem) => problem.gameId === "addition"),
-          ROUND_LENGTH / 2,
+          additionCount,
           random,
         ),
         ...pick(
           problems.filter((problem) => problem.gameId === "subtraction"),
-          ROUND_LENGTH / 2,
+          subtractionCount,
           random,
         ),
       ],
@@ -231,21 +244,21 @@ export function createRound(gameId: GameId, limit: Limit, previous?: Round, rand
         ...picks,
         ...pick(
           problems.filter((problem) => !pickedIds.has(problem.id)),
-          ROUND_LENGTH - picks.length,
+          Math.max(0, length - picks.length),
           random,
         ),
       ],
       random,
     );
   } else {
-    pool = pickRoundProblems(problems, ROUND_LENGTH, random, gameId === "multiplication" || gameId === "division");
+    pool = pickRoundProblems(problems, length, random, gameId === "multiplication" || gameId === "division");
   }
 
-  if (previous?.gameId === gameId && previous.limit === limit && pool[0].id === previous.questions[0]?.id) {
+  if (pool.length > 1 && previous?.gameId === gameId && previous.limit === limit && pool[0].id === previous.questions[0]?.id) {
     [pool[0], pool[1]] = [pool[1], pool[0]];
   }
 
-  const questions = pool.slice(0, ROUND_LENGTH).map((problem) => {
+  const questions = pool.slice(0, length).map((problem) => {
     const nearby = Array.from({ length: limit + 1 }, (_, index) => index).filter(
       (value) => value !== problem.result && Math.abs(value - problem.result) <= 10,
     );

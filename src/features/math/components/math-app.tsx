@@ -6,6 +6,7 @@ import { createContext, useContext, useEffect, useRef, useState } from "react";
 import { ProgressBanner } from "@/features/gamification/components/progress-banner";
 import { ProgressPill } from "@/features/gamification/components/progress-pill";
 import { RoundRewards } from "@/features/gamification/components/round-rewards";
+import { GameSetup } from "@/features/gamification/components/game-setup";
 import { useRoundReward } from "@/features/gamification/components/use-round-reward";
 import { CalculationHelp } from "@/features/math/components/calculation-help";
 import {
@@ -35,7 +36,6 @@ import {
   limits,
   operationSign,
   recordAnswer,
-  ROUND_LENGTH,
   scoreRound,
   spokenProblem,
   type Game,
@@ -63,9 +63,7 @@ const operationPrompts: Record<Problem["gameId"], string> = {
 
 type PlayContext = {
   round: Round | null;
-  limit: Limit;
-  setLimit: (limit: Limit) => void;
-  start: (id: GameId, limit?: Limit) => void;
+  start: (id: GameId, limit: Limit, options?: { length?: number }) => void;
   answer: (questionId: string, selected: number) => void;
   speak: (text: string) => void;
   sound: boolean;
@@ -80,7 +78,6 @@ function usePlay() {
 
 export function AppShell({ children }: { children: React.ReactNode }) {
   const [round, setRound] = useState<Round | null>(null);
-  const [limit, setLimit] = useState<Limit>(100);
   const [sound, setSound] = useState(true);
   const [audioError, setAudioError] = useState("");
   const pathname = usePathname();
@@ -114,9 +111,8 @@ export function AppShell({ children }: { children: React.ReactNode }) {
     window.speechSynthesis.speak(speech);
   }
 
-  function start(id: GameId, nextLimit = limit) {
-    setLimit(nextLimit);
-    setRound((previous) => createRound(id, nextLimit, previous ?? undefined));
+  function start(id: GameId, nextLimit: Limit, options?: { length?: number }) {
+    setRound((previous) => createRound(id, nextLimit, { length: options?.length }, previous ?? undefined));
   }
 
   function answer(questionId: string, selected: number) {
@@ -127,7 +123,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   }
 
   return (
-    <PlayContext.Provider value={{ round, limit, setLimit, start, answer, speak, sound }}>
+    <PlayContext.Provider value={{ round, start, answer, speak, sound }}>
       <a className="skip-link" href="#main">
         Vai al contenuto
       </a>
@@ -201,25 +197,7 @@ function GameArt({ game }: { game: Game }) {
   );
 }
 
-function LevelPicker() {
-  const { limit, setLimit } = usePlay();
-  return (
-    <fieldset className="level-picker">
-      <legend>Quanto grandi, questi numeri?</legend>
-      <div className="segmented-control">
-        {limits.map((value) => (
-          <button key={value} aria-pressed={limit === value} onClick={() => setLimit(value)}>
-            Entro {value}
-          </button>
-        ))}
-      </div>
-      <p>Parti da 10, oppure fai un piccolo salto in avanti.</p>
-    </fieldset>
-  );
-}
-
 export function Dashboard() {
-  const { start } = usePlay();
   const router = useRouter();
   return (
     <main id="main" className="dashboard page-width">
@@ -256,10 +234,9 @@ export function Dashboard() {
             <Sprout size={16} /> Nessuna fretta, solo curiosit&agrave;
           </span>
         </div>
-        <LevelPicker />
         <div className="games-grid">
           {games.map((game) => (
-            <Link key={game.id} className="game-card" href={`/math/play/${game.id}`} onClick={() => start(game.id)}>
+            <Link key={game.id} className="game-card" href={`/math/play/${game.id}`}>
               <GameArt game={game} />
               <div className="game-card-body">
                 <span className={`category-label label-${game.id}`}>{game.subtitle}</span>
@@ -267,7 +244,7 @@ export function Dashboard() {
                 <p>{game.description}</p>
                 <div className="game-card-bottom">
                   <span>
-                    <Clock3 size={15} /> 6 domande <span>/</span> al tuo ritmo
+                    <Clock3 size={15} /> Domande a scelta <span>/</span> al tuo ritmo
                   </span>
                   <span className="play-arrow">
                     <ArrowRight size={20} />
@@ -290,7 +267,6 @@ export function Dashboard() {
           className="button button-primary"
           onClick={() => {
             const game = games[Math.floor(Math.random() * games.length)];
-            start(game.id);
             router.push(`/math/play/${game.id}`);
           }}
         >
@@ -324,6 +300,7 @@ function QuestionCard({ round, game }: { round: Round; game: Game }) {
   const router = useRouter();
   const index = round.answers.length;
   const question = round.questions[index];
+  const total = round.questions.length;
   const [selected, setSelected] = useState<number | null>(null);
   const [help, setHelp] = useState(false);
   const lock = useRef(false);
@@ -342,7 +319,7 @@ function QuestionCard({ round, game }: { round: Round; game: Game }) {
     if (selected === null || lock.current) return;
     lock.current = true;
     answer(question.id, selected);
-    if (index === ROUND_LENGTH - 1) router.push(`/math/play/${game.id}/result`);
+    if (index === total - 1) router.push(`/math/play/${game.id}/result`);
   }
 
   return (
@@ -355,7 +332,7 @@ function QuestionCard({ round, game }: { round: Round; game: Game }) {
           {game.subtitle} <span>&middot; Entro {round.limit}</span>
         </span>
         <span className="round-counter">
-          {index + 1} <span>/ {ROUND_LENGTH}</span>
+          {index + 1} <span>/ {total}</span>
         </span>
       </div>
       <div
@@ -363,10 +340,10 @@ function QuestionCard({ round, game }: { round: Round; game: Game }) {
         role="progressbar"
         aria-label="Domande completate"
         aria-valuemin={0}
-        aria-valuemax={ROUND_LENGTH}
+        aria-valuemax={total}
         aria-valuenow={index}
       >
-        <span style={{ width: `${(index / ROUND_LENGTH) * 100}%` }} />
+        <span style={{ width: `${(index / total) * 100}%` }} />
       </div>
       <div className="question-heading">
         <span className="eyebrow">{operationPrompts[question.gameId]}</span>
@@ -432,7 +409,7 @@ function QuestionCard({ round, game }: { round: Round; game: Game }) {
               <p>{explain(question, true)}</p>
             </div>
             <button ref={nextRef} className="button button-primary" onClick={next}>
-              {index === ROUND_LENGTH - 1 ? "Il mio risultato" : "Avanti"} <ArrowRight size={18} />
+              {index === total - 1 ? "Il mio risultato" : "Avanti"} <ArrowRight size={18} />
             </button>
           </div>
         )}
@@ -457,11 +434,17 @@ export function PlayGame({ game }: { game: Game }) {
             <GameArt game={game} />
             <span className="eyebrow">{game.subtitle}</span>
             <h1>{game.title}</h1>
-            <p>Sei piccoli calcoli, tutto il tempo che vuoi.</p>
-            <LevelPicker />
-            <button className="button button-primary" onClick={() => start(game.id)}>
-              Cominciamo <ArrowRight size={18} />
-            </button>
+            <p>Scegli quanto grandi i numeri e quante domande.</p>
+            <GameSetup
+              key={game.id}
+              world="math"
+              gameId={game.id}
+              limits={limits.map((value) => ({ value, label: `Entro ${value}` }))}
+              onStart={({ roundLength, limit: chosenLimit }) => {
+                const nextLimit = limits.includes(chosenLimit as Limit) ? (chosenLimit as Limit) : 10;
+                start(game.id, nextLimit, { length: roundLength });
+              }}
+            />
           </section>
         </>
       )}
@@ -477,14 +460,14 @@ export function Results({ game }: { game: Game }) {
   useEffect(() => {
     headingRef.current?.focus();
   }, []);
-  const completed = Boolean(round && round.gameId === game.id && round.answers.length === ROUND_LENGTH);
+  const completed = Boolean(round && round.gameId === game.id && round.answers.length === round.questions.length);
   const score = round && completed ? scoreRound(round.answers) : 0;
   const reward = useRoundReward({
     roundId: round?.id ?? "",
     world: "math",
     gameId: game.id,
     correct: score,
-    total: ROUND_LENGTH,
+    total: round?.questions.length ?? 6,
     enabled: completed,
   });
 
@@ -507,6 +490,7 @@ export function Results({ game }: { game: Game }) {
   }
   const review = round.answers.filter(({ question, selected }) => question.result !== selected);
   const visible = filter === "review" ? review : round.answers;
+  const total = round.questions.length;
   return (
     <main id="main" className="results-page page-width">
       <Link className="back-link" href="/math">
@@ -520,13 +504,17 @@ export function Results({ game }: { game: Game }) {
         </div>
         <span className="eyebrow">AVVENTURA COMPLETATA &middot; ENTRO {round.limit}</span>
         <h1 ref={headingRef} tabIndex={-1}>
-          {score === ROUND_LENGTH
+          {score === total
             ? "Evviva! Tutte giuste!"
-            : score >= 3
+            : score >= Math.ceil(total / 2)
               ? "Ben fatto, esploratore!"
               : "Ogni tentativo ti fa crescere!"}
         </h1>
-        <p>{score === ROUND_LENGTH ? "Sei calcoli, sei piccole conquiste." : "Anche dagli errori nascono nuove scoperte."}</p>
+        <p>
+          {score === total
+            ? `${total} ${total === 1 ? "calcolo" : "calcoli"}, ${total} piccole conquiste.`
+            : "Anche dagli errori nascono nuove scoperte."}
+        </p>
         <div className="score-line">
           <span>
             <Check size={20} />
@@ -544,7 +532,7 @@ export function Results({ game }: { game: Game }) {
           <h2 id="review-title">I tuoi calcoli</h2>
           <div className="segmented-control" role="group" aria-label="Filtra risposte">
             <button aria-pressed={filter === "all"} onClick={() => setFilter("all")}>
-              Tutti ({ROUND_LENGTH})
+              Tutti ({total})
             </button>
             <button aria-pressed={filter === "review"} onClick={() => setFilter("review")}>
               Da ripassare ({review.length})
@@ -592,7 +580,7 @@ export function Results({ game }: { game: Game }) {
         <button
           className="button button-primary"
           onClick={() => {
-            start(game.id, round.limit);
+            start(game.id, round.limit, { length: total });
             router.push(`/math/play/${game.id}`);
           }}
         >

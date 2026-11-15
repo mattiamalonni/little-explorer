@@ -1,7 +1,8 @@
 "use client";
 
 import { createContext, useContext } from "react";
-import type { Progress, RoundInput, RoundReward } from "@/features/gamification/lib/progress";
+import type { GameSetting, GameSettings } from "@/features/gamification/lib/game-settings";
+import type { Progress, RoundInput, RoundReward, World } from "@/features/gamification/lib/progress";
 
 export type SessionUser = {
   id: string;
@@ -20,6 +21,8 @@ export type GamificationContextValue = {
   authError: string | null;
   syncState: SyncState;
   hasLegacyProgress: boolean;
+  settings: GameSettings;
+  updateGameSetting: (world: World, gameId: string, setting: GameSetting) => void;
   login: (name: string, password: string) => Promise<void>;
   register: (name: string, password: string) => Promise<void>;
   clearAuthError: () => void;

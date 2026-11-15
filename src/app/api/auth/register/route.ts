@@ -31,7 +31,7 @@ export async function POST(request: Request) {
           create: progressToRecordData(initialProgress),
         },
       },
-      include: { progress: true },
+      include: { progress: true, settings: true },
     });
 
     await createSession(user.id);
@@ -39,6 +39,7 @@ export async function POST(request: Request) {
     return NextResponse.json({
       user: { id: user.id, name: user.name },
       progress: progressFromRecord(user.progress),
+      settings: {},
     });
   } catch (error) {
     if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === "P2002") {

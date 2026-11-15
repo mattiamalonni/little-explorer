@@ -27,11 +27,17 @@ import { wordAudioPath } from "@/features/english/lib/audio";
 import { ProgressBanner } from "@/features/gamification/components/progress-banner";
 import { ProgressPill } from "@/features/gamification/components/progress-pill";
 import { RoundRewards } from "@/features/gamification/components/round-rewards";
+import { GameSetup } from "@/features/gamification/components/game-setup";
 import { useRoundReward } from "@/features/gamification/components/use-round-reward";
+
+type RoundConfig = {
+  selected?: readonly string[];
+  roundLength?: number;
+};
 
 type PlayContext = {
   round: Round | null;
-  start: (gameId: GameId) => void;
+  start: (gameId: GameId, config?: RoundConfig) => void;
   answer: (word: Word) => void;
   speak: (text: string) => void;
   sound: boolean;
@@ -103,9 +109,9 @@ export function AppShell({ children }: { children: React.ReactNode }) {
     void clip.play().catch(reportError);
   }
 
-  function start(gameId: GameId) {
+  function start(gameId: GameId, config?: RoundConfig) {
     stopAudio();
-    setRound((previous) => createRound(gameId, previous ?? undefined));
+    setRound((previous) => createRound(gameId, { words: config?.selected, length: config?.roundLength }, previous ?? undefined));
   }
 
   function answer(selected: Word) {
@@ -280,12 +286,10 @@ function GameArt({ id }: { id: GameId }) {
 }
 
 export function Dashboard() {
-  const { start } = usePlay();
   const router = useRouter();
 
   function surprise() {
     const game = games[Math.floor(Math.random() * games.length)];
-    start(game.id);
     router.push(`/english/play/${game.id}`);
   }
 
@@ -339,7 +343,6 @@ export function Dashboard() {
               key={game.id}
               className={`game-card card-${game.id}`}
               href={`/english/play/${game.id}`}
-              onClick={() => start(game.id)}
               style={{ animationDelay: `${index * 70}ms` }}
             >
               <GameArt id={game.id} />
@@ -349,7 +352,7 @@ export function Dashboard() {
                 <p>{game.description}</p>
                 <div className="game-card-bottom">
                   <span>
-                    <Clock3 size={14} /> 6 domande <span className="meta-dot">/</span> 2 min
+                    <Clock3 size={14} /> Domande a scelta <span className="meta-dot">/</span> al tuo ritmo
                   </span>
                   <span className="play-arrow">
                     <ArrowRight size={20} />
@@ -441,6 +444,14 @@ export function PlayGame({ game }: { game: Game }) {
   }, [questionIndex]);
 
   if (!activeRound) {
+    const setupItems = game.words.map((word) => ({
+      id: word.english,
+      label: word.english,
+      hint: word.italian,
+      image: word.image,
+      color: word.color,
+      number: word.number,
+    }));
     return (
       <main id="main" className="game-page page-width">
         <Link className="back-link" href="/english">
@@ -450,22 +461,24 @@ export function PlayGame({ game }: { game: Game }) {
           <GameArt id={game.id} />
           <span className="eyebrow">{game.english}</span>
           <h1>{game.title}</h1>
-          <p>Sei nuove parole ti aspettano.</p>
-          <button
-            className="button button-primary"
-            onClick={() => {
+          <p>Scegli le parole e quante domande.</p>
+          <GameSetup
+            key={game.id}
+            world="english"
+            gameId={game.id}
+            items={setupItems}
+            onStart={({ selected: chosen, roundLength }) => {
               setSelected(null);
-              start(game.id);
+              start(game.id, { selected: chosen, roundLength });
             }}
-          >
-            Cominciamo <ArrowRight size={18} />
-          </button>
+          />
         </section>
       </main>
     );
   }
 
   const question = activeRound.questions[questionIndex];
+  const total = activeRound.questions.length;
   const visualChoices = ["colors", "objects", "food", "emotions"].includes(game.id);
   const correct = selected?.english === question.word.english;
 
@@ -485,7 +498,7 @@ export function PlayGame({ game }: { game: Game }) {
         </Link>
         <span className="game-toolbar-title">{game.title}</span>
         <span className="round-counter">
-          {questionIndex + 1} <span>/ 6</span>
+          {questionIndex + 1} <span>/ {total}</span>
         </span>
       </div>
       <div
@@ -493,10 +506,10 @@ export function PlayGame({ game }: { game: Game }) {
         role="progressbar"
         aria-label="Domande completate"
         aria-valuemin={0}
-        aria-valuemax={6}
+        aria-valuemax={total}
         aria-valuenow={questionIndex}
       >
-        <span style={{ width: `${(questionIndex / 6) * 100}%` }} />
+        <span style={{ width: `${(questionIndex / total) * 100}%` }} />
       </div>
       <div className="question-heading">
         <span className="eyebrow">{game.label}</span>
@@ -561,7 +574,7 @@ export function PlayGame({ game }: { game: Game }) {
               </span>
             </div>
             <button className="button button-primary" onClick={nextQuestion}>
-              {questionIndex === 5 ? "Il mio risultato" : "Avanti"}
+              {questionIndex === total - 1 ? "Il mio risultato" : "Avanti"}
               <ArrowRight size={18} />
             </button>
           </div>
@@ -596,7 +609,7 @@ export function Results({ game }: { game: Game }) {
         <Illustration asset="seedling" />
         <h1>Una nuova avventura?</h1>
         <p>Qui non conserviamo le partite. Le parole imparate restano con te.</p>
-        <Link className="button button-primary" href={`/english/play/${game.id}`} onClick={() => start(game.id)}>
+        <Link className="button button-primary" href={`/english/play/${game.id}`}>
           Giochiamo <ArrowRight size={18} />
         </Link>
         <Link className="back-link" href="/english">
@@ -607,6 +620,7 @@ export function Results({ game }: { game: Game }) {
   }
   const review = round.answers.filter((entry) => entry.word.english !== entry.selected.english);
   const visibleAnswers = filter === "review" ? review : round.answers;
+  const total = round.questions.length;
 
   return (
     <main id="main" className="results-page page-width">
@@ -621,19 +635,23 @@ export function Results({ game }: { game: Game }) {
         </div>
         <span className="eyebrow">AVVENTURA COMPLETATA</span>
         <h1>
-          {score === 6
+          {score === total
             ? "Wonderful! Tutte giuste!"
-            : score >= 3
+            : score >= Math.ceil(total / 2)
               ? "Ben fatto, esploratore!"
               : "Ogni parola \u00e8 un nuovo inizio!"}
         </h1>
-        <p>{score === 6 ? "Sei parole, sei piccole conquiste." : "Anche dagli errori nascono nuove scoperte."}</p>
+        <p>
+          {score === total
+            ? `${total} ${total === 1 ? "parola" : "parole"}, ${total} piccole conquiste.`
+            : "Anche dagli errori nascono nuove scoperte."}
+        </p>
         <div className="score-line">
           <span>
             <Check size={20} /> <strong>{score}</strong> risposte giuste
           </span>
           <span>
-            <Sprout size={20} /> <strong>{6 - score}</strong> da ripassare
+            <Sprout size={20} /> <strong>{total - score}</strong> da ripassare
           </span>
         </div>
       </section>
@@ -643,7 +661,7 @@ export function Results({ game }: { game: Game }) {
           <h2 id="review-title">Le tue parole</h2>
           <div className="segmented-control" role="group" aria-label="Filtra risposte">
             <button aria-pressed={filter === "all"} onClick={() => setFilter("all")}>
-              Tutte (6)
+              Tutte ({total})
             </button>
             <button aria-pressed={filter === "review"} onClick={() => setFilter("review")}>
               Da ripassare ({review.length})
@@ -692,7 +710,10 @@ export function Results({ game }: { game: Game }) {
         <button
           className="button button-primary"
           onClick={() => {
-            start(game.id);
+            start(game.id, {
+              selected: round.selection,
+              roundLength: round.roundLength,
+            });
             router.push(`/english/play/${game.id}`);
           }}
         >

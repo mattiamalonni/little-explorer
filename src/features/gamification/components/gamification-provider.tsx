@@ -6,6 +6,13 @@ import { AppLoading } from "@/features/gamification/components/app-loading";
 import { GamificationContext, type SessionUser, type SyncState } from "@/features/gamification/components/gamification-context";
 import { ProgressPanel } from "@/features/gamification/components/progress-panel";
 import {
+  normalizeGameSettings,
+  normalizeGameSetting,
+  settingKey,
+  type GameSetting,
+  type GameSettings,
+} from "@/features/gamification/lib/game-settings";
+import {
   applyRound,
   clearProgress,
   createDefaultProgress,
@@ -13,11 +20,13 @@ import {
   normalizeProgress,
   type Progress,
   type RoundReward,
+  type World,
 } from "@/features/gamification/lib/progress";
 
 type SessionPayload = {
   user: SessionUser;
   progress: unknown;
+  settings?: unknown;
 };
 
 function hasMeaningfulProgress(progress: Progress): boolean {
@@ -32,6 +41,7 @@ function hasMeaningfulProgress(progress: Progress): boolean {
 
 export function GamificationProvider({ children }: { children: React.ReactNode }) {
   const [progress, setProgress] = useState<Progress>(createDefaultProgress);
+  const [settings, setSettings] = useState<GameSettings>({});
   const [hydrated, setHydrated] = useState(false);
   const [status, setStatus] = useState<"loading" | "auth" | "ready">("loading");
   const [user, setUser] = useState<SessionUser | null>(null);
@@ -44,13 +54,17 @@ export function GamificationProvider({ children }: { children: React.ReactNode }
   const rewardsRef = useRef(new Map<string, RoundReward>());
   const pendingSaveRef = useRef<Progress | null>(null);
   const savingRef = useRef(false);
+  const pendingSettingsRef = useRef(new Map<string, { world: World; gameId: string; setting: GameSetting }>());
+  const savingSettingsRef = useRef(false);
 
   const applySession = useCallback((payload: SessionPayload) => {
     const next = normalizeProgress(payload.progress);
     progressRef.current = next;
     rewardsRef.current.clear();
     pendingSaveRef.current = null;
+    pendingSettingsRef.current.clear();
     setProgress(next);
+    setSettings(normalizeGameSettings(payload.settings));
     setUser(payload.user);
     setStatus("ready");
     setHydrated(true);
@@ -143,6 +157,46 @@ export function GamificationProvider({ children }: { children: React.ReactNode }
     void flushSave();
   }, [flushSave]);
 
+  const flushSettings = useCallback(async () => {
+    if (savingSettingsRef.current) return;
+    savingSettingsRef.current = true;
+
+    try {
+      while (pendingSettingsRef.current.size > 0) {
+        const entry = pendingSettingsRef.current.entries().next().value;
+        if (!entry) break;
+        const [key, update] = entry;
+        pendingSettingsRef.current.delete(key);
+
+        try {
+          const response = await fetch("/api/settings", {
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ world: update.world, gameId: update.gameId, setting: update.setting }),
+          });
+          if (response.status === 401) {
+            pendingSettingsRef.current.clear();
+            return;
+          }
+        } catch {
+          // La scelta resta in memoria: al prossimo cambio riproveremo a salvarla.
+        }
+      }
+    } finally {
+      savingSettingsRef.current = false;
+    }
+  }, []);
+
+  const updateGameSetting = useCallback(
+    (world: World, gameId: string, setting: GameSetting) => {
+      const normalized = normalizeGameSetting(setting);
+      setSettings((current) => ({ ...current, [settingKey(world, gameId)]: normalized }));
+      pendingSettingsRef.current.set(settingKey(world, gameId), { world, gameId, setting: normalized });
+      void flushSettings();
+    },
+    [flushSettings],
+  );
+
   const clearAuthError = useCallback(() => setAuthError(null), []);
 
   const login = useCallback(
@@ -218,10 +272,12 @@ export function GamificationProvider({ children }: { children: React.ReactNode }
     }
 
     pendingSaveRef.current = null;
+    pendingSettingsRef.current.clear();
     const empty = createDefaultProgress();
     progressRef.current = empty;
     rewardsRef.current.clear();
     setProgress(empty);
+    setSettings({});
     setUser(null);
     setHydrated(false);
     setStatus("auth");
@@ -268,6 +324,8 @@ export function GamificationProvider({ children }: { children: React.ReactNode }
       authError,
       syncState,
       hasLegacyProgress,
+      settings,
+      updateGameSetting,
       login,
       register,
       clearAuthError,
@@ -286,6 +344,8 @@ export function GamificationProvider({ children }: { children: React.ReactNode }
       authError,
       syncState,
       hasLegacyProgress,
+      settings,
+      updateGameSetting,
       login,
       register,
       clearAuthError,

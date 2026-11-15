@@ -1656,6 +1656,9 @@ export function isAnswerCorrect(game: Game, entry: Entry, value: string): boolea
 export type Round = {
   id: string;
   gameId: GameId;
+  /** Le voci disponibili per questa partita, usate per rigiocare. */
+  selection: string[];
+  roundLength: number;
   questions: Question[];
   answers: Answer[];
 };
@@ -1669,16 +1672,28 @@ export function shuffle<Value>(values: readonly Value[], random = Math.random): 
   return result;
 }
 
-export function createRound(gameId: GameId, previous?: Round, random = Math.random): Round {
+export type RoundOptions = {
+  /** Le voci scelte nella schermata pre-gioco. Se assente, si usano tutte. */
+  entries?: readonly string[];
+  length?: number;
+};
+
+export function createRound(gameId: GameId, options: RoundOptions = {}, previous?: Round, random = Math.random): Round {
   const game = games.find((entry) => entry.id === gameId);
   if (!game) throw new Error("Unknown game");
-  const entries = shuffle(game.entries, random).slice(0, 6);
-  if (previous?.questions[0].entry.id === entries[0].id) {
+  const chosen = options.entries ? new Set(options.entries) : null;
+  const available = chosen ? game.entries.filter((entry) => chosen.has(entry.id)) : game.entries;
+  const pool = available.length > 0 ? available : game.entries;
+  const length = Math.min(Math.max(Math.floor(options.length ?? 6), 1), pool.length);
+  const entries = shuffle(pool, random).slice(0, length);
+  if (entries.length > 1 && previous?.questions[0]?.entry.id === entries[0].id) {
     [entries[0], entries[1]] = [entries[1], entries[0]];
   }
   return {
     id: `round-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
     gameId,
+    selection: pool.map((entry) => entry.id),
+    roundLength: length,
     questions: entries.map((entry) => ({
       entry,
       options: shuffle([entry.answer, ...entry.options], random),

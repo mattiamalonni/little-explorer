@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { getSessionUser } from "@/features/auth/lib/session";
+import { gameSettingsFromRecords } from "@/features/gamification/lib/db-settings";
 import { progressFromRecord } from "@/features/gamification/lib/db-progress";
 export async function GET() {
   const user = await getSessionUser();
@@ -10,5 +11,6 @@ export async function GET() {
   return NextResponse.json({
     user: { id: user.id, name: user.name },
     progress: progressFromRecord(user.progress),
+    settings: gameSettingsFromRecords(user.settings),
   });
 }

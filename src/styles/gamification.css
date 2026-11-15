@@ -741,6 +741,208 @@
   }
 }
 
+/* Pre-game setup: scelte delle voci e della lunghezza --------------------- */
+
+.game-setup {
+  margin: 0 auto;
+  text-align: left;
+}
+.game-setup .game-setup-intro {
+  color: var(--muted);
+  font-size: 12px;
+  margin-bottom: 14px;
+  text-align: center;
+}
+.game-setup-fieldset {
+  border: 0;
+  margin: 0 0 18px;
+  padding: 0;
+}
+.game-setup-fieldset legend {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  margin-bottom: 9px;
+  padding: 0;
+  color: var(--ink);
+  font: 800 13px var(--font-nunito);
+}
+.game-setup-selection-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 7px;
+  color: var(--muted);
+  font-size: 11px;
+}
+.game-setup-selection-head strong {
+  color: var(--ink);
+}
+.game-setup-selection-actions {
+  display: flex;
+  gap: 2px;
+}
+.game-setup-selection-actions button {
+  border: 0;
+  padding: 3px 5px;
+  background: none;
+  color: #6c8f58;
+  font: 800 11px var(--font-nunito);
+  cursor: pointer;
+}
+.game-setup-selection-actions button:disabled {
+  color: #b7b0a2;
+  cursor: default;
+}
+.game-setup-items {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(142px, 1fr));
+  gap: 7px;
+  max-height: 292px;
+  overflow-y: auto;
+  padding: 4px;
+  border: 1px solid #ece5d8;
+  border-radius: 14px;
+  background: #fdfbf5;
+  overscroll-behavior: contain;
+}
+.game-setup-item {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  min-height: 52px;
+  padding: 6px 22px 6px 6px;
+  border: 1px solid #e8e1d3;
+  border-radius: 11px;
+  background: #fff;
+  text-align: left;
+  cursor: pointer;
+  transition:
+    border-color 0.15s,
+    background 0.15s,
+    transform 0.15s;
+}
+.game-setup-item:hover {
+  border-color: #c9d8b7;
+  transform: translateY(-1px);
+}
+.game-setup-item[aria-pressed="true"] {
+  border-color: #9bb97f;
+  background: #f3f8eb;
+}
+.game-setup-item-media {
+  flex-shrink: 0;
+  display: grid;
+  place-items: center;
+  width: 38px;
+  height: 38px;
+}
+.game-setup-item-media img {
+  width: 38px;
+  height: 38px;
+}
+.game-setup-number {
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 9px;
+  background: #eef2e6;
+  color: #55704a;
+  font: 800 16px var(--font-nunito);
+}
+.game-setup-color {
+  width: 30px;
+  height: 30px;
+  border: 2px solid #fff;
+  border-radius: 50%;
+  box-shadow: 0 0 0 1px #d9d2c3;
+}
+.game-setup-word {
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 9px;
+  background: #f4eee4;
+  color: #8b7355;
+  font: 800 13px var(--font-nunito);
+  text-transform: uppercase;
+}
+.game-setup-item-copy {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  min-width: 0;
+}
+.game-setup-item-label {
+  overflow: hidden;
+  color: var(--ink);
+  font: 700 12px var(--font-nunito);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.game-setup-item-hint {
+  overflow: hidden;
+  color: var(--muted);
+  font-size: 10px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.game-setup-check {
+  position: absolute;
+  top: 7px;
+  right: 7px;
+  display: grid;
+  place-items: center;
+  width: 16px;
+  height: 16px;
+  border: 1px solid #d8d1c2;
+  border-radius: 50%;
+  background: #fff;
+  color: #fff;
+}
+.game-setup-check.is-checked {
+  border-color: #6e9c59;
+  background: #6e9c59;
+}
+.game-setup-choices {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+}
+.game-setup-choices button {
+  min-width: 48px;
+  min-height: 38px;
+  padding: 6px 12px;
+  border: 1px solid #ded7c7;
+  border-radius: 10px;
+  background: #fffdf8;
+  color: #6c6250;
+  font: 800 13px var(--font-nunito);
+  cursor: pointer;
+}
+.game-setup-choices button[aria-pressed="true"] {
+  border-color: #9bb97f;
+  background: #eef5e3;
+  color: #4c6b3c;
+}
+.game-setup .game-setup-fieldset .game-setup-note,
+.game-setup .game-setup-fieldset .game-setup-warning {
+  margin-top: 8px;
+  color: var(--muted);
+  font-size: 11px;
+  line-height: 1.7;
+}
+.game-setup .game-setup-fieldset .game-setup-warning {
+  color: #a3583f;
+}
+.game-setup-start {
+  margin-top: 4px;
+}
+
 @media (max-width: 960px) {
   .gami-banner {
     flex-wrap: wrap;
