@@ -76,7 +76,7 @@ scripts/
   generate-audio-italian.mjs
 public/
   audio/english/             MP3 già presenti
-  audio/italian/             MP3 opzionali
+  audio/italian/             MP3 opzionali, non usati dall'app
   illustrations/             SVG condivisi e crediti
 ```
 
@@ -176,7 +176,7 @@ Per aggiungere un'illustrazione:
 
 ## Audio
 
-L'inglese usa MP3 locali già inclusi, generati con la voce britannica **Alice** di ElevenLabs. L'italiano usa gli MP3 locali se presenti in `public/audio/italian/`, altrimenti la voce italiana del dispositivo tramite `speechSynthesis`.
+L'inglese usa MP3 locali già inclusi, generati con la voce britannica **Alice** di ElevenLabs. L'italiano non usa MP3: il pulsante Ascolta parla sempre con la voce italiana del dispositivo tramite `speechSynthesis`, scegliendo una voce `it-*` quando il browser la espone.
 
 I browser non chiamano mai ElevenLabs. Il pulsante Ascolta è presente in domande, feedback e riepiloghi. Un nuovo ascolto interrompe il precedente; cambio pagina, avanzamento e disattivazione audio fermano la riproduzione.
 
@@ -209,7 +209,7 @@ I browser non chiamano mai ElevenLabs. Il pulsante Ascolta è presente in domand
 
 Gli MP3 esistenti vengono riutilizzati, quindi il comando si può riprendere dopo un errore. Gli errori fermano il lotto senza retry automatici. Per rigenerare un file, rimuovilo esplicitamente. Se cambi voce o modello, sposta prima gli audio precedenti fuori dalla cartella di destinazione per non mescolare voci diverse.
 
-L'inglese scrive in `public/audio/english/`, l'italiano in `public/audio/italian/`. Le due cartelle sono separate per evitare collisioni tra parole uguali nelle due lingue.
+L'inglese scrive in `public/audio/english/`, l'italiano in `public/audio/italian/`. Le due cartelle sono separate per evitare collisioni tra parole uguali nelle due lingue. Gli MP3 italiani restano supportati dallo script di generazione, ma l'app non li riproduce.
 
 Il piano gratuito ElevenLabs non permette usi commerciali; l'app non commerciale riporta l'attribuzione e il collegamento a elevenlabs.io. Verifica licenza e costi prima di pubblicare.
 
@@ -219,7 +219,7 @@ Il piano gratuito ElevenLabs non permette usi commerciali; l'app non commerciale
 - **Italiano:** `src/features/italian/data/games.ts`. Ogni voce ha `pattern`, `answer`, tre alternative, `solution`, `spoken` e `note`; i giochi `letters` chiedono gruppi di lettere (come GN o MP), i giochi `words` chiedono parole intere (come l'apostrofo o l'acca).
 - **Math:** `src/features/math/data/games.ts`. Addizioni, sottrazioni, moltiplicazioni e divisioni sono generate dai limiti 10, 20 e 100; il gioco del doppio e della metà usa gli stessi limiti e genera solo coppie `a + a` e divisioni per 2. Ogni partita ha sei domande e quattro risposte vicine al risultato.
 
-Dopo aver aggiunto parole inglesi o testi italiani, genera gli audio mancanti prima del deploy.
+Dopo aver aggiunto parole inglesi, genera gli MP3 mancanti prima del deploy. I testi italiani non richiedono audio: vengono letti dal dispositivo.
 
 ## Deploy su Vercel
 

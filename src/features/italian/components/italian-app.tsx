@@ -33,7 +33,6 @@ import {
   type GameId,
   type Round,
 } from "@/features/italian/data/games";
-import { audioPath } from "@/features/italian/lib/audio";
 import { ProgressBanner } from "@/features/gamification/components/progress-banner";
 import { ProgressPill } from "@/features/gamification/components/progress-pill";
 import { RoundRewards } from "@/features/gamification/components/round-rewards";
@@ -85,68 +84,47 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   const [sound, setSound] = useState(true);
   const [audioError, setAudioError] = useState("");
   const pathname = usePathname();
-  const audio = useRef<HTMLAudioElement | null>(null);
 
   useEffect(() => {
     return () => {
-      const current = audio.current;
-      audio.current = null;
-      if (current) {
-        current.onerror = null;
-        current.pause();
-        current.removeAttribute("src");
-        current.load();
-      }
       stopSpeech();
     };
   }, [pathname]);
 
-  function stopAudio() {
-    const current = audio.current;
-    audio.current = null;
-    if (current) {
-      current.onerror = null;
-      current.pause();
-      current.removeAttribute("src");
-      current.load();
-    }
-    stopSpeech();
-  }
-
   function speak(text: string) {
     if (!sound) return;
-    stopAudio();
-    const clip = new Audio(audioPath(text));
-    audio.current = clip;
+    stopSpeech();
     setAudioError("");
 
-    function fallbackToDevice() {
-      if (audio.current !== clip) return;
-      audio.current = null;
-      if (typeof window !== "undefined" && "speechSynthesis" in window) {
-        const utterance = new SpeechSynthesisUtterance(text);
-        utterance.lang = "it-IT";
-        utterance.rate = 0.92;
-        window.speechSynthesis.cancel();
-        window.speechSynthesis.speak(utterance);
-      } else {
-        setAudioError("Audio non disponibile. Riprova premendo Ascolta oppure continua con le parole scritte.");
-      }
+    if (typeof window === "undefined" || !("speechSynthesis" in window)) {
+      setAudioError("Audio non disponibile in questo browser. Puoi continuare con le parole scritte.");
+      return;
     }
 
-    clip.onerror = fallbackToDevice;
-    void clip.play().catch(fallbackToDevice);
+    const utterance = new SpeechSynthesisUtterance(text);
+    utterance.lang = "it-IT";
+    utterance.rate = 0.92;
+    const italianVoice = window.speechSynthesis.getVoices().find((voice) => voice.lang.toLowerCase().startsWith("it"));
+    if (italianVoice) utterance.voice = italianVoice;
+    utterance.onerror = (event) => {
+      if (event.error !== "interrupted" && event.error !== "canceled") {
+        setAudioError("La voce del dispositivo non risponde. Puoi continuare con le parole scritte.");
+      }
+    };
+
+    window.speechSynthesis.cancel();
+    window.speechSynthesis.speak(utterance);
   }
 
   function start(gameId: GameId, config?: RoundConfig) {
-    stopAudio();
+    stopSpeech();
     setRound((previous) =>
       createRound(gameId, { entries: config?.selected, length: config?.roundLength }, previous ?? undefined),
     );
   }
 
   function answer(selected: string) {
-    stopAudio();
+    stopSpeech();
     setRound((current) => {
       if (!current || current.answers.length >= current.questions.length) return current;
       const game = games.find((entry) => entry.id === current.gameId);
@@ -202,7 +180,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
               aria-label={sound ? "Disattiva audio" : "Attiva audio"}
               aria-pressed={sound}
               onClick={() => {
-                stopAudio();
+                stopSpeech();
                 setSound(!sound);
               }}
             >
