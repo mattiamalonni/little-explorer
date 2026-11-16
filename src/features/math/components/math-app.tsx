@@ -50,6 +50,7 @@ const gameStickers: Record<GameId, string> = {
   subtraction: "Una piccola scoperta!",
   multiplication: "Quante volte insieme!",
   division: "Tutto in parti uguali!",
+  "doubles-halves": "Doppio o metà!",
   mixed: "Occhio al segno!",
   all: "Un po' di tutto!",
 };

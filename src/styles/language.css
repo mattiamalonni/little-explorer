@@ -339,6 +339,12 @@
 .subject-language .art-h {
   background-color: #e0edf4;
 }
+.subject-language .art-mp-mb {
+  background-color: #f4ecd8;
+}
+.subject-language .art-apostrophe {
+  background-color: #f1e4ef;
+}
 .subject-language .card-ch .category-label,
 .subject-language .art-ch .art-spark {
   color: #a35267;
@@ -371,6 +377,14 @@
 .subject-language .art-h .art-spark {
   color: #507f9d;
 }
+.subject-language .card-mp-mb .category-label,
+.subject-language .art-mp-mb .art-spark {
+  color: #9b7a3f;
+}
+.subject-language .card-apostrophe .category-label,
+.subject-language .art-apostrophe .art-spark {
+  color: #97608f;
+}
 /* Little English game artwork */
 .subject-language .art-colors {
   background-color: #fae8e1;
@@ -399,6 +413,9 @@
 .subject-language .art-emotions {
   background-color: #f5e9f4;
 }
+.subject-language .art-listening {
+  background-color: #e3eff2;
+}
 .subject-language .card-weather .category-label,
 .subject-language .art-weather .art-spark {
   color: #5685a0;
@@ -410,6 +427,10 @@
 .subject-language .card-emotions .category-label,
 .subject-language .art-emotions .art-spark {
   color: #925f95;
+}
+.subject-language .card-listening .category-label,
+.subject-language .art-listening .art-spark {
+  color: #3f7f8a;
 }
 .subject-language .card-food .category-label,
 .subject-language .art-food .art-spark {
@@ -677,6 +698,12 @@
 .subject-language .card-h .category-label {
   color: #507f9d;
 }
+.subject-language .card-mp-mb .category-label {
+  color: #9b7a3f;
+}
+.subject-language .card-apostrophe .category-label {
+  color: #97608f;
+}
 .subject-language .card-animals .category-label {
   color: #6b8953;
 }
@@ -685,6 +712,9 @@
 }
 .subject-language .card-verbs .category-label {
   color: #8874a6;
+}
+.subject-language .card-listening .category-label {
+  color: #3f7f8a;
 }
 .subject-language .game-card h3 {
   font-size: 19px;
@@ -997,6 +1027,45 @@
   max-width: 100%;
   text-align: center;
   overflow-wrap: anywhere;
+}
+.subject-language .listen-prompt {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  color: var(--green);
+}
+.subject-language .listen-icon {
+  display: grid;
+  place-items: center;
+  width: 96px;
+  height: 96px;
+  border-radius: 50%;
+  background: #e3f0e6;
+  border: 3px dashed #b7d3bf;
+  animation: listen-pulse 2.4s ease-in-out infinite;
+}
+.subject-language .listen-caption {
+  color: #5b8a6b;
+  font-family: var(--font-nunito), sans-serif;
+  font-size: 15px;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+@keyframes listen-pulse {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .subject-language .listen-icon {
+    animation: none;
+  }
 }
 .subject-language .audio-button {
   background: #edf2e7;

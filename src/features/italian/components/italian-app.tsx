@@ -309,6 +309,23 @@ function GameArt({ id }: { id: GameId }) {
           <span className="art-sticker">l&apos;acca magica</span>
         </>
       )}
+      {id === "mp-mb" && (
+        <>
+          <Illustration asset="bell" className="art-main" />
+          <Illustration asset="light-bulb" className="art-side" />
+          <span className="letter-tile">mp</span>
+          <span className="art-sticker">campo e lampada</span>
+        </>
+      )}
+      {id === "apostrophe" && (
+        <>
+          <Illustration asset="umbrella" className="art-main" />
+          <Illustration asset="bee" className="art-side" />
+          <span className="letter-tile">&apos;</span>
+          <span className="art-bubble">L&apos;ape!</span>
+          <span className="art-sticker">l&apos;amico e l&apos;ape</span>
+        </>
+      )}
     </div>
   );
 }

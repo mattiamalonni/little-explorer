@@ -1,5 +1,5 @@
 export type Operation = "addition" | "subtraction" | "multiplication" | "division";
-export type GameId = Operation | "mixed" | "all";
+export type GameId = Operation | "mixed" | "all" | "doubles-halves";
 export type Limit = 10 | 20 | 100;
 export type Game = {
   id: GameId;
@@ -42,6 +42,13 @@ export const games: Game[] = [
     example: ["12", "\u00f7", "3"],
   },
   {
+    id: "doubles-halves",
+    title: "Doppio o met\u00e0?",
+    subtitle: "Doppio e met\u00e0",
+    description: "Raddoppia un numero o dividilo in due parti uguali.",
+    example: ["4", "+", "4"],
+  },
+  {
     id: "mixed",
     title: "Un po\u2019 pi\u00f9, un po\u2019 meno!",
     subtitle: "Modalit\u00e0 mista",
@@ -79,6 +86,7 @@ const operationsByGame: Record<GameId, readonly Operation[]> = {
   subtraction: ["subtraction"],
   multiplication: ["multiplication"],
   division: ["division"],
+  "doubles-halves": ["addition", "division"],
   mixed: ["addition", "subtraction"],
   all: OPERATIONS,
 };
@@ -189,9 +197,21 @@ function createOperationProblems(operation: Operation, limit: Limit): Problem[] 
   return problems;
 }
 
+function createDoubleAndHalfProblems(limit: Limit): Problem[] {
+  const problems: Problem[] = [];
+  for (let value = 1; value * 2 <= limit; value++) {
+    problems.push({ id: `double-${value}`, a: value, b: value, gameId: "addition", result: value * 2 });
+    problems.push({ id: `half-${value * 2}`, a: value * 2, b: 2, gameId: "division", result: value });
+  }
+  return problems;
+}
+
 export function createProblems(gameId: GameId, limit: Limit): Problem[] {
   if (!getGame(gameId) || !limits.includes(limit)) {
     throw new Error("Gioco o livello non valido.");
+  }
+  if (gameId === "doubles-halves") {
+    return createDoubleAndHalfProblems(limit);
   }
   return operationsByGame[gameId].flatMap((operation) => createOperationProblems(operation, limit));
 }

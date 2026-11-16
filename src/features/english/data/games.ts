@@ -1,4 +1,14 @@
-export type GameId = "colors" | "animals" | "objects" | "verbs" | "food" | "weather" | "nature" | "emotions" | "numbers";
+export type GameId =
+  | "colors"
+  | "animals"
+  | "objects"
+  | "verbs"
+  | "food"
+  | "weather"
+  | "nature"
+  | "emotions"
+  | "numbers"
+  | "listening";
 
 export type Word = {
   english: string;
@@ -16,6 +26,8 @@ export type Game = {
   prompt: string;
   label: string;
   showItalianPrompt?: boolean;
+  /** La parola non compare: si ascolta e si sceglie la figura. */
+  listenOnly?: boolean;
   words: Word[];
 };
 
@@ -437,6 +449,41 @@ export const games: Game[] = [
       { english: "Twenty-eight", italian: "Ventotto", number: 28 },
       { english: "Twenty-nine", italian: "Ventinove", number: 29 },
       { english: "Thirty", italian: "Trenta", number: 30 },
+    ],
+  },
+  {
+    id: "listening",
+    title: "Orecchie attente",
+    english: "Listening",
+    description: "Chiudi gli occhi, ascolta la parola e trova la figura.",
+    prompt: "Ascolta e scegli la figura giusta",
+    label: "Solo con le orecchie",
+    listenOnly: true,
+    words: [
+      { english: "Cat", italian: "Gatto", image: "cat" },
+      { english: "Dog", italian: "Cane", image: "dog" },
+      { english: "Lion", italian: "Leone", image: "lion" },
+      { english: "Elephant", italian: "Elefante", image: "elephant" },
+      { english: "Rabbit", italian: "Coniglio", image: "rabbit" },
+      { english: "Fish", italian: "Pesce", image: "fish" },
+      { english: "Bird", italian: "Uccello", image: "bird" },
+      { english: "Monkey", italian: "Scimmia", image: "monkey" },
+      { english: "Horse", italian: "Cavallo", image: "horse" },
+      { english: "Cow", italian: "Mucca", image: "cow" },
+      { english: "Apple", italian: "Mela", image: "apple" },
+      { english: "Banana", italian: "Banana", image: "banana" },
+      { english: "Strawberry", italian: "Fragola", image: "strawberry" },
+      { english: "Cake", italian: "Torta", image: "cake" },
+      { english: "Pizza", italian: "Pizza", image: "pizza" },
+      { english: "Carrot", italian: "Carota", image: "carrot" },
+      { english: "Book", italian: "Libro", image: "book" },
+      { english: "Ball", italian: "Palla", image: "ball" },
+      { english: "Pencil", italian: "Matita", image: "pencil" },
+      { english: "Bicycle", italian: "Bicicletta", image: "bicycle" },
+      { english: "Train", italian: "Treno", image: "train" },
+      { english: "Clock", italian: "Orologio", image: "clock" },
+      { english: "Umbrella", italian: "Ombrello", image: "umbrella" },
+      { english: "Hat", italian: "Cappello", image: "hat" },
     ],
   },
 ];

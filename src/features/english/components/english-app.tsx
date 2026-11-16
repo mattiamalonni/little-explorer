@@ -281,6 +281,14 @@ function GameArt({ id }: { id: GameId }) {
           <span className="art-sticker">happy or sad?</span>
         </>
       )}
+      {id === "listening" && (
+        <>
+          <Illustration asset="listen" className="art-main" />
+          <Illustration asset="bird" className="art-side" />
+          <span className="art-bubble">Listen!</span>
+          <span className="art-sticker">just with your ears</span>
+        </>
+      )}
     </div>
   );
 }
@@ -352,7 +360,8 @@ export function Dashboard() {
                 <p>{game.description}</p>
                 <div className="game-card-bottom">
                   <span>
-                    <Clock3 size={14} /> Domande a scelta <span className="meta-dot">/</span> al tuo ritmo
+                    <Clock3 size={14} /> {game.listenOnly ? "Ascolta e scegli" : "Domande a scelta"}{" "}
+                    <span className="meta-dot">/</span> al tuo ritmo
                   </span>
                   <span className="play-arrow">
                     <ArrowRight size={20} />
@@ -385,15 +394,15 @@ export function Dashboard() {
   );
 }
 
-function AudioButton({ word, compact = false }: { word: string; compact?: boolean }) {
+function AudioButton({ word, compact = false, hideWord = false }: { word: string; compact?: boolean; hideWord?: boolean }) {
   const { speak, sound } = usePlay();
   return (
     <button
       className={compact ? "icon-button" : "button audio-button"}
       onClick={() => speak(word)}
       disabled={!sound}
-      title={sound ? `Ascolta ${word}` : "Attiva audio in alto per ascoltare"}
-      aria-label={`Ascolta ${word}`}
+      title={sound ? (hideWord ? "Ascolta la parola" : `Ascolta ${word}`) : "Attiva audio in alto per ascoltare"}
+      aria-label={hideWord ? "Ascolta la parola" : `Ascolta ${word}`}
     >
       <Volume2 size={compact ? 19 : 22} />
       {!compact && "Ascolta"}
@@ -479,7 +488,8 @@ export function PlayGame({ game }: { game: Game }) {
 
   const question = activeRound.questions[questionIndex];
   const total = activeRound.questions.length;
-  const visualChoices = ["colors", "objects", "food", "emotions"].includes(game.id);
+  const listenOnly = Boolean(game.listenOnly);
+  const visualChoices = listenOnly || ["colors", "objects", "food", "emotions"].includes(game.id);
   const correct = selected?.english === question.word.english;
 
   function nextQuestion() {
@@ -517,8 +527,15 @@ export function PlayGame({ game }: { game: Game }) {
           {game.prompt}
         </h1>
       </div>
-      <div className={`question-stage ${visualChoices ? "word-stage" : "picture-stage"}`}>
-        {visualChoices ? (
+      <div className={`question-stage ${visualChoices ? "word-stage" : "picture-stage"} ${listenOnly ? "listen-stage" : ""}`}>
+        {listenOnly ? (
+          <div className="listen-prompt">
+            <span className="listen-icon" aria-hidden="true">
+              <Volume2 size={38} />
+            </span>
+            <span className="listen-caption">Ascolta la parola</span>
+          </div>
+        ) : visualChoices ? (
           <span className="english-prompt" lang="en">
             {question.word.english}
           </span>
@@ -528,7 +545,7 @@ export function PlayGame({ game }: { game: Game }) {
             {game.showItalianPrompt && <span className="italian-prompt">{question.word.italian}</span>}
           </>
         )}
-        <AudioButton word={question.word.english} />
+        <AudioButton word={question.word.english} hideWord={listenOnly} />
       </div>
       <div
         className={`answer-grid ${visualChoices ? "visual-answers" : "text-answers"}`}

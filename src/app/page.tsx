@@ -10,8 +10,8 @@ const worlds = [
     kicker: "ENGLISH",
     title: "Little English",
     description:
-      "Colori, animali, oggetti, azioni, cibi, emozioni e numeri: le prime parole inglesi con illustrazioni e pronuncia.",
-    games: "9 giochi",
+      "Colori, animali, oggetti, azioni, cibi, emozioni, numeri e un gioco di solo ascolto: le prime parole inglesi con illustrazioni e pronuncia.",
+    games: "10 giochi",
   },
   {
     id: "math",
@@ -19,16 +19,17 @@ const worlds = [
     kicker: "MATH",
     title: "Little Math",
     description:
-      "Addizioni, sottrazioni, moltiplicazioni e divisioni fino a 100, con blocchi da contare e passaggi spiegati un pezzetto alla volta.",
-    games: "6 giochi",
+      "Addizioni, sottrazioni, moltiplicazioni, divisioni, doppio e metà fino a 100, con blocchi da contare e passaggi spiegati un pezzetto alla volta.",
+    games: "7 giochi",
   },
   {
     id: "italian",
     href: "/italian",
     kicker: "ITALIANO",
     title: "Little Italiano",
-    description: "GN, GLI, SC, CH, CU, doppie e accenti: i suoni dell'italiano diventano piccoli giochi da scoprire.",
-    games: "8 giochi",
+    description:
+      "GN, GLI, SC, CH, CU, MP, MB, doppie, accenti e apostrofo: i suoni dell'italiano diventano piccoli giochi da scoprire.",
+    games: "10 giochi",
   },
 ] as const;
 
@@ -113,7 +114,7 @@ export default function HubPage() {
             <p>Scegli un mondo e comincia a scoprire. Parole, numeri e suoni ti aspettano, un piccolo passo alla volta.</p>
             <div className="hub-hero-meta">
               <span>
-                <BookOpen size={15} /> 19 giochi
+                <BookOpen size={15} /> 27 giochi
               </span>
               <span>
                 <Heart size={15} /> Il tuo account

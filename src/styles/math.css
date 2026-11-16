@@ -309,6 +309,9 @@
 .subject-math .art-division {
   background-color: #dfeaf4;
 }
+.subject-math .art-doubles-halves {
+  background-color: #e9e4f6;
+}
 .subject-math .art-mixed {
   background-color: #ede8f5;
 }
@@ -364,6 +367,9 @@
   color: var(--green);
   border-color: #a8c8b7;
 }
+.subject-math .art-doubles-halves .art-spark {
+  color: #8874a6;
+}
 .subject-math .art-spark {
   position: absolute;
   top: 26px;
@@ -405,6 +411,9 @@
 }
 .subject-math .label-division {
   color: #3f7291;
+}
+.subject-math .label-doubles-halves {
+  color: #6e5c9a;
 }
 .subject-math .label-mixed {
   color: #79609a;

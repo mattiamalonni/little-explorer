@@ -5,7 +5,7 @@ import { AppShell } from "@/features/english/components/english-app";
 export const metadata: Metadata = {
   title: "Little English | Piccole parole, grandi scoperte",
   description:
-    "Un piccolo mondo di minigiochi per scoprire colori, animali, oggetti, verbi, cibi, emozioni e numeri in inglese. Crea il tuo nome e ritrova stelle e progressi su ogni dispositivo.",
+    "Un piccolo mondo di minigiochi per scoprire colori, animali, oggetti, verbi, cibi, emozioni, numeri e parole da ascoltare in inglese. Crea il tuo nome e ritrova stelle e progressi su ogni dispositivo.",
 };
 
 export default function EnglishLayout({ children }: LayoutProps<"/english">) {
