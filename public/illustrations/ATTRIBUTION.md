@@ -53,11 +53,9 @@ sempre senza modifiche:
 | bagno           | `bathtub.svg`        |
 | sogno           | `dream.svg`          |
 | pugno           | `fist.svg`           |
-| gnomo           | `wizard.svg`         |
 | castagna        | `chestnut.svg`       |
 | campagna        | `countryside.svg`    |
 | spugna          | `sponge.svg`         |
-| lavagna         | `memo.svg`           |
 | cognome         | `id-card.svg`        |
 | segno           | `check-mark.svg`     |
 | bottiglia       | `bottle.svg`         |
@@ -77,7 +75,6 @@ sempre senza modifiche:
 | dischi          | `cd.svg`             |
 | scienza         | `microscope.svg`     |
 | chilo           | `scale.svg`          |
-| chiodo          | `pushpin.svg`        |
 | draghi          | `dragon.svg`         |
 | amiche          | `two-women.svg`      |
 | chiesa          | `church.svg`         |
@@ -91,7 +88,6 @@ sempre senza modifiche:
 | nonno           | `grandpa.svg`        |
 | bocca           | `mouth.svg`          |
 | terra           | `globe.svg`          |
-| ferro           | `bolt.svg`           |
 | pappa           | `bowl.svg`           |
 | città           | `city.svg`           |
 | perché          | `question.svg`       |
@@ -104,10 +100,31 @@ sempre senza modifiche:
 | bambù           | `herb.svg`           |
 | università      | `graduation-cap.svg` |
 | attività        | `briefcase.svg`      |
-| già             | `alarm-clock.svg`    |
+| già / sveglia   | `alarm-clock.svg`    |
+| aquila          | `eagle.svg`          |
+| oca / oche      | `goose.svg`          |
+| ghiaccio        | `ice.svg`            |
+| medaglia        | `medal.svg`          |
+| oliva           | `olive.svg`          |
+
+### Illustrazioni originali di Little Italiano
+
+Queste illustrazioni sono state create appositamente per Little Italiano, con
+uno stile vettoriale piatto e un viewBox 36 × 36. Non sono Twemoji e nessun
+servizio di generazione immagini è stato usato.
+
+- Animali: `stork.svg`, `quail.svg`.
+- Personaggi: `gnome.svg`, `doll.svg`, `back.svg`.
+- Oggetti: `blackboard.svg`, `marble.svg`, `oil.svg`, `pockets.svg`,
+  `pillow.svg`, `nail.svg`, `cart.svg`, `sugar.svg`, `foam.svg`, `iron.svg`.
+- Natura: `lily.svg`, `wood.svg`, `willow.svg`.
+
+Licenza: Creative Commons Attribution 4.0 International
+(https://creativecommons.org/licenses/by/4.0/).
+Attribuzione: “Little Italiano contributors — original illustrations, CC BY 4.0”.
 
 Little Italiano riusa inoltre le illustrazioni locali di Little English per le
-schede dei giochi. Nessun servizio di generazione immagini è stato usato.
+schede dei giochi.
 
 ## Mappatura dei nomi Twemoji
 
@@ -178,6 +195,7 @@ schede dei giochi. Nessun servizio di generazione immagini è stato usato.
 | `door.svg`        | `1f6aa.svg`                |
 | `draw.svg`        | `1f58d.svg`                |
 | `drink.svg`       | `1f964.svg`                |
+| `eagle.svg`       | `1f985.svg`                |
 | `drum.svg`        | `1f941.svg`                |
 | `duck.svg`        | `1f986.svg`                |
 | `eat.svg`         | `1f37d.svg`                |
@@ -199,6 +217,7 @@ schede dei giochi. Nessun servizio di generazione immagini è stato usato.
 | `giraffe.svg`     | `1f992.svg`                |
 | `glasses.svg`     | `1f453.svg`                |
 | `goat.svg`        | `1f410.svg`                |
+| `goose.svg`       | `1fabf.svg`                |
 | `grapes.svg`      | `1f347.svg`                |
 | `grumpy.svg`      | `1f612.svg`                |
 | `guitar.svg`      | `1f3b8.svg`                |
@@ -210,6 +229,7 @@ schede dei giochi. Nessun servizio di generazione immagini è stato usato.
 | `hot.svg`         | `1f975.svg`                |
 | `house.svg`       | `1f3e0.svg`                |
 | `hungry.svg`      | `1f924.svg`                |
+| `ice.svg`         | `1f9ca.svg`                |
 | `ice-cream.svg`   | `1f368.svg`                |
 | `island.svg`      | `1f3dd.svg`                |
 | `kangaroo.svg`    | `1f998.svg`                |
@@ -228,6 +248,7 @@ schede dei giochi. Nessun servizio di generazione immagini è stato usato.
 | `loved.svg`       | `1f970.svg`                |
 | `mango.svg`       | `1f96d.svg`                |
 | `map.svg`         | `1f5fa.svg`                |
+| `medal.svg`       | `1f3c5.svg`                |
 | `melon.svg`       | `1f348.svg`                |
 | `milk.svg`        | `1f95b.svg`                |
 | `mirror.svg`      | `1fa9e.svg`                |

@@ -227,6 +227,6 @@ Importa il repository su Vercel, seleziona il preset **Next.js** e Node.js 22.x 
 
 ## Crediti
 
-Illustrazioni [Twemoji](https://github.com/jdecked/twemoji), Twitter e altri contributori, licenza [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/). Le illustrazioni originali di Little English sono distribuite con la stessa licenza. Elenco completo, provenienza e mappatura dei nomi in [`public/illustrations/ATTRIBUTION.md`](public/illustrations/ATTRIBUTION.md).
+Illustrazioni [Twemoji](https://github.com/jdecked/twemoji), Twitter e altri contributori, licenza [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/). Le illustrazioni originali di Little English e Little Italiano sono distribuite con la stessa licenza. Elenco completo, provenienza e mappatura dei nomi in [`public/illustrations/ATTRIBUTION.md`](public/illustrations/ATTRIBUTION.md).
 
 Icone [Lucide](https://lucide.dev/), licenza ISC. Font Nunito e Plus Jakarta Sans, SIL Open Font License. Audio inglese generato con ElevenLabs, voce Alice.
