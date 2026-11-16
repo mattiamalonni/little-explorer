@@ -216,7 +216,7 @@ Il piano gratuito ElevenLabs non permette usi commerciali; l'app non commerciale
 ## Aggiungere parole e giochi
 
 - **English:** `src/features/english/data/games.ts`. Ogni gioco richiede almeno sei parole distinte; colori e numeri usano rappresentazioni CSS, gli altri concetti un'illustrazione locale. Con `listenOnly: true` la parola non viene mostrata: il bambino ascolta l'audio e sceglie la figura, quindi servono parole già coperte dagli MP3.
-- **Italiano:** `src/features/italian/data/games.ts`. Ogni voce ha `pattern`, `answer`, tre alternative, `solution`, `spoken` e `note`; i giochi `letters` chiedono gruppi di lettere (come GN o MP), i giochi `words` chiedono parole intere (come l'apostrofo o l'acca).
+- **Italiano:** `src/features/italian/data/games.ts`. Ogni voce ha `pattern`, `answer`, tre alternative, `solution`, `spoken` e `note`; i giochi `letters` chiedono gruppi di lettere (come GN o MP), i giochi `words` chiedono parole intere (come l'apostrofo o l'acca). Ogni gioco deve mescolare parole in cui il suono serve e parole-tranello in cui non serve (per esempio `angolo` o `nido` dentro GN, `olio` dentro GLI, `un amico` dentro l'apostrofo), così il bambino non può indovinare dalla prima lettera.
 - **Math:** `src/features/math/data/games.ts`. Addizioni, sottrazioni, moltiplicazioni e divisioni sono generate dai limiti 10, 20 e 100; il gioco del doppio e della metà usa gli stessi limiti e genera solo coppie `a + a` e divisioni per 2. Ogni partita ha sei domande e quattro risposte vicine al risultato.
 
 Dopo aver aggiunto parole inglesi, genera gli MP3 mancanti prima del deploy. I testi italiani non richiedono audio: vengono letti dal dispositivo.

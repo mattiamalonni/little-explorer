@@ -28,7 +28,7 @@ const worlds = [
     kicker: "ITALIANO",
     title: "Little Italiano",
     description:
-      "GN, GLI, SC, CH, CU, MP, MB, doppie, accenti e apostrofo: i suoni dell'italiano diventano piccoli giochi da scoprire.",
+      "GN, GLI, SC, CH, CU, MP, MB, doppie, accenti e apostrofo: i suoni dell'italiano diventano piccoli giochi da scoprire, con qualche tranello da smascherare.",
     games: "10 giochi",
   },
 ] as const;
