@@ -8,7 +8,7 @@ const worlds = [
     id: "english",
     href: "/english",
     kicker: "ENGLISH",
-    title: "Little English",
+    title: "English in festa",
     description:
       "Colori, animali, oggetti, azioni, cibi, emozioni, numeri e un gioco di solo ascolto: le prime parole inglesi con illustrazioni e pronuncia.",
     games: "10 giochi",
@@ -17,7 +17,7 @@ const worlds = [
     id: "math",
     href: "/math",
     kicker: "MATH",
-    title: "Little Math",
+    title: "Numeri in gioco",
     description:
       "Addizioni, sottrazioni, moltiplicazioni, divisioni, doppio e metà fino a 100, con blocchi da contare e passaggi spiegati un pezzetto alla volta.",
     games: "7 giochi",
@@ -26,7 +26,7 @@ const worlds = [
     id: "italian",
     href: "/italian",
     kicker: "ITALIANO",
-    title: "Little Italiano",
+    title: "Caccia ai suoni",
     description:
       "GN, GLI, SC, CH, CU, MP, MB, doppie, accenti e apostrofo: i suoni dell'italiano diventano piccoli giochi da scoprire, con qualche tranello da smascherare.",
     games: "10 giochi",
@@ -35,7 +35,7 @@ const worlds = [
     id: "time",
     href: "/time",
     kicker: "OROLOGIO",
-    title: "Little Orologio",
+    title: "Tic tac, che ora è?",
     description:
       "In punto, e un quarto, e mezza e meno un quarto: lancette da leggere, orologi da scegliere e ore da ascoltare, un quarto alla volta.",
     games: "5 giochi",
@@ -44,7 +44,7 @@ const worlds = [
     id: "logic",
     href: "/logic",
     kicker: "LOGICA",
-    title: "Little Logica",
+    title: "Detective delle forme",
     description:
       "Sequenze, intrusi, dimensioni e percorsi: forme colorate per allenare lo sguardo e il pensiero, una piccola sfida alla volta.",
     games: "5 giochi",
