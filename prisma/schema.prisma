@@ -29,6 +29,8 @@ model Progress {
   correctEnglish  Int      @default(0)
   correctMath     Int      @default(0)
   correctItalian  Int      @default(0)
+  correctTime     Int      @default(0)
+  correctLogic    Int      @default(0)
   games           String[] @default([])
   streak          Int      @default(0)
   lastPlayed      String?

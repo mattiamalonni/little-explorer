@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight, BookOpen, Clock3, Dices, Heart, Sparkles, Sprout, Star } from "lucide-react";
+import { LogicShape } from "@/features/logic/components/logic-shape";
 import { ProgressPill } from "@/features/gamification/components/progress-pill";
 
 const worlds = [
@@ -30,6 +31,24 @@ const worlds = [
     description:
       "GN, GLI, SC, CH, CU, MP, MB, doppie, accenti e apostrofo: i suoni dell'italiano diventano piccoli giochi da scoprire, con qualche tranello da smascherare.",
     games: "10 giochi",
+  },
+  {
+    id: "time",
+    href: "/time",
+    kicker: "OROLOGIO",
+    title: "Little Orologio",
+    description:
+      "In punto, e un quarto, e mezza e meno un quarto: lancette da leggere, orologi da scegliere e ore da ascoltare, un quarto alla volta.",
+    games: "5 giochi",
+  },
+  {
+    id: "logic",
+    href: "/logic",
+    kicker: "LOGICA",
+    title: "Little Logica",
+    description:
+      "Sequenze, intrusi, dimensioni e percorsi: forme colorate per allenare lo sguardo e il pensiero, una piccola sfida alla volta.",
+    games: "5 giochi",
   },
 ] as const;
 
@@ -61,13 +80,44 @@ function WorldArt({ id }: { id: (typeof worlds)[number]["id"] }) {
     );
   }
 
+  if (id === "italian") {
+    return (
+      <div className="hub-world-art" aria-hidden="true">
+        <Image className="art-spider" src="/illustrations/spider.svg" alt="" width={92} height={92} unoptimized />
+        <span className="hub-world-glyph">gn</span>
+        <span className="hub-world-glyph glyph-two">gl</span>
+        <Image className="art-mountain" src="/illustrations/mountain.svg" alt="" width={82} height={82} unoptimized />
+        <span className="hub-world-sticker">suoni e lettere</span>
+      </div>
+    );
+  }
+
+  if (id === "time") {
+    return (
+      <div className="hub-world-art" aria-hidden="true">
+        <span className="hub-clock">
+          <span className="hub-clock-hand is-hour" />
+          <span className="hub-clock-hand is-minute" />
+          <span className="hub-clock-center" />
+        </span>
+        <span className="hub-time-chips">
+          <span>in punto</span>
+          <span>e un quarto</span>
+          <span>e mezza</span>
+          <span>meno un quarto</span>
+        </span>
+        <span className="hub-world-sticker">un quarto alla volta</span>
+      </div>
+    );
+  }
+
   return (
     <div className="hub-world-art" aria-hidden="true">
-      <Image className="art-spider" src="/illustrations/spider.svg" alt="" width={92} height={92} unoptimized />
-      <span className="hub-world-glyph">gn</span>
-      <span className="hub-world-glyph glyph-two">gl</span>
-      <Image className="art-mountain" src="/illustrations/mountain.svg" alt="" width={82} height={82} unoptimized />
-      <span className="hub-world-sticker">suoni e lettere</span>
+      <LogicShape className="hub-shape hub-shape-a" token={{ kind: "circle", color: "sun", size: "large" }} size={62} />
+      <LogicShape className="hub-shape hub-shape-b" token={{ kind: "star", color: "coral", size: "medium" }} size={54} />
+      <LogicShape className="hub-shape hub-shape-c" token={{ kind: "triangle", color: "green", size: "medium" }} size={46} />
+      <span className="hub-world-glyph hub-logic-glyph">?</span>
+      <span className="hub-world-sticker">guarda e scopri</span>
     </div>
   );
 }
@@ -90,10 +140,12 @@ export default function HubPage() {
             </span>
           </Link>
           <div className="hub-header-tools">
-            <nav className="hub-nav" aria-label="I tre mondi">
+            <nav className="hub-nav" aria-label="I cinque mondi">
               <Link href="/english">English</Link>
               <Link href="/math">Math</Link>
               <Link href="/italian">Italiano</Link>
+              <Link href="/time">Orologio</Link>
+              <Link href="/logic">Logica</Link>
             </nav>
             <ProgressPill />
           </div>
@@ -104,17 +156,19 @@ export default function HubPage() {
         <section className="hub-hero" aria-labelledby="hub-title">
           <div className="hub-hero-copy">
             <span className="hub-eyebrow">
-              <Sparkles size={15} /> TRE MONDI, UN ESPLORATORE
+              <Sparkles size={15} /> CINQUE MONDI, UN ESPLORATORE
             </span>
             <h1 id="hub-title">
               Ciao, piccolo
               <br />
               <span>esploratore!</span>
             </h1>
-            <p>Scegli un mondo e comincia a scoprire. Parole, numeri e suoni ti aspettano, un piccolo passo alla volta.</p>
+            <p>
+              Scegli un mondo e comincia a scoprire. Parole, numeri, suoni, ore e forme ti aspettano, un piccolo passo alla volta.
+            </p>
             <div className="hub-hero-meta">
               <span>
-                <BookOpen size={15} /> 27 giochi
+                <BookOpen size={15} /> 37 giochi
               </span>
               <span>
                 <Heart size={15} /> Il tuo account
@@ -140,7 +194,7 @@ export default function HubPage() {
           <div className="hub-section-heading">
             <div>
               <span className="hub-eyebrow">DA DOVE VUOI PARTIRE?</span>
-              <h2 id="worlds-title">Tre mondi da scoprire</h2>
+              <h2 id="worlds-title">Cinque mondi da scoprire</h2>
             </div>
             <span className="hub-note">
               <Sprout size={16} /> Nessuna fretta, solo curiosità
@@ -182,7 +236,7 @@ export default function HubPage() {
 
       <footer className="hub-footer">
         <span>
-          <Sprout size={16} /> Tre mondi, un piccolo esploratore.
+          <Sprout size={16} /> Cinque mondi, un piccolo esploratore.
         </span>
         <span>
           Fatto per imparare, con <Heart size={13} /> /{" "}

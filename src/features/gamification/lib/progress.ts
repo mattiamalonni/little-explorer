@@ -1,6 +1,6 @@
-export type World = "english" | "math" | "italian";
+export type World = "english" | "math" | "italian" | "time" | "logic";
 
-export const WORLDS: readonly World[] = ["english", "math", "italian"];
+export const WORLDS: readonly World[] = ["english", "math", "italian", "time", "logic"];
 
 export const STORAGE_KEY = "little-explorer:progress:v1";
 export const PERFECT_BONUS = 3;
@@ -47,6 +47,8 @@ export type BadgeIcon =
   | "book"
   | "calculator"
   | "languages"
+  | "clock"
+  | "puzzle"
   | "flame"
   | "medal"
   | "crown";
@@ -84,7 +86,7 @@ export const BADGES: readonly Badge[] = [
   {
     id: "three-worlds",
     title: "Giro del mondo",
-    description: "Gioca almeno una volta in tutti e tre i mondi.",
+    description: "Gioca almeno una volta in ogni mondo.",
     icon: "compass",
     isUnlocked: (progress) => WORLDS.every((world) => progress.games.some((game) => game.startsWith(`${world}:`))),
   },
@@ -108,6 +110,20 @@ export const BADGES: readonly Badge[] = [
     description: "Trova 25 risposte giuste in italiano.",
     icon: "languages",
     isUnlocked: (progress) => progress.correct.italian >= 25,
+  },
+  {
+    id: "time-25",
+    title: "Ore in tasca",
+    description: "Leggi 25 orologi e scegli l'ora giusta.",
+    icon: "clock",
+    isUnlocked: (progress) => progress.correct.time >= 25,
+  },
+  {
+    id: "logic-25",
+    title: "Mente svelta",
+    description: "Risolvi 25 sfide di logica.",
+    icon: "puzzle",
+    isUnlocked: (progress) => progress.correct.logic >= 25,
   },
   {
     id: "streak-3",
@@ -163,7 +179,7 @@ export function createDefaultProgress(): Progress {
     stars: 0,
     rounds: 0,
     perfectRounds: 0,
-    correct: { english: 0, math: 0, italian: 0 },
+    correct: { english: 0, math: 0, italian: 0, time: 0, logic: 0 },
     games: [],
     streak: 0,
     lastPlayed: null,
@@ -287,6 +303,8 @@ export function normalizeProgress(value: unknown): Progress {
       english: toCount(correct.english),
       math: toCount(correct.math),
       italian: toCount(correct.italian),
+      time: toCount(correct.time),
+      logic: toCount(correct.logic),
     },
     games: Array.from(new Set(toStringList(value.games))).slice(0, 200),
     streak: toCount(value.streak),

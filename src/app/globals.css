@@ -361,7 +361,7 @@ svg {
 }
 .hub-grid {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(6, minmax(0, 1fr));
   gap: 24px;
   margin-top: 26px;
 }
@@ -370,6 +370,7 @@ svg {
   --world-dark: var(--green-dark);
   --world-soft: var(--mint);
   --world-ink: #45744a;
+  grid-column: span 2;
   display: flex;
   flex-direction: column;
   overflow: hidden;
@@ -381,6 +382,10 @@ svg {
     transform 0.2s,
     box-shadow 0.2s,
     border-color 0.2s;
+}
+.hub-world:nth-child(4),
+.hub-world:nth-child(5) {
+  grid-column: span 3;
 }
 .hub-world:hover {
   transform: translateY(-5px);
@@ -404,6 +409,18 @@ svg {
   --world-dark: #5e437d;
   --world-soft: #eeebf7;
   --world-ink: #6f5890;
+}
+.hub-world-time {
+  --world: #2a7a74;
+  --world-dark: #1f5c57;
+  --world-soft: #e2f0ec;
+  --world-ink: #3a746d;
+}
+.hub-world-logic {
+  --world: #476f9e;
+  --world-dark: #355879;
+  --world-soft: #e8eef7;
+  --world-ink: #4b6d92;
 }
 .hub-world-art {
   position: relative;
@@ -533,6 +550,112 @@ svg {
   width: 82px;
   height: 82px;
   transform: rotate(7deg);
+}
+
+/* Orologio: quadrante disegnato con CSS, senza nuove illustrazioni. */
+.hub-clock {
+  position: absolute;
+  left: 26px;
+  top: 24px;
+  width: 116px;
+  height: 116px;
+  border: 4px solid var(--world);
+  border-radius: 50%;
+  background: #fffdf6;
+  box-shadow: 0 10px 20px #273a3214;
+}
+.hub-clock-hand {
+  position: absolute;
+  left: 50%;
+  bottom: 50%;
+  border-radius: 999px;
+  transform-origin: bottom center;
+}
+.hub-clock-hand.is-hour {
+  width: 6px;
+  height: 30px;
+  margin-left: -3px;
+  background: #33473f;
+  transform: rotate(308deg);
+}
+.hub-clock-hand.is-minute {
+  width: 4px;
+  height: 41px;
+  margin-left: -2px;
+  background: #d97757;
+  transform: rotate(90deg);
+}
+.hub-clock-center {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 10px;
+  height: 10px;
+  margin: -5px;
+  border: 2px solid #fffdf6;
+  border-radius: 50%;
+  background: #d97757;
+}
+.hub-time-chips {
+  position: absolute;
+  right: 14px;
+  top: 30px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 7px;
+}
+.hub-time-chips > span {
+  padding: 5px 9px;
+  border: 1px solid #ffffffc9;
+  border-radius: 999px;
+  color: var(--world-ink);
+  background: #fffdf7e6;
+  font-size: 10px;
+  font-weight: 800;
+  box-shadow: 0 4px 10px #273a3210;
+  white-space: nowrap;
+}
+.hub-time-chips > span:nth-child(2) {
+  transform: rotate(3deg);
+}
+.hub-time-chips > span:nth-child(3) {
+  transform: rotate(-2deg);
+}
+.hub-world-time .hub-world-sticker {
+  left: 24px;
+}
+
+/* Logica: forme geometriche colorate, riusate anche dentro i giochi. */
+.hub-shape {
+  position: absolute;
+  filter: drop-shadow(0 7px 11px #273a3216);
+}
+.hub-world-logic .hub-shape-a {
+  left: 24px;
+  top: 20px;
+  transform: rotate(-8deg);
+}
+.hub-world-logic .hub-shape-b {
+  right: 26px;
+  top: 24px;
+  transform: rotate(9deg);
+}
+.hub-world-logic .hub-shape-c {
+  right: 52px;
+  bottom: 18px;
+  transform: rotate(-6deg);
+}
+.hub-world-logic .hub-world-glyph {
+  top: 58px;
+  left: 116px;
+  width: 58px;
+  height: 64px;
+  font-size: 30px;
+  transform: rotate(3deg);
+}
+.hub-world-logic .hub-world-sticker {
+  left: 22px;
 }
 .hub-world-body {
   display: flex;
@@ -678,6 +801,11 @@ svg {
   .hub-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
+  .hub-world,
+  .hub-world:nth-child(4),
+  .hub-world:nth-child(5) {
+    grid-column: span 1;
+  }
   .hub-world:last-child {
     grid-column: 1 / -1;
   }
@@ -717,6 +845,9 @@ svg {
     grid-template-columns: 1fr;
     gap: 18px;
   }
+  .hub-world,
+  .hub-world:nth-child(4),
+  .hub-world:nth-child(5),
   .hub-world:last-child {
     grid-column: auto;
   }

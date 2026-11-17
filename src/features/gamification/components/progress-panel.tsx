@@ -8,11 +8,13 @@ import {
   Check,
   Cloud,
   CloudOff,
+  Clock3,
   Flame,
   Languages,
   Lock,
   LogOut,
   Medal,
+  Puzzle,
   RefreshCw,
   Sparkles,
   Star,
@@ -29,6 +31,8 @@ const WORLD_STATS: { world: World; label: string; icon: LucideIcon }[] = [
   { world: "english", label: "Inglese", icon: BookOpen },
   { world: "math", label: "Matematica", icon: Calculator },
   { world: "italian", label: "Italiano", icon: Languages },
+  { world: "time", label: "Orologio", icon: Clock3 },
+  { world: "logic", label: "Logica", icon: Puzzle },
 ];
 
 export function ProgressPanel({ onClose }: { onClose: () => void }) {

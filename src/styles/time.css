@@ -1,0 +1,324 @@
+.subject-time {
+  --muted: #5d716b;
+  --green: #2a7a74;
+  --green-dark: #1f5c57;
+  --mint: #e6f2ef;
+}
+.subject-time .brand,
+.subject-time .time-phrase,
+.subject-time .time-option-label,
+.subject-time .hero-clock {
+  font-family: var(--font-nunito), sans-serif;
+}
+
+/* Orologio disegnato: uno solo, riusato in dashboard, gioco e riepilogo. */
+.subject-time .clock-face {
+  display: block;
+  flex-shrink: 0;
+}
+.subject-time .clock-rim {
+  fill: #fffdf6;
+  stroke: var(--green);
+  stroke-width: 3;
+}
+.subject-time .clock-inner {
+  fill: #fffdf6;
+  stroke: #d9eae5;
+  stroke-width: 0.9;
+}
+.subject-time .clock-tick {
+  stroke: #b7d1ca;
+  stroke-width: 0.9;
+  stroke-linecap: round;
+}
+.subject-time .clock-tick-major {
+  stroke: var(--green);
+  stroke-width: 1.7;
+}
+.subject-time .clock-number {
+  fill: #2f443f;
+  font-family: var(--font-nunito), sans-serif;
+  font-size: 8.8px;
+  font-weight: 800;
+}
+.subject-time .clock-hand {
+  stroke-linecap: round;
+}
+.subject-time .clock-hand-hour {
+  stroke: #2f443f;
+  stroke-width: 3.9;
+}
+.subject-time .clock-hand-minute {
+  stroke: #d97757;
+  stroke-width: 2.5;
+}
+.subject-time .clock-center {
+  fill: #d97757;
+}
+.subject-time .clock-center-pin {
+  fill: #fffdf6;
+}
+
+/* Dashboard */
+.subject-time .welcome-art {
+  width: 310px;
+}
+.subject-time .hero-clock {
+  position: absolute;
+  top: 34px;
+  left: 14px;
+  transform: rotate(-5deg);
+  filter: drop-shadow(0 12px 20px #25433d1a);
+}
+.subject-time .time-chip {
+  position: absolute;
+  z-index: 2;
+  padding: 5px 10px;
+  border: 1px solid #cfe3dd;
+  border-radius: 999px;
+  background: #fffdf7;
+  color: #2a7a74;
+  font-size: 10px;
+  font-weight: 800;
+  box-shadow: 0 4px 10px #25433d12;
+  white-space: nowrap;
+}
+.subject-time .chip-quarter {
+  top: 34px;
+  right: 0;
+  transform: rotate(4deg);
+}
+.subject-time .chip-half {
+  top: 70px;
+  right: 8px;
+  transform: rotate(-3deg);
+}
+.subject-time .chip-to {
+  top: 106px;
+  right: 0;
+  transform: rotate(3deg);
+}
+.subject-time .chip-hour {
+  top: 142px;
+  right: 10px;
+  transform: rotate(-2deg);
+}
+.subject-time .welcome-bubble {
+  background: #e2f0ec;
+  color: #3a746d;
+}
+
+/* Copertine dei giochi */
+.subject-time .game-art {
+  height: 210px;
+}
+.subject-time .art-read {
+  background-color: #e2f0ec;
+}
+.subject-time .art-set {
+  background-color: #f8ecd9;
+}
+.subject-time .art-quarters {
+  background-color: #e4ecf6;
+}
+.subject-time .art-listen {
+  background-color: #f5e9df;
+}
+.subject-time .art-mixed {
+  background-color: #eae7f4;
+}
+.subject-time .art-clock {
+  position: absolute;
+  top: 24px;
+  left: calc(50% - 66px);
+  transform: rotate(-4deg);
+  filter: drop-shadow(0 9px 15px #25433d1a);
+}
+.subject-time .art-sticker {
+  z-index: 2;
+}
+.subject-time .category-label {
+  color: #2a7a74;
+}
+.subject-time .label-set {
+  color: #9a6b2c;
+}
+.subject-time .label-quarters {
+  color: #456f96;
+}
+.subject-time .label-listen {
+  color: #a05f45;
+}
+.subject-time .label-mixed {
+  color: #6f5c9a;
+}
+.subject-time .surprise-section {
+  background: #e8f2ee;
+  border-color: #d6e7e1;
+}
+.subject-time .surprise-icon {
+  color: #2f7a72;
+  border-color: #cfe4dd;
+}
+
+/* Gioco */
+.subject-time .clock-stage {
+  min-height: 268px;
+  gap: 12px;
+}
+.subject-time .clock-caption {
+  color: #647a73;
+  font-size: 11px;
+  line-height: 1.7;
+  text-align: center;
+}
+.subject-time .time-prompt {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+  text-align: center;
+}
+.subject-time .time-phrase {
+  color: #234742;
+  font-size: clamp(30px, 5vw, 46px);
+  font-weight: 900;
+  line-height: 1.2;
+  text-wrap: balance;
+}
+.subject-time .listen-phrase {
+  font-size: clamp(24px, 4vw, 34px);
+}
+.subject-time .listen-mark {
+  display: grid;
+  place-items: center;
+  width: 78px;
+  height: 78px;
+  border: 1px solid #cfe3dd;
+  border-radius: 50%;
+  color: #2a7a74;
+  background: #fffdf7;
+  box-shadow: 0 8px 18px #25433d12;
+  animation: time-pulse 2.6s ease-in-out infinite;
+}
+@keyframes time-pulse {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.06);
+  }
+}
+.subject-time .clock-help {
+  background: #f4faf8;
+  border-color: #d6e7e1;
+}
+.subject-time .clock-help > p {
+  font-size: 13px;
+  line-height: 1.9;
+}
+.subject-time .clock-legend {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+  margin-top: 16px;
+  padding-top: 15px;
+  border-top: 1px dashed #cfe3dd;
+}
+.subject-time .clock-legend > span {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 7px;
+  color: #4f6862;
+  font-size: 10px;
+  font-weight: 700;
+  text-align: center;
+}
+.subject-time .time-answer-grid {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+.subject-time .time-option {
+  min-height: 105px;
+  padding: 16px 10px;
+  font-size: 19px;
+  line-height: 1.35;
+  text-align: center;
+}
+.subject-time .time-option.is-clock {
+  min-height: 150px;
+  padding: 12px 8px;
+}
+.subject-time .time-option.is-clock .clock-face {
+  filter: drop-shadow(0 4px 8px #25433d12);
+}
+.subject-time .time-option-label {
+  font-weight: 800;
+  text-wrap: balance;
+}
+.subject-time .time-option.answer-muted .clock-face {
+  opacity: 0.4;
+}
+
+/* Riepilogo */
+.subject-time .review-clock {
+  flex-shrink: 0;
+}
+.subject-time .review-clock-note {
+  margin-top: 6px;
+  color: var(--muted);
+  font-size: 11px;
+  line-height: 1.7;
+}
+.subject-time .review-calculation > strong {
+  font-size: 19px;
+}
+
+@media (max-width: 900px) {
+  .subject-time .welcome-art {
+    width: 270px;
+  }
+  .subject-time .time-answer-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .subject-time .time-option.is-clock {
+    min-height: 140px;
+  }
+}
+@media (max-width: 600px) {
+  .subject-time .clock-stage {
+    min-height: 230px;
+  }
+  .subject-time .clock-stage > .clock-face {
+    width: 180px;
+    height: 180px;
+  }
+  .subject-time .clock-legend {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .subject-time .clock-legend .clock-face {
+    width: 56px;
+    height: 56px;
+  }
+  .subject-time .time-option {
+    font-size: 17px;
+  }
+  .subject-time .time-option.is-clock .clock-face {
+    width: 86px;
+    height: 86px;
+  }
+  .subject-time .review-row .review-clock {
+    width: 48px;
+    height: 48px;
+  }
+  .subject-time .review-clock-note {
+    font-size: 10px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .subject-time .listen-mark {
+    animation: none;
+  }
+}

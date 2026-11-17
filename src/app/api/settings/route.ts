@@ -2,10 +2,8 @@ import { NextResponse } from "next/server";
 import { getSessionUser } from "@/features/auth/lib/session";
 import { gameSettingToRecordData, gameSettingsFromRecords } from "@/features/gamification/lib/db-settings";
 import { normalizeGameSetting } from "@/features/gamification/lib/game-settings";
-import type { World } from "@/features/gamification/lib/progress";
+import { WORLDS, type World } from "@/features/gamification/lib/progress";
 import { prisma } from "@/lib/db";
-
-const WORLDS: readonly World[] = ["english", "math", "italian"];
 
 function parseWorld(value: unknown): World | null {
   return typeof value === "string" && WORLDS.includes(value as World) ? (value as World) : null;

@@ -1,4 +1,4 @@
-import type { World } from "@/features/gamification/lib/progress";
+import { WORLDS, type World } from "@/features/gamification/lib/progress";
 
 export type GameSetting = {
   /** Voci scelte per il gioco. `null` significa tutte quelle disponibili. */
@@ -14,7 +14,6 @@ export const ROUND_LENGTH_OPTIONS = [4, 6, 8, 10] as const;
 export const DEFAULT_ROUND_LENGTH = 6;
 export const DEFAULT_MATH_LIMITS = [10, 20, 100] as const;
 
-const WORLDS: readonly World[] = ["english", "math", "italian"];
 const MAX_SELECTED = 500;
 
 export function settingKey(world: World, gameId: string): string {

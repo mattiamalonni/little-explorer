@@ -8,6 +8,8 @@ export type ProgressData = {
   correctEnglish: number;
   correctMath: number;
   correctItalian: number;
+  correctTime: number;
+  correctLogic: number;
   games: string[];
   streak: number;
   lastPlayed: string | null;
@@ -25,6 +27,8 @@ export function progressFromRecord(record: ProgressRecord | null | undefined): P
       english: record.correctEnglish,
       math: record.correctMath,
       italian: record.correctItalian,
+      time: record.correctTime,
+      logic: record.correctLogic,
     },
     games: [...record.games],
     streak: record.streak,
@@ -41,6 +45,8 @@ export function progressToRecordData(progress: Progress): ProgressData {
     correctEnglish: progress.correct.english,
     correctMath: progress.correct.math,
     correctItalian: progress.correct.italian,
+    correctTime: progress.correct.time,
+    correctLogic: progress.correct.logic,
     games: progress.games,
     streak: progress.streak,
     lastPlayed: progress.lastPlayed,

@@ -1,14 +1,14 @@
 # Little Explorer
 
-Tre mondi di minigiochi per bambini in un'unica app: **inglese**, **matematica** e **italiano**. Next.js App Router, React e TypeScript.
+Cinque mondi di minigiochi per bambini in un'unica app: **inglese**, **matematica**, **italiano**, **orologio** e **logica**. Next.js App Router, React e TypeScript.
 
-La home è un hub con tre mondi. Ogni mondo conserva il proprio carattere, i propri giochi e le proprie impostazioni, ma condivide infrastruttura, illustrazioni, stili di base e un unico sistema di **stelle, livelli e traguardi**.
+La home è un hub con cinque mondi. Ogni mondo conserva il proprio carattere, i propri giochi e le proprie impostazioni, ma condivide infrastruttura, illustrazioni, stili di base e un unico sistema di **stelle, livelli e traguardi**.
 
 ## Rotte
 
 | Percorso                        | Contenuto                                |
 | ------------------------------- | ---------------------------------------- |
-| `/`                             | Hub con i tre mondi                      |
+| `/`                             | Hub con i cinque mondi                   |
 | `/english`                      | Dashboard di Little English (10 giochi)  |
 | `/english/play/[gameId]`        | Partita                                  |
 | `/english/play/[gameId]/result` | Riepilogo                                |
@@ -18,6 +18,12 @@ La home è un hub con tre mondi. Ogni mondo conserva il proprio carattere, i pro
 | `/italian`                      | Dashboard di Little Italiano (10 giochi) |
 | `/italian/play/[gameId]`        | Partita                                  |
 | `/italian/play/[gameId]/result` | Riepilogo                                |
+| `/time`                         | Dashboard di Little Orologio (5 giochi)  |
+| `/time/play/[gameId]`           | Partita                                  |
+| `/time/play/[gameId]/result`    | Riepilogo                                |
+| `/logic`                        | Dashboard di Little Logica (5 giochi)    |
+| `/logic/play/[gameId]`          | Partita                                  |
+| `/logic/play/[gameId]/result`   | Riepilogo                                |
 
 Gli URL sono in inglese; l'interfaccia per i bambini resta in italiano. Le partite vivono nello stato React. Ogni bambino crea un **nome unico** con una password: stelle, livelli e traguardi vengono salvati su PostgreSQL (Neon) e restano legati al suo account.
 
@@ -26,7 +32,7 @@ Gli URL sono in inglese; l'interfaccia per i bambini resta in italiano. Le parti
 ```text
 src/
   app/
-    page.tsx                 hub dei tre mondi
+    page.tsx                 hub dei cinque mondi
     globals.css              reset, base e stili dell'hub
     api/
       auth/                  registrazione, accesso e uscita
@@ -36,6 +42,8 @@ src/
     english/                 rotte di Little English
     math/                    rotte di Little Math
     italian/                 rotte di Little Italiano
+    time/                    rotte di Little Orologio
+    logic/                   rotte di Little Logica
   features/
     auth/
       components/auth-screen.tsx
@@ -52,6 +60,14 @@ src/
       components/italian-app.tsx
       data/games.ts
       lib/audio.ts
+    time/
+      components/time-app.tsx
+      components/clock-face.tsx   orologio SVG originale
+      data/games.ts
+    logic/
+      components/logic-app.tsx
+      components/logic-shape.tsx  forme SVG originali
+      data/games.ts
     gamification/
       components/            accesso, pillola, banner, pannello traguardi, provider React
       components/game-setup.tsx  schermata pre-gioco condivisa
@@ -64,7 +80,9 @@ src/
     auth.css                 stili di accesso e creazione del nome
     gamification.css         stili condivisi di stelle, banner, traguardi e setup
     language.css             stili condivisi English + Italiano, con scope
-    math.css                 stili Math, con scope
+    math.css                 stili Math, riusati da Orologio e Logica
+    time.css                 override e orologio di Little Orologio
+    logic.css                override e forme di Little Logica
 prisma/
   schema.prisma              modelli User, Progress, GameSetting e Session
   migrations/                migrazioni SQL versionate
@@ -84,21 +102,22 @@ Ogni feature è autosufficiente: dati, componenti e audio vivono nella propria c
 
 ### Stili con scope
 
-Le tre app originali usavano nomi di classe uguali (`.game-card`, `.dashboard`, `.question-stage`…). Per conviverle senza conflitti:
+Le app originali usavano nomi di classe uguali (`.game-card`, `.dashboard`, `.question-stage`…). Per conviverle senza conflitti:
 
 - `language.css` è scritto tutto sotto `.subject-language`.
 - `math.css` è scritto tutto sotto `.subject-math`.
 - Il layout di English applica `subject-language subject-english`, quello di Italiano `subject-language subject-italian`, quello di Math `subject-math`.
+- Little Orologio e Little Logica riusano il layout di Math applicando `subject-math subject-time` e `subject-math subject-logic`; i file `time.css` e `logic.css` contengono solo override e i pezzi specifici (quadrante, forme, colori).
 
-Quando si modifica uno stile condiviso, mantenere il prefisso `.subject-language`. Le differenze di un solo mondo vanno aggiunte come override mirati, ad esempio `.subject-language.subject-english .welcome-letter`.
+Quando si modifica uno stile condiviso, mantenere il prefisso `.subject-language` o `.subject-math`. Le differenze di un solo mondo vanno aggiunte come override mirati, ad esempio `.subject-language.subject-english .welcome-letter` o `.subject-math.subject-time .hero-clock`.
 
 ## Stelle e traguardi
 
-La gamification è condivisa dai tre mondi e vive sopra i layout delle singole feature:
+La gamification è condivisa dai cinque mondi e vive sopra i layout delle singole feature:
 
 - ogni risposta giusta vale **1 stella**; una partita perfetta aggiunge un **bonus di 3 stelle**;
 - le stelle fanno salire di **livello** (da “Primi passi” a “Leggenda curiosa”);
-- i **traguardi** premiano partite complete, serie perfette, costanza, mondi visitati e risposte corrette per materia;
+- i **traguardi** premiano partite complete, serie perfette, costanza, mondi visitati e risposte corrette per mondo;
 - la **serie di giorni** aumenta giocando in giorni consecutivi;
 - il pannello dei traguardi, aperto dalla pillola nell'header o dal banner in dashboard, mostra livelli, statistiche e badge e permette di azzerare tutto.
 
@@ -108,9 +127,9 @@ Lo stato è gestito da `GamificationProvider` nel layout radice. All'avvio il pr
 
 Ogni partita parte da una schermata di preparazione condivisa, in `src/features/gamification/components/game-setup.tsx`:
 
-- nei giochi con un elenco (inglese e italiano) si scelgono le voci da usare, con le azioni **Tutti** e **Nessuno**; servono almeno quattro voci;
+- nei giochi con un elenco (inglese, italiano e orologio) si scelgono le voci da usare, con le azioni **Tutti** e **Nessuno**; servono almeno quattro voci. In Little Orologio le voci sono le dodici ore;
 - si sceglie il numero di domande della partita (4, 6, 8 o 10, oppure tutte le voci selezionate quando sono meno di 10);
-- in Little Math si sceglie anche il limite dei numeri (entro 10, 20 o 100), spostato qui dalla dashboard.
+- in Little Math si sceglie anche il limite dei numeri (entro 10, 20 o 100), spostato qui dalla dashboard. Little Logica non ha un elenco di voci: si sceglie solo la lunghezza della partita.
 
 Le preferenze vengono salvate per utente e per gioco nel modello `GameSetting` (`GET` e `PUT /api/settings`) e ricaricate con `GET /api/me`. Il round usa la selezione e la lunghezza salvate; “Giochiamo ancora” riparte con la stessa configurazione.
 
@@ -166,7 +185,7 @@ Non è presente una suite di test: la verifica avviene con lint, controllo della
 
 ## Illustrazioni
 
-Tutte le immagini sono SVG locali in `public/illustrations`, con nomi inglesi leggibili in minuscolo e trattini tra le parole (`cat.svg`, `teddy-bear.svg`). L'app applica dimensioni, rotazioni e composizione tramite CSS; non usa emoji di sistema.
+Tutte le immagini sono SVG locali in `public/illustrations`, con nomi inglesi leggibili in minuscolo e trattini tra le parole (`cat.svg`, `teddy-bear.svg`). L'app applica dimensioni, rotazioni e composizione tramite CSS; non usa emoji di sistema. Little Orologio e Little Logica non richiedono nuove illustrazioni: il quadrante e le forme geometriche sono SVG disegnati direttamente nei componenti.
 
 Per aggiungere un'illustrazione:
 
@@ -176,7 +195,7 @@ Per aggiungere un'illustrazione:
 
 ## Audio
 
-L'inglese usa MP3 locali già inclusi, generati con la voce britannica **Alice** di ElevenLabs. L'italiano non usa MP3: il pulsante Ascolta parla sempre con la voce italiana del dispositivo tramite `speechSynthesis`, scegliendo una voce `it-*` quando il browser la espone.
+L'inglese usa MP3 locali già inclusi, generati con la voce britannica **Alice** di ElevenLabs. L'italiano non usa MP3: il pulsante Ascolta parla sempre con la voce italiana del dispositivo tramite `speechSynthesis`, scegliendo una voce `it-*` quando il browser la espone. Little Orologio usa la stessa voce italiana del dispositivo per leggere le ore ad alta voce.
 
 I browser non chiamano mai ElevenLabs. Il pulsante Ascolta è presente in domande, feedback e riepiloghi. Un nuovo ascolto interrompe il precedente; cambio pagina, avanzamento e disattivazione audio fermano la riproduzione.
 
@@ -218,6 +237,8 @@ Il piano gratuito ElevenLabs non permette usi commerciali; l'app non commerciale
 - **English:** `src/features/english/data/games.ts`. Ogni gioco richiede almeno sei parole distinte; colori e numeri usano rappresentazioni CSS, gli altri concetti un'illustrazione locale. Con `listenOnly: true` la parola non viene mostrata: il bambino ascolta l'audio e sceglie la figura, quindi servono parole già coperte dagli MP3.
 - **Italiano:** `src/features/italian/data/games.ts`. Ogni voce ha `pattern`, `answer`, tre alternative, `solution`, `spoken` e `note`; i giochi `letters` chiedono gruppi di lettere (come GN o MP), i giochi `words` chiedono parole intere (come l'apostrofo o l'acca). Ogni gioco deve mescolare parole in cui il suono serve e parole-tranello in cui non serve (per esempio `angolo` o `nido` dentro GN, `olio` dentro GLI, `un amico` dentro l'apostrofo), così il bambino non può indovinare dalla prima lettera.
 - **Math:** `src/features/math/data/games.ts`. Addizioni, sottrazioni, moltiplicazioni e divisioni sono generate dai limiti 10, 20 e 100; il gioco del doppio e della metà usa gli stessi limiti e genera solo coppie `a + a` e divisioni per 2. Ogni partita ha sei domande e quattro risposte vicine al risultato.
+- **Orologio:** `src/features/time/data/games.ts`. Le ore sono limitate a `in punto`, `e un quarto`, `e mezza` e `meno un quarto` (minuti 0, 15, 30, 45). `timePhrase` costruisce la frase italiana, `spokenTime` aggiunge “È l'” o “Sono le” per la voce del dispositivo. I giochi leggono il quadrante, scelgono l'orologio, riconoscono il quarto o ascoltano l'ora; le partite ruotano sui quattro minuti.
+- **Logica:** `src/features/logic/data/games.ts`. Le sfide sono sequenze, intruso, dimensioni e percorsi su griglia; le forme sono descritte da tipo, colore e dimensione e disegnate da `logic-shape.tsx`. Il gioco misto alterna i quattro tipi.
 
 Dopo aver aggiunto parole inglesi, genera gli MP3 mancanti prima del deploy. I testi italiani non richiedono audio: vengono letti dal dispositivo.
 

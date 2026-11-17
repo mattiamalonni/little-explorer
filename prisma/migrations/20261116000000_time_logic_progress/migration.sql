@@ -1,0 +1,3 @@
+-- AlterTable
+ALTER TABLE "Progress" ADD COLUMN "correctTime" INTEGER NOT NULL DEFAULT 0,
+ADD COLUMN "correctLogic" INTEGER NOT NULL DEFAULT 0;

@@ -18,11 +18,11 @@ import {
   createDefaultProgress,
   loadProgress,
   normalizeProgress,
+  WORLDS,
   type Progress,
   type RoundReward,
   type World,
 } from "@/features/gamification/lib/progress";
-
 type SessionPayload = {
   user: SessionUser;
   progress: unknown;
@@ -35,7 +35,7 @@ function hasMeaningfulProgress(progress: Progress): boolean {
     progress.rounds > 0 ||
     progress.games.length > 0 ||
     progress.badges.length > 0 ||
-    progress.correct.english + progress.correct.math + progress.correct.italian > 0
+    WORLDS.some((world) => progress.correct[world] > 0)
   );
 }
 

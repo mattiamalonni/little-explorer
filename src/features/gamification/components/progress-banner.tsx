@@ -8,6 +8,8 @@ const WORLD_COPY: Record<World, (count: number) => string> = {
   english: (count) => `${count} risposte giuste in inglese`,
   math: (count) => `${count} calcoli risolti`,
   italian: (count) => `${count} risposte giuste in italiano`,
+  time: (count) => `${count} orologi letti`,
+  logic: (count) => `${count} sfide di logica risolte`,
 };
 
 export function ProgressBanner({ world }: { world: World }) {
