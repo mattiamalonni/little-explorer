@@ -5,6 +5,7 @@ import { AuthScreen } from "@/features/auth/components/auth-screen";
 import { AppLoading } from "@/features/gamification/components/app-loading";
 import { GamificationContext, type SessionUser, type SyncState } from "@/features/gamification/components/gamification-context";
 import { ProgressPanel } from "@/features/gamification/components/progress-panel";
+import { SiteHeader } from "@/features/gamification/components/site-header";
 import {
   normalizeGameSettings,
   normalizeGameSetting,
@@ -365,6 +366,7 @@ export function GamificationProvider({ children }: { children: React.ReactNode }
         <AuthScreen />
       ) : (
         <>
+          <SiteHeader />
           {children}
           {panelOpen && <ProgressPanel onClose={closeProgress} />}
         </>

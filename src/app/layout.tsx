@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { Nunito, Plus_Jakarta_Sans } from "next/font/google";
 import { GamificationProvider } from "@/features/gamification/components/gamification-provider";
+import { SoundProvider } from "@/features/gamification/components/sound-context";
 import "./globals.css";
 import "@/styles/gamification.css";
 import "@/styles/auth.css";
@@ -35,7 +36,9 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html lang="it" className={`${nunito.variable} ${jakarta.variable}`} data-scroll-behavior="smooth">
       <body>
-        <GamificationProvider>{children}</GamificationProvider>
+        <SoundProvider>
+          <GamificationProvider>{children}</GamificationProvider>
+        </SoundProvider>
       </body>
     </html>
   );

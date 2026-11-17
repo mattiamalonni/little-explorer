@@ -2,7 +2,6 @@ import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight, BookOpen, Clock3, Dices, Heart, Sparkles, Sprout, Star } from "lucide-react";
 import { LogicShape } from "@/features/logic/components/logic-shape";
-import { ProgressPill } from "@/features/gamification/components/progress-pill";
 
 const worlds = [
   {
@@ -125,33 +124,6 @@ function WorldArt({ id }: { id: (typeof worlds)[number]["id"] }) {
 export default function HubPage() {
   return (
     <div className="hub">
-      <a className="hub-skip" href="#main">
-        Vai al contenuto
-      </a>
-      <header className="hub-header">
-        <div className="hub-header-inner">
-          <Link href="/" className="hub-brand" aria-label="Little Explorer, pagina iniziale">
-            <span className="hub-brand-mark">
-              <Sprout size={25} strokeWidth={2.4} />
-            </span>
-            <span>
-              little<span className="hub-brand-accent">explorer</span>
-              <span className="hub-brand-dot">.</span>
-            </span>
-          </Link>
-          <div className="hub-header-tools">
-            <nav className="hub-nav" aria-label="I cinque mondi">
-              <Link href="/english">English</Link>
-              <Link href="/math">Math</Link>
-              <Link href="/italian">Italiano</Link>
-              <Link href="/time">Orologio</Link>
-              <Link href="/logic">Logica</Link>
-            </nav>
-            <ProgressPill />
-          </div>
-        </div>
-      </header>
-
       <main className="hub-main" id="main">
         <section className="hub-hero" aria-labelledby="hub-title">
           <div className="hub-hero-copy">

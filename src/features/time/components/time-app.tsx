@@ -19,7 +19,6 @@ import {
   Star,
   Trophy,
   Volume2,
-  VolumeX,
   X,
 } from "lucide-react";
 import { ClockFace } from "@/features/time/components/clock-face";
@@ -41,10 +40,10 @@ import {
   type RoundConfig,
 } from "@/features/time/data/games";
 import { ProgressBanner } from "@/features/gamification/components/progress-banner";
-import { ProgressPill } from "@/features/gamification/components/progress-pill";
 import { RoundRewards } from "@/features/gamification/components/round-rewards";
 import { GameSetup } from "@/features/gamification/components/game-setup";
 import { useRoundReward } from "@/features/gamification/components/use-round-reward";
+import { useSound } from "@/features/gamification/components/sound-context";
 
 const sampleTimes: Record<TimeGameId, { hour: number; minute: Minute }> = {
   read: { hour: 3, minute: 30 },
@@ -84,7 +83,7 @@ function stopSpeech() {
 
 export function AppShell({ children }: { children: React.ReactNode }) {
   const [round, setRound] = useState<Round | null>(null);
-  const [sound, setSound] = useState(true);
+  const { sound } = useSound();
   const [audioError, setAudioError] = useState("");
   const pathname = usePathname();
 
@@ -93,6 +92,10 @@ export function AppShell({ children }: { children: React.ReactNode }) {
       stopSpeech();
     };
   }, [pathname]);
+
+  useEffect(() => {
+    if (!sound) stopSpeech();
+  }, [sound]);
 
   function speak(text: string) {
     if (!sound) return;
@@ -145,48 +148,6 @@ export function AppShell({ children }: { children: React.ReactNode }) {
 
   return (
     <PlayContext.Provider value={{ round, start, answer, speak, sound }}>
-      <a className="skip-link" href="#main">
-        Vai al contenuto
-      </a>
-      <header className="site-header">
-        <div className="header-inner">
-          <Link href="/" className="brand" aria-label="Little Explorer, tutti i mondi">
-            <span className="brand-mark">
-              <Sprout size={25} strokeWidth={2.4} />
-            </span>
-            <span>
-              little<span className="brand-sub">orologio</span>
-              <span className="brand-dot">.</span>
-            </span>
-          </Link>
-          <nav aria-label="Navigazione principale">
-            <Link
-              href="/time"
-              aria-label="Tutti i minigiochi"
-              title="Tutti i minigiochi"
-              className={`nav-home ${pathname === "/time" ? "active" : ""}`}
-            >
-              <House size={17} /> <span>I minigiochi</span>
-            </Link>
-          </nav>
-          <div className="header-right">
-            <span className="header-note">Un&apos;ora alla volta.</span>
-            <ProgressPill />
-            <button
-              className="icon-button sound-toggle"
-              aria-label={sound ? "Disattiva audio" : "Attiva audio"}
-              title={sound ? "Disattiva audio" : "Attiva audio"}
-              aria-pressed={sound}
-              onClick={() => {
-                stopSpeech();
-                setSound(!sound);
-              }}
-            >
-              {sound ? <Volume2 size={21} /> : <VolumeX size={21} />}
-            </button>
-          </div>
-        </div>
-      </header>
       {audioError && (
         <div className="audio-notice" role="status">
           {audioError}

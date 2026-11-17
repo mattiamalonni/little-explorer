@@ -4,10 +4,10 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { createContext, useContext, useEffect, useRef, useState } from "react";
 import { ProgressBanner } from "@/features/gamification/components/progress-banner";
-import { ProgressPill } from "@/features/gamification/components/progress-pill";
 import { RoundRewards } from "@/features/gamification/components/round-rewards";
 import { GameSetup } from "@/features/gamification/components/game-setup";
 import { useRoundReward } from "@/features/gamification/components/use-round-reward";
+import { useSound } from "@/features/gamification/components/sound-context";
 import { CalculationHelp } from "@/features/math/components/calculation-help";
 import {
   ArrowLeft,
@@ -25,7 +25,6 @@ import {
   Star,
   Trophy,
   Volume2,
-  VolumeX,
   X,
 } from "lucide-react";
 import {
@@ -79,7 +78,7 @@ function usePlay() {
 
 export function AppShell({ children }: { children: React.ReactNode }) {
   const [round, setRound] = useState<Round | null>(null);
-  const [sound, setSound] = useState(true);
+  const { sound } = useSound();
   const [audioError, setAudioError] = useState("");
   const pathname = usePathname();
   const utterance = useRef<SpeechSynthesisUtterance | null>(null);
@@ -90,6 +89,10 @@ export function AppShell({ children }: { children: React.ReactNode }) {
     },
     [pathname],
   );
+
+  useEffect(() => {
+    if (!sound) window.speechSynthesis?.cancel();
+  }, [sound]);
 
   function speak(text: string) {
     if (!sound) return;
@@ -125,43 +128,6 @@ export function AppShell({ children }: { children: React.ReactNode }) {
 
   return (
     <PlayContext.Provider value={{ round, start, answer, speak, sound }}>
-      <a className="skip-link" href="#main">
-        Vai al contenuto
-      </a>
-      <header className="site-header">
-        <div className="header-inner">
-          <Link href="/" className="brand" aria-label="Little Explorer, tutti i mondi">
-            <span className="brand-mark">
-              <Sprout size={25} />
-            </span>
-            <span>
-              little<span className="brand-sub">math</span>
-              <span className="brand-dot">.</span>
-            </span>
-          </Link>
-          <nav aria-label="Navigazione principale">
-            <Link href="/math" aria-label="Tutti i minigiochi" className={`nav-home ${pathname === "/math" ? "active" : ""}`}>
-              <House size={17} />
-              <span>I minigiochi</span>
-            </Link>
-          </nav>
-          <div className="header-right">
-            <span className="header-note">Piccoli passi, grandi scoperte.</span>
-            <ProgressPill />
-            <button
-              className="icon-button"
-              aria-label={sound ? "Disattiva audio" : "Attiva audio"}
-              aria-pressed={sound}
-              onClick={() => {
-                window.speechSynthesis?.cancel();
-                setSound(!sound);
-              }}
-            >
-              {sound ? <Volume2 size={21} /> : <VolumeX size={21} />}
-            </button>
-          </div>
-        </div>
-      </header>
       {audioError && (
         <div className="audio-notice" role="status">
           {audioError}

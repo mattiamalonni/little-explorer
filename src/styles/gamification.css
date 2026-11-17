@@ -61,7 +61,7 @@
 .gami-pill-level {
   color: #5d6f5f;
 }
-.hub-header-tools {
+.app-header-tools {
   display: flex;
   align-items: center;
   gap: 18px;
@@ -994,6 +994,11 @@
     justify-content: center;
   }
 }
+@media (max-width: 920px) {
+  .gami-pill-label {
+    display: none;
+  }
+}
 @media (max-width: 700px) {
   .gami-pill-label {
     display: none;
@@ -1012,7 +1017,7 @@
   .gami-pill {
     padding-right: 10px;
   }
-  .hub-header-tools {
+  .app-header-tools {
     gap: 8px;
   }
   .gami-banner {
@@ -1041,7 +1046,7 @@
     width: 34px;
     height: 34px;
   }
-  .hub-header-tools {
+  .app-header-tools {
     gap: 4px;
   }
 }

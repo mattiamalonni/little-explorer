@@ -111,14 +111,14 @@ svg {
 /* Explorer hub ------------------------------------------------------------ */
 
 .hub {
-  min-height: 100svh;
+  min-height: calc(100svh - var(--shell-header-height));
   display: flex;
   flex-direction: column;
   background:
     radial-gradient(circle at 8% 12%, #eef5e8 0, transparent 28%), radial-gradient(circle at 92% 6%, #fbeee4 0, transparent 24%),
     var(--background);
 }
-.hub-skip {
+.app-skip {
   position: fixed;
   top: -70px;
   left: 20px;
@@ -126,16 +126,16 @@ svg {
   padding: 14px 20px;
   background: #fff;
 }
-.hub-skip:focus {
+.app-skip:focus {
   top: 12px;
 }
-.hub-header {
+.app-header {
   height: var(--shell-header-height);
   border-bottom: 1px solid var(--line);
   background: #ffffffd9;
   backdrop-filter: blur(8px);
 }
-.hub-header-inner {
+.app-header-inner {
   width: min(var(--shell-max), calc(100% - var(--shell-gutter) * 2));
   height: 100%;
   margin: auto;
@@ -144,14 +144,14 @@ svg {
   justify-content: space-between;
   gap: 24px;
 }
-.hub-brand {
+.app-brand {
   display: inline-flex;
   align-items: center;
   gap: 10px;
   font: 900 27px var(--font-nunito);
   white-space: nowrap;
 }
-.hub-brand-mark {
+.app-brand-mark {
   width: 39px;
   height: 41px;
   display: grid;
@@ -161,22 +161,22 @@ svg {
   border-radius: 12px 12px 16px 5px;
   transform: rotate(-6deg);
 }
-.hub-brand-mark svg {
+.app-brand-mark svg {
   transform: rotate(6deg);
 }
-.hub-brand-accent {
+.app-brand-accent {
   color: var(--green);
   font-weight: 700;
 }
-.hub-brand-dot {
+.app-brand-dot {
   color: var(--coral);
 }
-.hub-nav {
+.app-nav {
   display: flex;
   align-items: center;
   gap: 8px;
 }
-.hub-nav a {
+.app-nav a {
   min-height: 42px;
   display: inline-flex;
   align-items: center;
@@ -189,9 +189,29 @@ svg {
     background 0.18s,
     color 0.18s;
 }
-.hub-nav a:hover {
+.app-nav a:hover,
+.app-nav a[aria-current="page"] {
   color: var(--green);
   background: var(--mint);
+}
+.app-sound-toggle {
+  width: 42px;
+  height: 42px;
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--line);
+  border-radius: 50%;
+  color: var(--ink);
+  background: #fff;
+  transition:
+    background 0.18s,
+    border-color 0.18s;
+}
+.app-sound-toggle:hover {
+  background: var(--mint);
+  border-color: #cfe0cd;
 }
 .hub-main {
   width: min(var(--shell-max), calc(100% - var(--shell-gutter) * 2));
@@ -813,22 +833,27 @@ svg {
     height: 170px;
   }
 }
+@media (max-width: 810px) {
+  .app-nav {
+    display: none;
+  }
+}
 @media (max-width: 700px) {
   :root {
     --shell-gutter: 20px;
     --shell-header-height: 76px;
   }
-  .hub-nav {
+  .app-nav {
     gap: 2px;
   }
-  .hub-nav a {
+  .app-nav a {
     padding-inline: 9px;
     font-size: 11px;
   }
-  .hub-brand {
+  .app-brand {
     font-size: 22px;
   }
-  .hub-brand-mark {
+  .app-brand-mark {
     width: 34px;
     height: 36px;
   }
@@ -879,13 +904,13 @@ svg {
 @media (max-width: 560px) {
   /* Sotto i 560px brand, nav e pillola non stanno nella stessa riga:
      i tre mondi sono già le card della home, quindi in header restano brand e progressi. */
-  .hub-header-inner {
+  .app-header-inner {
     gap: 12px;
   }
-  .hub-nav {
+  .app-nav {
     display: none;
   }
-  .hub-brand {
+  .app-brand {
     font-size: 21px;
   }
 }
@@ -893,9 +918,16 @@ svg {
   :root {
     --shell-gutter: 14px;
   }
-  .hub-brand {
-    font-size: 20px;
+  .app-header-inner {
     gap: 8px;
+  }
+  .app-brand {
+    font-size: 18px;
+    gap: 6px;
+  }
+  .app-sound-toggle {
+    width: 38px;
+    height: 38px;
   }
   .hub-hero-art {
     display: none;
