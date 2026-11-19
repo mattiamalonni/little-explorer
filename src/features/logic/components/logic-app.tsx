@@ -227,7 +227,7 @@ export function Dashboard() {
         </span>
         <div>
           <h2 id="surprise-title">Oggi mi lascio sorprendere!</h2>
-          <p>Una sequenza, un intruso, una freccia: scegliamo una sfida per te.</p>
+          <p>Una sequenza, un intruso, un percorso di frecce: scegliamo una sfida per te.</p>
         </div>
         <button className="button button-primary" onClick={surprise}>
           Scegli per me <ArrowRight size={17} />
@@ -281,8 +281,29 @@ function LogicGrid({ grid }: { grid: Grid }) {
   );
 }
 
+function PathArrows({ path, size = 30 }: { path: Direction[]; size?: number }) {
+  return (
+    <span className="logic-path-option" aria-hidden="true">
+      {path.map((direction, index) => (
+        <span className="logic-path-step" key={index}>
+          <DirectionGlyph direction={direction} size={size} />
+          {index < path.length - 1 && <span className="logic-path-arrow">›</span>}
+        </span>
+      ))}
+    </span>
+  );
+}
+
 function OptionVisual({ option }: { option: Option }) {
   if (option.shape) return <LogicShape token={option.shape} />;
+  if (option.path) {
+    return (
+      <span className="logic-path-choice" aria-hidden="true">
+        <PathArrows path={option.path} />
+        <span className="logic-path-caption">{option.label}</span>
+      </span>
+    );
+  }
   if (option.arrow) {
     return (
       <span className="logic-arrow-option" aria-hidden="true">
@@ -353,14 +374,22 @@ function QuestionCard({ round, game }: { round: Round; game: Game }) {
       <section className={`question-stage logic-stage art-${question.kind}`} aria-label="Sfida di logica">
         {question.kind === "patterns" && (
           <div className="logic-sequence logic-sequence-question">
-            {question.sequence.map((token, position) => (
-              <span className="logic-sequence-item" key={position}>
-                <LogicShape token={token} />
+            {question.sequence.map((token, position) =>
+              position === question.blankIndex ? (
+                <span className="logic-question-tile" key={position} aria-label="forma mancante">
+                  ?
+                </span>
+              ) : (
+                <span className="logic-sequence-item" key={position}>
+                  <LogicShape token={token} />
+                </span>
+              ),
+            )}
+            {question.blankIndex === undefined && (
+              <span className="logic-question-tile" aria-hidden="true">
+                ?
               </span>
-            ))}
-            <span className="logic-question-tile" aria-hidden="true">
-              ?
-            </span>
+            )}
           </div>
         )}
         {question.kind === "odd-one-out" && <Sequence tokens={question.sequence} />}
@@ -382,7 +411,7 @@ function QuestionCard({ round, game }: { round: Round; game: Game }) {
           return (
             <button
               key={option.id}
-              className={`answer-option logic-option ${option.arrow ? "is-arrow" : ""} ${feedback}`}
+              className={`answer-option logic-option ${option.arrow || option.path ? "is-arrow" : ""} ${feedback}`}
               disabled={selected !== null}
               aria-pressed={isSelected}
               aria-label={`${option.label}${selected !== null && isCorrect ? ", risposta corretta" : ""}`}
@@ -476,6 +505,10 @@ function ReviewVisual({ question }: { question: Question }) {
     <span className="logic-review-visual" aria-hidden="true">
       {correctOption?.shape ? (
         <LogicShape token={correctOption.shape} size={36} />
+      ) : correctOption?.path ? (
+        <span className="logic-review-path">
+          <PathArrows path={correctOption.path} size={21} />
+        </span>
       ) : correctOption?.arrow ? (
         <span className="logic-review-arrow">
           <DirectionGlyph direction={correctOption.arrow} size={26} />
