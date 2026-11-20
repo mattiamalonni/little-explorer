@@ -8,6 +8,14 @@ export type GameId =
   | "nature"
   | "emotions"
   | "numbers"
+  | "body-parts"
+  | "family"
+  | "classroom"
+  | "phrases"
+  | "prepositions"
+  | "opposites"
+  | "days"
+  | "months"
   | "listening";
 
 export type Word = {
@@ -16,6 +24,8 @@ export type Word = {
   image?: string;
   color?: string;
   number?: number;
+  /** Testo italiano mostrato al posto dell'illustrazione nella domanda. */
+  text?: string;
 };
 
 export type Game = {
@@ -449,6 +459,172 @@ export const games: Game[] = [
       { english: "Twenty-eight", italian: "Ventotto", number: 28 },
       { english: "Twenty-nine", italian: "Ventinove", number: 29 },
       { english: "Thirty", italian: "Trenta", number: 30 },
+    ],
+  },
+  {
+    id: "body-parts",
+    title: "Testa, spalle, ginocchia!",
+    english: "Body parts",
+    description: "Dalla testa ai piedi, impariamo a conoscerci.",
+    prompt: "Quale parte del corpo è?",
+    label: "Guarda e impara",
+    showItalianPrompt: true,
+    words: [
+      { english: "Head", italian: "Testa", image: "head" },
+      { english: "Hand", italian: "Mano", image: "fist" },
+      { english: "Foot", italian: "Piede", image: "foot" },
+      { english: "Eye", italian: "Occhio", image: "eye" },
+      { english: "Ear", italian: "Orecchio", image: "listen" },
+      { english: "Nose", italian: "Naso", image: "nose" },
+      { english: "Mouth", italian: "Bocca", image: "mouth" },
+      { english: "Arm", italian: "Braccio", image: "flexed-biceps" },
+      { english: "Leg", italian: "Gamba", image: "leg" },
+      { english: "Finger", italian: "Dito", image: "point" },
+      { english: "Hair", italian: "Capelli", image: "hair" },
+      { english: "Tooth", italian: "Dente", image: "tooth" },
+    ],
+  },
+  {
+    id: "family",
+    title: "La mia famiglia",
+    english: "Family",
+    description: "Mamma, papà e tutte le persone che ami.",
+    prompt: "Chi è in famiglia?",
+    label: "Guarda e impara",
+    showItalianPrompt: true,
+    words: [
+      { english: "Mother", italian: "Madre", image: "mother" },
+      { english: "Father", italian: "Padre", image: "father" },
+      { english: "Sister", italian: "Sorella", image: "sister" },
+      { english: "Brother", italian: "Fratello", image: "brother" },
+      { english: "Grandmother", italian: "Nonna", image: "grandmother" },
+      { english: "Grandfather", italian: "Nonno", image: "grandpa" },
+      { english: "Baby", italian: "Bebè", image: "baby" },
+      { english: "Family", italian: "Famiglia", image: "family" },
+    ],
+  },
+  {
+    id: "classroom",
+    title: "Nella classe",
+    english: "Classroom",
+    description: "Matite, quaderni e tante cose da scoprire.",
+    prompt: "Che cosa c'è in classe?",
+    label: "Guarda e impara",
+    showItalianPrompt: true,
+    words: [
+      { english: "Book", italian: "Libro", image: "book" },
+      { english: "Pencil", italian: "Matita", image: "pencil" },
+      { english: "Pen", italian: "Penna", image: "pen" },
+      { english: "Ruler", italian: "Righello", image: "ruler" },
+      { english: "Chair", italian: "Sedia", image: "chair" },
+      { english: "Backpack", italian: "Zaino", image: "backpack" },
+      { english: "Blackboard", italian: "Lavagna", image: "blackboard" },
+      { english: "Notebook", italian: "Quaderno", image: "notebook" },
+      { english: "School", italian: "Scuola", image: "school" },
+      { english: "Calculator", italian: "Calcolatrice", image: "calculator" },
+    ],
+  },
+  {
+    id: "phrases",
+    title: "Parole magiche",
+    english: "Useful phrases",
+    description: "Ciao, grazie, per favore… piccole frasi, grandi sorrisi.",
+    prompt: "Quale frase in inglese?",
+    label: "Ascolta e scegli",
+    words: [
+      { english: "Hello", italian: "Ciao!", text: "Ciao!" },
+      { english: "Goodbye", italian: "Arrivederci!", text: "Arrivederci!" },
+      { english: "Thank you", italian: "Grazie!", text: "Grazie!" },
+      { english: "Please", italian: "Per favore", text: "Per favore" },
+      { english: "Sorry", italian: "Mi dispiace", text: "Mi dispiace" },
+      { english: "Good morning", italian: "Buongiorno!", text: "Buongiorno!" },
+      { english: "Good night", italian: "Buonanotte!", text: "Buonanotte!" },
+      { english: "How are you?", italian: "Come stai?", text: "Come stai?" },
+      { english: "See you soon", italian: "A presto!", text: "A presto!" },
+      { english: "Well done", italian: "Bravissimo!", text: "Bravissimo!" },
+    ],
+  },
+  {
+    id: "prepositions",
+    title: "Dov'è la palla?",
+    english: "Prepositions",
+    description: "Dentro, sopra, sotto… la palla si muove!",
+    prompt: "Dov'è la palla?",
+    label: "Guarda e scegli",
+    words: [
+      { english: "In", italian: "Dentro", image: "ball-in-box" },
+      { english: "On", italian: "Sopra", image: "ball-on-box" },
+      { english: "Under", italian: "Sotto", image: "ball-under-box" },
+      { english: "Next to", italian: "Accanto", image: "ball-next-to-box" },
+      { english: "Behind", italian: "Dietro", image: "ball-behind-box" },
+      { english: "In front of", italian: "Davanti", image: "ball-in-front-of-box" },
+      { english: "Between", italian: "Tra", image: "ball-between-boxes" },
+      { english: "Above", italian: "Più in alto", image: "ball-above-box" },
+    ],
+  },
+  {
+    id: "opposites",
+    title: "Grande e piccolo",
+    english: "Opposites",
+    description: "Due parole, un mondo di differenze.",
+    prompt: "Com'è in inglese?",
+    label: "Trova il contrario",
+    words: [
+      { english: "Big", italian: "Grande", text: "Grande" },
+      { english: "Small", italian: "Piccolo", text: "Piccolo" },
+      { english: "Tall", italian: "Alto", text: "Alto" },
+      { english: "Short", italian: "Basso", text: "Basso" },
+      { english: "Hot", italian: "Caldo", text: "Caldo" },
+      { english: "Cold", italian: "Freddo", text: "Freddo" },
+      { english: "Happy", italian: "Felice", text: "Felice" },
+      { english: "Sad", italian: "Triste", text: "Triste" },
+      { english: "Fast", italian: "Veloce", text: "Veloce" },
+      { english: "Slow", italian: "Lento", text: "Lento" },
+      { english: "Old", italian: "Vecchio", text: "Vecchio" },
+      { english: "Young", italian: "Giovane", text: "Giovane" },
+      { english: "Clean", italian: "Pulito", text: "Pulito" },
+      { english: "Dirty", italian: "Sporco", text: "Sporco" },
+      { english: "Full", italian: "Pieno", text: "Pieno" },
+      { english: "Empty", italian: "Vuoto", text: "Vuoto" },
+    ],
+  },
+  {
+    id: "days",
+    title: "I giorni della settimana",
+    english: "Days of the week",
+    description: "Da lunedì a domenica, un giorno alla volta.",
+    prompt: "Come si dice questo giorno?",
+    label: "Giorni",
+    words: [
+      { english: "Monday", italian: "Lunedì", text: "Lunedì", image: "calendar" },
+      { english: "Tuesday", italian: "Martedì", text: "Martedì", image: "calendar" },
+      { english: "Wednesday", italian: "Mercoledì", text: "Mercoledì", image: "calendar" },
+      { english: "Thursday", italian: "Giovedì", text: "Giovedì", image: "calendar" },
+      { english: "Friday", italian: "Venerdì", text: "Venerdì", image: "calendar" },
+      { english: "Saturday", italian: "Sabato", text: "Sabato", image: "calendar" },
+      { english: "Sunday", italian: "Domenica", text: "Domenica", image: "calendar" },
+    ],
+  },
+  {
+    id: "months",
+    title: "I mesi dell'anno",
+    english: "Months",
+    description: "Gennaio, febbraio… tutto l'anno in inglese.",
+    prompt: "Come si dice questo mese?",
+    label: "Mesi",
+    words: [
+      { english: "January", italian: "Gennaio", text: "Gennaio", image: "calendar" },
+      { english: "February", italian: "Febbraio", text: "Febbraio", image: "calendar" },
+      { english: "March", italian: "Marzo", text: "Marzo", image: "calendar" },
+      { english: "April", italian: "Aprile", text: "Aprile", image: "calendar" },
+      { english: "May", italian: "Maggio", text: "Maggio", image: "calendar" },
+      { english: "June", italian: "Giugno", text: "Giugno", image: "calendar" },
+      { english: "July", italian: "Luglio", text: "Luglio", image: "calendar" },
+      { english: "August", italian: "Agosto", text: "Agosto", image: "calendar" },
+      { english: "September", italian: "Settembre", text: "Settembre", image: "calendar" },
+      { english: "October", italian: "Ottobre", text: "Ottobre", image: "calendar" },
+      { english: "November", italian: "Novembre", text: "Novembre", image: "calendar" },
+      { english: "December", italian: "Dicembre", text: "Dicembre", image: "calendar" },
     ],
   },
   {

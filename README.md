@@ -9,7 +9,7 @@ La home è un hub con cinque mondi. Ogni mondo conserva il proprio carattere, i 
 | Percorso                        | Contenuto                                |
 | ------------------------------- | ---------------------------------------- |
 | `/`                             | Hub con i cinque mondi                   |
-| `/english`                      | Dashboard di Little English (10 giochi)  |
+| `/english`                      | Dashboard di Little English (18 giochi)  |
 | `/english/play/[gameId]`        | Partita                                  |
 | `/english/play/[gameId]/result` | Riepilogo                                |
 | `/math`                         | Dashboard di Little Math (7 giochi)      |
@@ -234,7 +234,7 @@ Il piano gratuito ElevenLabs non permette usi commerciali; l'app non commerciale
 
 ## Aggiungere parole e giochi
 
-- **English:** `src/features/english/data/games.ts`. Ogni gioco richiede almeno sei parole distinte; colori e numeri usano rappresentazioni CSS, gli altri concetti un'illustrazione locale. Con `listenOnly: true` la parola non viene mostrata: il bambino ascolta l'audio e sceglie la figura, quindi servono parole già coperte dagli MP3.
+- **English:** `src/features/english/data/games.ts`. Ogni gioco richiede almeno sei parole distinte; colori e numeri usano rappresentazioni CSS, gli altri concetti un'illustrazione locale. Il campo opzionale `text` mostra un testo italiano al posto dell'illustrazione nella domanda: è il caso di frasi, contrari, giorni e mesi. Con `listenOnly: true` la parola non viene mostrata: il bambino ascolta l'audio e sceglie la figura, quindi servono parole già coperte dagli MP3. Oltre ai dieci giochi originali ci sono corpo umano, famiglia, classe, frasi utili, preposizioni, contrari, giorni della settimana e mesi dell'anno (giochi separati); le preposizioni usano illustrazioni originali `ball-*` in `public/illustrations/`.
 - **Italiano:** `src/features/italian/data/games.ts`. Ogni voce ha `pattern`, `answer`, tre alternative, `solution`, `spoken` e `note`; i giochi `letters` chiedono gruppi di lettere (come GN o MP), i giochi `words` chiedono parole intere (come l'apostrofo o l'acca). Ogni gioco deve mescolare parole in cui il suono serve e parole-tranello in cui non serve (per esempio `angolo` o `nido` dentro GN, `olio` dentro GLI, `un amico` dentro l'apostrofo), così il bambino non può indovinare dalla prima lettera.
 - **Math:** `src/features/math/data/games.ts`. Addizioni, sottrazioni, moltiplicazioni e divisioni sono generate dai limiti 10, 20 e 100; il gioco del doppio e della metà usa gli stessi limiti e genera solo coppie `a + a` e divisioni per 2. Ogni partita ha sei domande e quattro risposte vicine al risultato.
 - **Orologio:** `src/features/time/data/games.ts`. Le ore sono limitate a `in punto`, `e un quarto`, `e mezza` e `meno un quarto` (minuti 0, 15, 30, 45). `timePhrase` costruisce la frase italiana, `spokenTime` aggiunge “È l'” o “Sono le” per la voce del dispositivo. I giochi leggono il quadrante, scelgono l'orologio, riconoscono il quarto o ascoltano l'ora; le partite ruotano sui quattro minuti.

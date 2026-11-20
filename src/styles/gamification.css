@@ -865,11 +865,14 @@
   place-items: center;
   width: 34px;
   height: 34px;
+  overflow: hidden;
   border-radius: 9px;
   background: #f4eee4;
   color: #8b7355;
-  font: 800 13px var(--font-nunito);
+  font: 800 11px var(--font-nunito);
+  text-overflow: ellipsis;
   text-transform: uppercase;
+  white-space: nowrap;
 }
 .game-setup-item-copy {
   display: flex;

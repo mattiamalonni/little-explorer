@@ -250,6 +250,68 @@ function GameArt({ id }: { id: GameId }) {
           <span className="art-sticker">happy or sad?</span>
         </>
       )}
+      {id === "body-parts" && (
+        <>
+          <Illustration asset="eye" className="art-main" />
+          <Illustration asset="foot" className="art-side" />
+          <span className="art-bubble">Head &amp; toes!</span>
+          <span className="art-sticker">from head to toe</span>
+        </>
+      )}
+      {id === "family" && (
+        <>
+          <Illustration asset="mother" className="art-main" />
+          <Illustration asset="father" className="art-side" />
+          <span className="art-bubble">We are family!</span>
+          <span className="art-sticker">mum, dad &amp; you</span>
+        </>
+      )}
+      {id === "classroom" && (
+        <>
+          <Illustration asset="blackboard" className="art-main" />
+          <Illustration asset="notebook" className="art-side" />
+          <span className="letter-tile">Aa</span>
+          <span className="art-sticker">back to school</span>
+        </>
+      )}
+      {id === "phrases" && (
+        <>
+          <Illustration asset="listen" className="art-main" />
+          <Illustration asset="smile" className="art-side" />
+          <span className="art-bubble">Hello!</span>
+          <span className="art-sticker">thank you, please!</span>
+        </>
+      )}
+      {id === "prepositions" && (
+        <>
+          <Illustration asset="ball-in-box" className="art-main" />
+          <Illustration asset="ball-on-box" className="art-side" />
+          <span className="art-sticker">in, on, under…</span>
+        </>
+      )}
+      {id === "opposites" && (
+        <>
+          <Illustration asset="elephant" className="art-main" />
+          <Illustration asset="ant" className="art-side" />
+          <span className="art-bubble">Big or small?</span>
+          <span className="art-sticker">two sides of a word</span>
+        </>
+      )}
+      {id === "days" && (
+        <>
+          <Illustration asset="calendar" className="art-main" />
+          <Illustration asset="sun" className="art-side" />
+          <span className="art-bubble">Today!</span>
+          <span className="art-sticker">one day at a time</span>
+        </>
+      )}
+      {id === "months" && (
+        <>
+          <Illustration asset="calendar" className="art-main" />
+          <Illustration asset="flower" className="art-side" />
+          <span className="art-sticker">all year long</span>
+        </>
+      )}
       {id === "listening" && (
         <>
           <Illustration asset="listen" className="art-main" />
@@ -404,6 +466,12 @@ function WordArt({ word, small = false }: { word: Word; small?: boolean }) {
         aria-label={word.italian}
       />
     );
+  if (word.text)
+    return (
+      <span className={`word-text ${small ? "small-word-text" : ""}`} lang="it">
+        {word.text}
+      </span>
+    );
   return <Illustration asset={word.image!} alt={word.italian} className={small ? "small-word-art" : "word-art"} />;
 }
 
@@ -429,6 +497,7 @@ export function PlayGame({ game }: { game: Game }) {
       image: word.image,
       color: word.color,
       number: word.number,
+      text: word.text,
     }));
     return (
       <main id="main" className="game-page page-width">

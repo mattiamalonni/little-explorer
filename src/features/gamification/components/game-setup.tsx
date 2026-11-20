@@ -14,6 +14,7 @@ export type SetupItem = {
   image?: string;
   color?: string;
   number?: number;
+  text?: string;
 };
 
 export type SetupConfig = {
@@ -152,7 +153,7 @@ export function GameSetup({ world, gameId, items = [], limits, intro, startLabel
                     ) : item.image ? (
                       <Image src={`/illustrations/${item.image}.svg`} alt="" width={44} height={44} unoptimized />
                     ) : (
-                      <span className="game-setup-word">{item.label.slice(0, 2)}</span>
+                      <span className="game-setup-word">{(item.text ?? item.label).slice(0, 2)}</span>
                     )}
                   </span>
                   <span className="game-setup-item-copy">

@@ -416,6 +416,62 @@
 .subject-language .art-listening {
   background-color: #e3eff2;
 }
+.subject-language .art-body-parts {
+  background-color: #f9e9dd;
+}
+.subject-language .art-family {
+  background-color: #f6e6ef;
+}
+.subject-language .art-classroom {
+  background-color: #e4ebf8;
+}
+.subject-language .art-phrases {
+  background-color: #f3ecd9;
+}
+.subject-language .art-prepositions {
+  background-color: #e6f0e5;
+}
+.subject-language .art-opposites {
+  background-color: #efe6f5;
+}
+.subject-language .art-days {
+  background-color: #e9eef7;
+}
+.subject-language .art-months {
+  background-color: #f5e9dd;
+}
+.subject-language .card-body-parts .category-label,
+.subject-language .art-body-parts .art-spark {
+  color: #ad6e3e;
+}
+.subject-language .card-family .category-label,
+.subject-language .art-family .art-spark {
+  color: #a55c82;
+}
+.subject-language .card-classroom .category-label,
+.subject-language .art-classroom .art-spark {
+  color: #5577ab;
+}
+.subject-language .card-phrases .category-label,
+.subject-language .art-phrases .art-spark {
+  color: #9a7a3a;
+}
+.subject-language .card-prepositions .category-label,
+.subject-language .art-prepositions .art-spark {
+  color: #5c8a5b;
+}
+.subject-language .card-opposites .category-label,
+.subject-language .art-opposites .art-spark {
+  color: #8661a1;
+}
+.subject-language .card-days .category-label,
+.subject-language .art-days .art-spark {
+  color: #5d719d;
+}
+.subject-language .card-months .category-label,
+.subject-language .art-months .art-spark {
+  color: #a06c42;
+}
 .subject-language .card-weather .category-label,
 .subject-language .art-weather .art-spark {
   color: #5685a0;
@@ -1083,6 +1139,28 @@
 .subject-language .word-art {
   width: 146px;
   height: 146px;
+}
+.subject-language .word-text {
+  display: grid;
+  place-items: center;
+  max-width: 100%;
+  padding: 12px 20px;
+  border-radius: 20px;
+  background: #fffdf6;
+  box-shadow: 0 6px 0 #273a3210;
+  color: var(--green-dark);
+  font: 900 clamp(30px, 6vw, 58px) / 1.1 var(--font-nunito);
+  text-align: center;
+  overflow-wrap: anywhere;
+}
+.subject-language .small-word-text {
+  min-width: 0;
+  padding: 4px 8px;
+  border-radius: 10px;
+  background: #f2f6ee;
+  box-shadow: none;
+  font-size: 16px;
+  font-weight: 800;
 }
 .subject-language .number-art {
   display: flex;

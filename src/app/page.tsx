@@ -10,8 +10,8 @@ const worlds = [
     kicker: "ENGLISH",
     title: "English in festa",
     description:
-      "Colori, animali, oggetti, azioni, cibi, emozioni, numeri e un gioco di solo ascolto: le prime parole inglesi con illustrazioni e pronuncia.",
-    games: "10 giochi",
+      "Colori, animali, corpo, famiglia, classe, frasi, preposizioni, contrari, giorni, mesi e tanto ascolto: le prime parole inglesi con illustrazioni e pronuncia.",
+    games: "18 giochi",
   },
   {
     id: "math",
@@ -140,7 +140,7 @@ export default function HubPage() {
             </p>
             <div className="hub-hero-meta">
               <span>
-                <BookOpen size={15} /> 37 giochi
+                <BookOpen size={15} /> 45 giochi
               </span>
               <span>
                 <Heart size={15} /> Il tuo account

@@ -126,7 +126,50 @@ Attribuzione: “Little Italiano contributors — original illustrations, CC BY 
 Little Italiano riusa inoltre le illustrazioni locali di Little English per le
 schede dei giochi.
 
+## Aggiunte di Little English (nuovi giochi)
+
+Gli SVG seguenti sono stati copiati senza modifiche dalla revisione pinnata
+`b6b55fef1e8636b540a6d016a4729ca8cdf2e60b`, la stessa usata per il vocabolario
+esteso. Nessun servizio di generazione immagini è stato usato.
+
+| Concetto     | File              | Upstream    |
+| ------------ | ----------------- | ----------- |
+| testa        | `head.svg`        | `1f642.svg` |
+| piede        | `foot.svg`        | `1f463.svg` |
+| occhio       | `eye.svg`         | `1f441.svg` |
+| naso         | `nose.svg`        | `1f443.svg` |
+| gamba        | `leg.svg`         | `1f9b5.svg` |
+| capelli      | `hair.svg`        | `1f487.svg` |
+| dente        | `tooth.svg`       | `1f9b7.svg` |
+| madre        | `mother.svg`      | `1f469.svg` |
+| padre        | `father.svg`      | `1f468.svg` |
+| sorella      | `sister.svg`      | `1f467.svg` |
+| fratello     | `brother.svg`     | `1f466.svg` |
+| nonna        | `grandmother.svg` | `1f475.svg` |
+| bebè         | `baby.svg`        | `1f476.svg` |
+| quaderno     | `notebook.svg`    | `1f4d3.svg` |
+| scuola       | `school.svg`      | `1f3eb.svg` |
+| calcolatrice | `calculator.svg`  | `1f9ee.svg` |
+
+`ear.svg` e `finger.svg` non sono stati aggiunti: i locali `listen.svg` e
+`point.svg` derivano dagli stessi upstream (`1f442.svg` e `1f446.svg`).
+
+### Illustrazioni originali per le preposizioni
+
+Otto SVG originali mostrano una palla in relazione a una scatola: `ball-in-box.svg`,
+`ball-on-box.svg`, `ball-under-box.svg`, `ball-next-to-box.svg`, `ball-behind-box.svg`,
+`ball-in-front-of-box.svg`, `ball-between-boxes.svg`, `ball-above-box.svg`.
+Usano uno stile vettoriale piatto e un viewBox 36 × 36, senza risorse esterne.
+Nessun servizio di generazione immagini è stato usato.
+
+Licenza: Creative Commons Attribution 4.0 International
+(https://creativecommons.org/licenses/by/4.0/).
+Attribuzione: “Little English contributors — original illustrations, CC BY 4.0”.
+
 ## Mappatura dei nomi Twemoji
+
+La tabella storica seguente copre gli asset preesistenti; le nuove mappature sono
+elencate nella sezione “Aggiunte di Little English (nuovi giochi)”.
 
 | Local filename    | Original upstream filename |
 | ----------------- | -------------------------- |
