@@ -250,6 +250,14 @@ function GameArt({ id }: { id: GameId }) {
           <span className="art-sticker">happy or sad?</span>
         </>
       )}
+      {id === "be-feelings" && (
+        <>
+          <Illustration asset="smile" className="art-main" />
+          <Illustration asset="sad" className="art-side" />
+          <span className="art-bubble">I am... you are!</span>
+          <span className="art-sticker">not &amp; aren&apos;t</span>
+        </>
+      )}
       {id === "body-parts" && (
         <>
           <Illustration asset="eye" className="art-main" />

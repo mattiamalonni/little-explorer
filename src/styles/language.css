@@ -420,6 +420,9 @@
 .subject-language .art-emotions {
   background-color: #f5e9f4;
 }
+.subject-language .art-be-feelings {
+  background-color: #eae8f6;
+}
 .subject-language .art-listening {
   background-color: #e3eff2;
 }
@@ -490,6 +493,10 @@
 .subject-language .card-emotions .category-label,
 .subject-language .art-emotions .art-spark {
   color: #925f95;
+}
+.subject-language .card-be-feelings .category-label,
+.subject-language .art-be-feelings .art-spark {
+  color: #6d68a8;
 }
 .subject-language .card-listening .category-label,
 .subject-language .art-listening .art-spark {

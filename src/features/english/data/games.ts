@@ -16,7 +16,8 @@ export type GameId =
   | "opposites"
   | "days"
   | "months"
-  | "listening";
+  | "listening"
+  | "be-feelings";
 
 export type Word = {
   english: string;
@@ -26,6 +27,8 @@ export type Word = {
   number?: number;
   /** Testo italiano mostrato al posto dell'illustrazione nella domanda. */
   text?: string;
+  /** Alternative fisse per i giochi di grammatica: con la risposta formano 4 opzioni. */
+  options?: string[];
 };
 
 export type Game = {
@@ -662,6 +665,305 @@ export const games: Game[] = [
       { english: "Hat", italian: "Cappello", image: "hat" },
     ],
   },
+  {
+    id: "be-feelings",
+    title: "I am / You are",
+    english: "Feelings & being",
+    description: "Io sono, tu sei... e le frasi negative con not e aren't.",
+    prompt: "Scegli la frase giusta",
+    label: "Essere e emozioni",
+    showItalianPrompt: true,
+    words: [
+      {
+        english: "I am happy",
+        italian: "Io sono happy",
+        image: "smile",
+        options: ["You are happy", "I am not happy", "You aren't happy"],
+      },
+      {
+        english: "You are happy",
+        italian: "Tu sei happy",
+        image: "smile",
+        options: ["I am happy", "I am not happy", "You aren't happy"],
+      },
+      {
+        english: "I am not happy",
+        italian: "Io non sono happy",
+        image: "smile",
+        options: ["I am happy", "You are happy", "You aren't happy"],
+      },
+      {
+        english: "You aren't happy",
+        italian: "Tu non sei happy",
+        image: "smile",
+        options: ["I am happy", "You are happy", "I am not happy"],
+      },
+      {
+        english: "I am sad",
+        italian: "Io sono sad",
+        image: "sad",
+        options: ["You are sad", "I am not sad", "You aren't sad"],
+      },
+      {
+        english: "You are sad",
+        italian: "Tu sei sad",
+        image: "sad",
+        options: ["I am sad", "I am not sad", "You aren't sad"],
+      },
+      {
+        english: "I am not sad",
+        italian: "Io non sono sad",
+        image: "sad",
+        options: ["I am sad", "You are sad", "You aren't sad"],
+      },
+      {
+        english: "You aren't sad",
+        italian: "Tu non sei sad",
+        image: "sad",
+        options: ["I am sad", "You are sad", "I am not sad"],
+      },
+      {
+        english: "I am angry",
+        italian: "Io sono angry",
+        image: "angry",
+        options: ["You are angry", "I am not angry", "You aren't angry"],
+      },
+      {
+        english: "You are angry",
+        italian: "Tu sei angry",
+        image: "angry",
+        options: ["I am angry", "I am not angry", "You aren't angry"],
+      },
+      {
+        english: "I am not angry",
+        italian: "Io non sono angry",
+        image: "angry",
+        options: ["I am angry", "You are angry", "You aren't angry"],
+      },
+      {
+        english: "You aren't angry",
+        italian: "Tu non sei angry",
+        image: "angry",
+        options: ["I am angry", "You are angry", "I am not angry"],
+      },
+      {
+        english: "I am scared",
+        italian: "Io sono scared",
+        image: "scared",
+        options: ["You are scared", "I am not scared", "You aren't scared"],
+      },
+      {
+        english: "You are scared",
+        italian: "Tu sei scared",
+        image: "scared",
+        options: ["I am scared", "I am not scared", "You aren't scared"],
+      },
+      {
+        english: "I am not scared",
+        italian: "Io non sono scared",
+        image: "scared",
+        options: ["I am scared", "You are scared", "You aren't scared"],
+      },
+      {
+        english: "You aren't scared",
+        italian: "Tu non sei scared",
+        image: "scared",
+        options: ["I am scared", "You are scared", "I am not scared"],
+      },
+      {
+        english: "I am surprised",
+        italian: "Io sono surprised",
+        image: "surprised",
+        options: ["You are surprised", "I'm not surprised", "You aren't surprised"],
+      },
+      {
+        english: "You are surprised",
+        italian: "Tu sei surprised",
+        image: "surprised",
+        options: ["I am surprised", "I'm not surprised", "You aren't surprised"],
+      },
+      {
+        english: "I'm not surprised",
+        italian: "Io non sono surprised",
+        image: "surprised",
+        options: ["I am surprised", "You are surprised", "You aren't surprised"],
+      },
+      {
+        english: "You aren't surprised",
+        italian: "Tu non sei surprised",
+        image: "surprised",
+        options: ["I am surprised", "You are surprised", "I'm not surprised"],
+      },
+      {
+        english: "I am excited",
+        italian: "Io sono excited",
+        image: "excited",
+        options: ["You are excited", "I'm not excited", "You aren't excited"],
+      },
+      {
+        english: "You are excited",
+        italian: "Tu sei excited",
+        image: "excited",
+        options: ["I am excited", "I'm not excited", "You aren't excited"],
+      },
+      {
+        english: "I'm not excited",
+        italian: "Io non sono excited",
+        image: "excited",
+        options: ["I am excited", "You are excited", "You aren't excited"],
+      },
+      {
+        english: "You aren't excited",
+        italian: "Tu non sei excited",
+        image: "excited",
+        options: ["I am excited", "You are excited", "I'm not excited"],
+      },
+      {
+        english: "I am calm",
+        italian: "Io sono calm",
+        image: "calm",
+        options: ["You are calm", "I'm not calm", "You aren't calm"],
+      },
+      {
+        english: "You are calm",
+        italian: "Tu sei calm",
+        image: "calm",
+        options: ["I am calm", "I'm not calm", "You aren't calm"],
+      },
+      {
+        english: "I'm not calm",
+        italian: "Io non sono calm",
+        image: "calm",
+        options: ["I am calm", "You are calm", "You aren't calm"],
+      },
+      {
+        english: "You aren't calm",
+        italian: "Tu non sei calm",
+        image: "calm",
+        options: ["I am calm", "You are calm", "I'm not calm"],
+      },
+      {
+        english: "I am proud",
+        italian: "Io sono proud",
+        image: "proud",
+        options: ["You are proud", "I'm not proud", "You aren't proud"],
+      },
+      {
+        english: "You are proud",
+        italian: "Tu sei proud",
+        image: "proud",
+        options: ["I am proud", "I'm not proud", "You aren't proud"],
+      },
+      {
+        english: "I'm not proud",
+        italian: "Io non sono proud",
+        image: "proud",
+        options: ["I am proud", "You are proud", "You aren't proud"],
+      },
+      {
+        english: "You aren't proud",
+        italian: "Tu non sei proud",
+        image: "proud",
+        options: ["I am proud", "You are proud", "I'm not proud"],
+      },
+      {
+        english: "I am worried",
+        italian: "Io sono worried",
+        image: "worried",
+        options: ["You are worried", "I am not worried", "You are not worried"],
+      },
+      {
+        english: "You are worried",
+        italian: "Tu sei worried",
+        image: "worried",
+        options: ["I am worried", "I am not worried", "You are not worried"],
+      },
+      {
+        english: "I am not worried",
+        italian: "Io non sono worried",
+        image: "worried",
+        options: ["I am worried", "You are worried", "You are not worried"],
+      },
+      {
+        english: "You are not worried",
+        italian: "Tu non sei worried",
+        image: "worried",
+        options: ["I am worried", "You are worried", "I am not worried"],
+      },
+      {
+        english: "I am confused",
+        italian: "Io sono confused",
+        image: "confused",
+        options: ["You are confused", "I am not confused", "You are not confused"],
+      },
+      {
+        english: "You are confused",
+        italian: "Tu sei confused",
+        image: "confused",
+        options: ["I am confused", "I am not confused", "You are not confused"],
+      },
+      {
+        english: "I am not confused",
+        italian: "Io non sono confused",
+        image: "confused",
+        options: ["I am confused", "You are confused", "You are not confused"],
+      },
+      {
+        english: "You are not confused",
+        italian: "Tu non sei confused",
+        image: "confused",
+        options: ["I am confused", "You are confused", "I am not confused"],
+      },
+      {
+        english: "I am shy",
+        italian: "Io sono shy",
+        image: "shy",
+        options: ["You are shy", "I am not shy", "You are not shy"],
+      },
+      {
+        english: "You are shy",
+        italian: "Tu sei shy",
+        image: "shy",
+        options: ["I am shy", "I am not shy", "You are not shy"],
+      },
+      {
+        english: "I am not shy",
+        italian: "Io non sono shy",
+        image: "shy",
+        options: ["I am shy", "You are shy", "You are not shy"],
+      },
+      {
+        english: "You are not shy",
+        italian: "Tu non sei shy",
+        image: "shy",
+        options: ["I am shy", "You are shy", "I am not shy"],
+      },
+      {
+        english: "I am bored",
+        italian: "Io sono bored",
+        image: "bored",
+        options: ["You are bored", "I am not bored", "You are not bored"],
+      },
+      {
+        english: "You are bored",
+        italian: "Tu sei bored",
+        image: "bored",
+        options: ["I am bored", "I am not bored", "You are not bored"],
+      },
+      {
+        english: "I am not bored",
+        italian: "Io non sono bored",
+        image: "bored",
+        options: ["I am bored", "You are bored", "You are not bored"],
+      },
+      {
+        english: "You are not bored",
+        italian: "Tu non sei bored",
+        image: "bored",
+        options: ["I am bored", "You are bored", "I am not bored"],
+      },
+    ],
+  },
 ];
 
 export type Question = { word: Word; options: Word[] };
@@ -709,16 +1011,18 @@ export function createRound(gameId: GameId, options: RoundOptions = {}, previous
     roundLength: length,
     questions: words.map((word) => ({
       word,
-      options: shuffle(
-        [
-          word,
-          ...shuffle(
-            pool.filter((entry) => entry.english !== word.english),
+      options: word.options
+        ? shuffle([word, ...word.options.map((text) => ({ english: text, italian: "" }))], random)
+        : shuffle(
+            [
+              word,
+              ...shuffle(
+                pool.filter((entry) => entry.english !== word.english),
+                random,
+              ).slice(0, 3),
+            ],
             random,
-          ).slice(0, 3),
-        ],
-        random,
-      ),
+          ),
     })),
     answers: [],
   };
