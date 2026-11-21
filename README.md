@@ -223,7 +223,7 @@ La verifica automatica è:
 
 ```bash
 npm test              # 36 test unitari con node:test (nessun framework, nessun DB)
-npm run typecheck     # tsc --noEmit
+npm run typecheck     # next typegen && tsc --noEmit (serve da checkout pulito)
 npm run lint
 npm run format:check
 npm run audio:check:english
