@@ -1,5 +1,12 @@
 import type { GameSetting as GameSettingRecord } from "@/generated/prisma/client";
-import { normalizeGameSetting, settingKey, type GameSetting, type GameSettings } from "@/features/gamification/lib/game-settings";
+import {
+  normalizeGameSetting,
+  selectionFromRecord,
+  selectionToRecord,
+  settingKey,
+  type GameSetting,
+  type GameSettings,
+} from "@/features/gamification/lib/game-settings";
 import type { World } from "@/features/gamification/lib/progress";
 
 export type GameSettingData = {
@@ -10,7 +17,7 @@ export type GameSettingData = {
 
 export function gameSettingFromRecord(record: GameSettingRecord): GameSetting {
   return normalizeGameSetting({
-    selected: record.selected.length > 0 ? record.selected : null,
+    selected: selectionFromRecord(record.selected),
     roundLength: record.roundLength,
     limit: record.limit,
   });
@@ -26,7 +33,7 @@ export function gameSettingsFromRecords(records: readonly GameSettingRecord[]): 
 
 export function gameSettingToRecordData(setting: GameSetting): GameSettingData {
   return {
-    selected: setting.selected ?? [],
+    selected: selectionToRecord(setting.selected),
     roundLength: setting.roundLength,
     limit: setting.limit,
   };

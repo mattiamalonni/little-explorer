@@ -160,7 +160,7 @@ La data usata per serie e badge è calcolata sul server e passata al client (`to
 
 Ogni partita parte da una schermata di preparazione condivisa, in `src/features/gamification/components/game-setup.tsx`:
 
-- nei giochi con un elenco (inglese, italiano e orologio) si scelgono le voci da usare, con le azioni **Tutti** e **Nessuno**; servono almeno quattro voci. La scelta esplicita “Nessuno” è salvata come selezione vuota e sopravvive alla navigazione, mentre `null` significa “non ancora impostata, prendi tutte le voci”. In Little Orologio le voci sono le dodici ore;
+- nei giochi con un elenco (inglese, italiano e orologio) si scelgono le voci da usare, con le azioni **Tutti** e **Nessuno**; servono almeno quattro voci. La scelta esplicita “Nessuno” sopravvive alla navigazione e al reload: `null` significa “non ancora impostata, prendi tutte le voci”, `[]` in memoria è “Nessuno”, e sul database quest'ultimo è salvato con il segnaposto `__none__` perché i record storici con `[]` significavano “tutto”. In Little Orologio le voci sono le dodici ore;
 - si sceglie il numero di domande della partita (4, 6, 8 o 10, oppure tutte le voci selezionate quando sono meno di 10);
 - in Little Math si sceglie anche il limite dei numeri (entro 10, 20 o 100), spostato qui dalla dashboard. Little Logica non ha un elenco di voci: si sceglie solo la lunghezza della partita.
 

@@ -4,6 +4,8 @@ import {
   createDefaultGameSetting,
   normalizeGameSetting,
   normalizeGameSettings,
+  selectionFromRecord,
+  selectionToRecord,
   settingFor,
   settingKey,
 } from "../src/features/gamification/lib/game-settings.ts";
@@ -40,6 +42,20 @@ test("la selezione vuota ('Nessuno') sopravvive alla normalizzazione", () => {
   assert.notEqual(saved.selected, null);
   assert.deepEqual(normalizeGameSetting({}).selected, null);
   assert.deepEqual(normalizeGameSetting({ selected: "none" }).selected, null);
+});
+
+test("il round-trip DB distingue 'tutto', 'nessuno' e selezione esplicita", () => {
+  const none = normalizeGameSetting({ selected: selectionFromRecord(selectionToRecord([])) });
+  assert.deepEqual(none.selected, []);
+
+  const all = normalizeGameSetting({ selected: selectionFromRecord(selectionToRecord(null)) });
+  assert.equal(all.selected, null);
+
+  const chosen = normalizeGameSetting({ selected: selectionFromRecord(selectionToRecord(["red", "blue"])) });
+  assert.deepEqual(chosen.selected, ["red", "blue"]);
+
+  // I record scritti prima del segnaposto avevano [] per "tutto": restano "tutto".
+  assert.equal(normalizeGameSetting({ selected: selectionFromRecord([]) }).selected, null);
 });
 
 test("normalizeGameSettings scarta chiavi non valide", () => {

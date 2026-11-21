@@ -12,12 +12,26 @@ export type GameSettings = Record<string, GameSetting>;
 
 export const ROUND_LENGTH_OPTIONS = [4, 6, 8, 10] as const;
 export const DEFAULT_ROUND_LENGTH = 6;
+/** Nel DB `[]` storicamente significa "non impostato": serve un segnaposto per "Nessuno". */
+export const EXPLICIT_NONE_SELECTION = "__none__";
 export const DEFAULT_MATH_LIMITS = [10, 20, 100] as const;
 
 const MAX_SELECTED = 500;
 
 export function settingKey(world: World, gameId: string): string {
   return `${world}:${gameId}`;
+}
+
+export function selectionToRecord(selected: string[] | null): string[] {
+  if (selected === null) return [];
+  if (selected.length === 0) return [EXPLICIT_NONE_SELECTION];
+  return [...selected];
+}
+
+export function selectionFromRecord(selected: readonly string[]): string[] | null {
+  if (selected.length === 0) return null;
+  if (selected.length === 1 && selected[0] === EXPLICIT_NONE_SELECTION) return [];
+  return [...selected];
 }
 
 export function createDefaultGameSetting(): GameSetting {
