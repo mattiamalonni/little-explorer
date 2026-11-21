@@ -9,13 +9,13 @@ La home è un hub con cinque mondi. Ogni mondo conserva il proprio carattere, i 
 | Percorso                        | Contenuto                                |
 | ------------------------------- | ---------------------------------------- |
 | `/`                             | Hub con i cinque mondi                   |
-| `/english`                      | Dashboard di Little English (18 giochi)  |
+| `/english`                      | Dashboard di Little English (19 giochi)  |
 | `/english/play/[gameId]`        | Partita                                  |
 | `/english/play/[gameId]/result` | Riepilogo                                |
 | `/math`                         | Dashboard di Little Math (7 giochi)      |
 | `/math/play/[gameId]`           | Partita                                  |
 | `/math/play/[gameId]/result`    | Riepilogo                                |
-| `/italian`                      | Dashboard di Little Italiano (10 giochi) |
+| `/italian`                      | Dashboard di Little Italiano (11 giochi) |
 | `/italian/play/[gameId]`        | Partita                                  |
 | `/italian/play/[gameId]/result` | Riepilogo                                |
 | `/time`                         | Dashboard di Little Orologio (5 giochi)  |
@@ -157,7 +157,7 @@ La data usata per serie e badge è calcolata sul server e passata al client (`to
 
 Ogni partita parte da una schermata di preparazione condivisa, in `src/features/gamification/components/game-setup.tsx`:
 
-- nei giochi con un elenco (inglese, italiano e orologio) si scelgono le voci da usare, con le azioni **Tutti** e **Nessuno**; servono almeno quattro voci. In Little Orologio le voci sono le dodici ore;
+- nei giochi con un elenco (inglese, italiano e orologio) si scelgono le voci da usare, con le azioni **Tutti** e **Nessuno**; servono almeno quattro voci. La scelta esplicita “Nessuno” è salvata come selezione vuota e sopravvive alla navigazione, mentre `null` significa “non ancora impostata, prendi tutte le voci”. In Little Orologio le voci sono le dodici ore;
 - si sceglie il numero di domande della partita (4, 6, 8 o 10, oppure tutte le voci selezionate quando sono meno di 10);
 - in Little Math si sceglie anche il limite dei numeri (entro 10, 20 o 100), spostato qui dalla dashboard. Little Logica non ha un elenco di voci: si sceglie solo la lunghezza della partita.
 
@@ -272,6 +272,8 @@ Gli elementi audio vengono riutilizzati per parola e la parola successiva è pre
    ```bash
    npm run audio:generate:english -- --all --dry-run
    npm run audio:generate:italian -- --all --dry-run
+   # oppure vedi il testo del campione senza spendere crediti:
+   npm run audio:generate:english -- --sample --dry-run
    npm run audio:generate:english -- --all --confirm
    npm run audio:generate:italian -- --all --confirm
    ```

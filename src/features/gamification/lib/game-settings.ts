@@ -38,7 +38,8 @@ function normalizeSelected(value: unknown): string[] | null {
         .filter((entry) => entry.length > 0 && entry.length <= 80),
     ),
   ).slice(0, MAX_SELECTED);
-  return selected.length > 0 ? selected : null;
+  // `null` significa "non impostato, seleziona tutto"; `[]` è la scelta esplicita "Nessuno".
+  return selected;
 }
 
 function normalizeRoundLength(value: unknown): number {

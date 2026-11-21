@@ -695,6 +695,10 @@ export function Results({ game }: { game: Game }) {
   const { round, start } = usePlay();
   const router = useRouter();
   const [filter, setFilter] = useState<"all" | "review">("all");
+  const headingRef = useRef<HTMLHeadingElement>(null);
+  useEffect(() => {
+    headingRef.current?.focus();
+  }, []);
   const completed = Boolean(round && round.gameId === game.id && round.answers.length === round.questions.length);
   const score = round && completed ? scoreRound(round.answers) : 0;
   const reward = useRoundReward({
@@ -710,7 +714,9 @@ export function Results({ game }: { game: Game }) {
     return (
       <main id="main" className="empty-state page-width">
         <Illustration asset="seedling" />
-        <h1>Una nuova avventura?</h1>
+        <h1 ref={headingRef} tabIndex={-1}>
+          Una nuova avventura?
+        </h1>
         <p>Qui non conserviamo le partite. Le parole imparate restano con te.</p>
         <Link className="button button-primary" href={`/english/play/${game.id}`}>
           Giochiamo <ArrowRight size={18} />
@@ -737,7 +743,7 @@ export function Results({ game }: { game: Game }) {
           <Star className="trophy-star second" size={18} fill="currentColor" />
         </div>
         <span className="eyebrow">AVVENTURA COMPLETATA</span>
-        <h1>
+        <h1 ref={headingRef} tabIndex={-1}>
           {score === total
             ? "Wonderful! Tutte giuste!"
             : score >= Math.ceil(total / 2)

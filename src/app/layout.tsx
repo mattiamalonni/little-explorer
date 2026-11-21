@@ -29,7 +29,7 @@ export const metadata: Metadata = {
     template: "%s | Little Explorer",
   },
   description:
-    "Un solo posto per imparare giocando: inglese, matematica e italiano con minigiochi per bambini. Crea il tuo nome: stelle e progressi ti seguono su ogni dispositivo.",
+    "Un solo posto per imparare giocando: inglese, matematica, italiano, orologio e logica con minigiochi per bambini. Crea il tuo nome: stelle e progressi ti seguono su ogni dispositivo.",
 };
 
 export const viewport: Viewport = {

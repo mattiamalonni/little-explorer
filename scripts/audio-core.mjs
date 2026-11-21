@@ -79,7 +79,7 @@ export function checkArguments(args, help) {
     new Set(args).size !== args.length ||
     args.filter((arg) => ["--voices", "--sample", "--all"].includes(arg)).length !== 1 ||
     (args.includes("--dry-run") && args.includes("--confirm")) ||
-    (args.length > 1 && !args.includes("--all"))
+    (args.length > 1 && !args.includes("--all") && !args.includes("--dry-run"))
   ) {
     throw new Error(`Argomenti non validi.\n${help}`);
   }

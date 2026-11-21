@@ -22,7 +22,7 @@ test("normalizeGameSetting ripulisce selezione, lunghezza e limite", () => {
     limit: 20,
   });
   assert.deepEqual(normalizeGameSetting({ selected: [], roundLength: -3, limit: 7 }), {
-    selected: null,
+    selected: [],
     roundLength: 1,
     limit: null,
   });
@@ -32,6 +32,14 @@ test("normalizeGameSetting ripulisce selezione, lunghezza e limite", () => {
     limit: 100,
   });
   assert.deepEqual(normalizeGameSetting(null), createDefaultGameSetting());
+});
+
+test("la selezione vuota ('Nessuno') sopravvive alla normalizzazione", () => {
+  const saved = normalizeGameSetting({ selected: [], roundLength: 6, limit: null });
+  assert.deepEqual(saved.selected, []);
+  assert.notEqual(saved.selected, null);
+  assert.deepEqual(normalizeGameSetting({}).selected, null);
+  assert.deepEqual(normalizeGameSetting({ selected: "none" }).selected, null);
 });
 
 test("normalizeGameSettings scarta chiavi non valide", () => {

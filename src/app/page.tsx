@@ -1,7 +1,14 @@
 import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight, BookOpen, Clock3, Dices, Heart, Sparkles, Sprout, Star } from "lucide-react";
+import { games as englishGames } from "@/features/english/data/games";
+import { games as mathGames } from "@/features/math/data/games";
+import { games as italianGames } from "@/features/italian/data/games";
+import { games as timeGames } from "@/features/time/data/games";
+import { games as logicGames } from "@/features/logic/data/games";
 import { LogicShape } from "@/features/logic/components/logic-shape";
+
+const totalGames = englishGames.length + mathGames.length + italianGames.length + timeGames.length + logicGames.length;
 
 const worlds = [
   {
@@ -11,7 +18,7 @@ const worlds = [
     title: "English in festa",
     description:
       "Colori, animali, corpo, famiglia, classe, frasi, preposizioni, contrari, giorni, mesi e tanto ascolto: le prime parole inglesi con illustrazioni e pronuncia.",
-    games: "18 giochi",
+    games: `${englishGames.length} giochi`,
   },
   {
     id: "math",
@@ -20,7 +27,7 @@ const worlds = [
     title: "Numeri in gioco",
     description:
       "Addizioni, sottrazioni, moltiplicazioni, divisioni, doppio e metà fino a 100, con blocchi da contare e passaggi spiegati un pezzetto alla volta.",
-    games: "7 giochi",
+    games: `${mathGames.length} giochi`,
   },
   {
     id: "italian",
@@ -29,7 +36,7 @@ const worlds = [
     title: "Caccia ai suoni",
     description:
       "GN, GLI, SC, CH, CU, MP, MB, doppie, accenti e apostrofo: i suoni dell'italiano diventano piccoli giochi da scoprire, con qualche tranello da smascherare.",
-    games: "10 giochi",
+    games: `${italianGames.length} giochi`,
   },
   {
     id: "time",
@@ -38,7 +45,7 @@ const worlds = [
     title: "Tic tac, che ora è?",
     description:
       "In punto, e un quarto, e mezza e meno un quarto: lancette da leggere, orologi da scegliere e ore da ascoltare, un quarto alla volta.",
-    games: "5 giochi",
+    games: `${timeGames.length} giochi`,
   },
   {
     id: "logic",
@@ -47,7 +54,7 @@ const worlds = [
     title: "Detective delle forme",
     description:
       "Sequenze, intrusi, dimensioni e percorsi: forme colorate per allenare lo sguardo e il pensiero, una piccola sfida alla volta.",
-    games: "5 giochi",
+    games: `${logicGames.length} giochi`,
   },
 ] as const;
 
@@ -140,7 +147,7 @@ export default function HubPage() {
             </p>
             <div className="hub-hero-meta">
               <span>
-                <BookOpen size={15} /> 45 giochi
+                <BookOpen size={15} /> {totalGames} giochi
               </span>
               <span>
                 <Heart size={15} /> Il tuo account

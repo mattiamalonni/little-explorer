@@ -68,10 +68,11 @@ export function GameSetup({ world, gameId, items = [], limits, intro, startLabel
 
   const [selected, setSelected] = useState<string[]>(() => {
     if (allIds.length === 0) return [];
-    if (!stored.selected) return allIds;
+    // null = mai impostato (tutto), [] = l'utente ha scelto "Nessuno".
+    if (stored.selected === null) return allIds;
     const known = new Set(allIds);
     const restored = stored.selected.filter((id) => known.has(id));
-    return restored.length > 0 ? restored : allIds;
+    return stored.selected.length > 0 && restored.length === 0 ? allIds : restored;
   });
   const [roundLength, setRoundLength] = useState(() => clampRoundLength(stored.roundLength, allIds.length));
   const [limit, setLimit] = useState<number | null>(() => stored.limit ?? limits?.[0]?.value ?? null);
