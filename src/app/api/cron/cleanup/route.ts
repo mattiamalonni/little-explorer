@@ -12,8 +12,14 @@ export async function GET(request: Request) {
   }
 
   try {
-    const result = await prisma.session.deleteMany({ where: { expiresAt: { lt: new Date() } } });
-    return NextResponse.json({ deleted: result.count });
+    const [sessions, rounds] = await Promise.all([
+      prisma.session.deleteMany({ where: { expiresAt: { lt: new Date() } } }),
+      // Le partite servono per l'idempotenza per 90 giorni; poi lo storico non serve più.
+      prisma.round.deleteMany({
+        where: { createdAt: { lt: new Date(Date.now() - 90 * 86_400_000) } },
+      }),
+    ]);
+    return NextResponse.json({ deletedSessions: sessions.count, deletedRounds: rounds.count });
   } catch (error) {
     console.error("Errore durante la pulizia delle sessioni", error);
     return NextResponse.json({ error: "Pulizia non riuscita." }, { status: 500 });

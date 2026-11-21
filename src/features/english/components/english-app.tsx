@@ -29,7 +29,7 @@ import { GameSetup } from "@/features/gamification/components/game-setup";
 import { useRoundReward } from "@/features/gamification/components/use-round-reward";
 import { ProgressTrack } from "@/features/gamification/components/progress-track";
 import { useRoundController } from "@/features/gamification/hooks/use-round-controller";
-import { speakWithDeviceVoice } from "@/features/gamification/lib/speech";
+import { speakWithDeviceVoice, stopSpeech } from "@/features/gamification/lib/speech";
 import { useSound } from "@/features/gamification/components/sound-context";
 
 type RoundConfig = {
@@ -90,6 +90,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   const activeAudio = useRef<HTMLAudioElement | null>(null);
 
   function disposeAudio() {
+    stopSpeech();
     activeAudio.current = null;
     for (const clip of audioCache.current.values()) {
       clip.onerror = null;
@@ -107,6 +108,8 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   }, [sound]);
 
   function stopAudio() {
+    // Copre anche la voce di riserva: nessuna pronuncia deve continuare sulla domanda successiva.
+    stopSpeech();
     const current = activeAudio.current;
     activeAudio.current = null;
     if (current) {

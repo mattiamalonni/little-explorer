@@ -52,6 +52,7 @@ model Round {
 
   @@unique([userId, roundId])
   @@index([userId])
+  @@index([createdAt])
 }
 
 model GameSetting {

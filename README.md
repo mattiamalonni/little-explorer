@@ -159,7 +159,7 @@ Ogni partita parte da una schermata di preparazione condivisa, in `src/features/
 - si sceglie il numero di domande della partita (4, 6, 8 o 10, oppure tutte le voci selezionate quando sono meno di 10);
 - in Little Math si sceglie anche il limite dei numeri (entro 10, 20 o 100), spostato qui dalla dashboard. Little Logica non ha un elenco di voci: si sceglie solo la lunghezza della partita.
 
-Le preferenze vengono salvate per utente e per gioco nel modello `GameSetting` (`GET` e `PUT /api/settings`) e ricaricate con `GET /api/me`. Il round usa la selezione e la lunghezza salvate; “Giochiamo ancora” riparte con la stessa configurazione.
+Le preferenze vengono salvate per utente e per gioco nel modello `GameSetting` (`GET` e `PUT /api/settings`) e ricaricate con `GET /api/me`. Il round usa la selezione e la lunghezza salvate; “Giochiamo ancora” riparte con la stessa configurazione. Se il salvataggio di una preferenza fallisce, la modifica resta in coda, lo stato del salvataggio passa in errore e **Riprova** la invia di nuovo insieme agli eventuali round e azzeramenti pendenti.
 
 ## Account e database
 
@@ -186,7 +186,7 @@ Compila in `.env`:
 - `DIRECT_URL`: URL diretto dello stesso database, usato dalle migrazioni Prisma;
 - `CRON_SECRET`: segreto per il cron di pulizia sessioni (facoltativo in locale; obbligatorio su Vercel per abilitare il cron).
 
-`vercel.json` schedula `GET /api/cron/cleanup` ogni notte alle 03:00 UTC per eliminare le sessioni scadute; l'endpoint risponde 503 se `CRON_SECRET` non è impostato e 401 senza l'header `Authorization: Bearer <CRON_SECRET>`.
+`vercel.json` schedula `GET /api/cron/cleanup` ogni notte alle 03:00 UTC per eliminare le sessioni scadute e i record `Round` più vecchi di 90 giorni (l'indice `Round_createdAt_idx` rende la pulizia economica); l'endpoint risponde 503 se `CRON_SECRET` non è impostato e 401 senza l'header `Authorization: Bearer <CRON_SECRET>`.
 
 Poi applica lo schema e avvia:
 
@@ -230,7 +230,7 @@ Per aggiungere un'illustrazione:
 
 L'inglese usa MP3 locali già inclusi (441 voci del vocabolario, comprese le 48 frasi del gioco _I am / You are_), generati con la voce britannica **Alice** di ElevenLabs. L'italiano non usa MP3: il pulsante Ascolta parla sempre con la voce italiana del dispositivo tramite `speechSynthesis`, scegliendo una voce `it-*` quando il browser la espone. Little Orologio e Little Logica usano la stessa voce italiana del dispositivo.
 
-I browser non chiamano mai ElevenLabs. Il pulsante Ascolta è presente in domande, feedback e riepiloghi. Un nuovo ascolto interrompe il precedente; cambio pagina, avanzamento e disattivazione audio fermano la riproduzione. Se un MP3 manca o non si riproduce, English ripassa alla voce inglese del dispositivo (`en-*`): il messaggio di errore compare solo se anche quel fallback fallisce.
+I browser non chiamano mai ElevenLabs. Il pulsante Ascolta è presente in domande, feedback e riepiloghi. Un nuovo ascolto interrompe il precedente; cambio pagina, avanzamento e disattivazione audio fermano la riproduzione, compresa la voce di riserva. Se un MP3 manca o non si riproduce, English ripassa alla voce inglese del dispositivo (`en-*`): il messaggio di errore compare solo se anche quel fallback fallisce.
 
 Gli elementi audio vengono riutilizzati per parola e la parola successiva è precaricata quando appare il feedback, così il primo ascolto non paga la latenza di rete. `next.config.ts` serve `/audio` e `/illustrations` con `Cache-Control: immutable`.
 

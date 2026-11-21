@@ -200,7 +200,7 @@ export function GamificationProvider({
         }
       }
 
-      setSyncState("saved");
+      if (pendingSettingsRef.current.size === 0 && !pendingResetRef.current) setSyncState("saved");
     } finally {
       savingRoundsRef.current = false;
     }
@@ -231,14 +231,6 @@ export function GamificationProvider({
     }
   }, [handleSessionExpired]);
 
-  const retrySave = useCallback(() => {
-    if (pendingResetRef.current) {
-      void flushReset();
-      return;
-    }
-    void flushRounds();
-  }, [flushReset, flushRounds]);
-
   const flushSettings = useCallback(async () => {
     if (savingSettingsRef.current) return;
     savingSettingsRef.current = true;
@@ -255,19 +247,37 @@ export function GamificationProvider({
             method: "PUT",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ world: update.world, gameId: update.gameId, setting: update.setting }),
+            keepalive: true,
           });
           if (response.status === 401) {
             handleSessionExpired();
             return;
           }
+          if (!response.ok) {
+            pendingSettingsRef.current.set(key, update);
+            setSyncState("error");
+            return;
+          }
         } catch {
-          // La scelta resta in memoria: al prossimo cambio riproveremo a salvarla.
+          pendingSettingsRef.current.set(key, update);
+          setSyncState("error");
+          return;
         }
       }
+      if (pendingRoundsRef.current.size === 0 && !pendingResetRef.current) setSyncState("saved");
     } finally {
       savingSettingsRef.current = false;
     }
   }, [handleSessionExpired]);
+
+  const retrySave = useCallback(() => {
+    if (pendingResetRef.current) {
+      void flushReset();
+      return;
+    }
+    if (pendingSettingsRef.current.size > 0) void flushSettings();
+    void flushRounds();
+  }, [flushReset, flushRounds, flushSettings]);
 
   const updateGameSetting = useCallback(
     (world: World, gameId: string, setting: GameSetting) => {
