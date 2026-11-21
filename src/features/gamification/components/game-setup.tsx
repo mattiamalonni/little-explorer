@@ -10,6 +10,8 @@ import type { World } from "@/features/gamification/lib/progress";
 export type SetupItem = {
   id: string;
   label: string;
+  /** Lingua dell'etichetta, quando non coincide con quella del documento. */
+  lang?: string;
   hint?: string;
   image?: string;
   color?: string;
@@ -157,7 +159,9 @@ export function GameSetup({ world, gameId, items = [], limits, intro, startLabel
                     )}
                   </span>
                   <span className="game-setup-item-copy">
-                    <span className="game-setup-item-label">{item.label}</span>
+                    <span className="game-setup-item-label" lang={item.lang}>
+                      {item.label}
+                    </span>
                     {item.hint && <span className="game-setup-item-hint">{item.hint}</span>}
                   </span>
                   <span className={`game-setup-check ${isSelected ? "is-checked" : ""}`}>

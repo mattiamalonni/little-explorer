@@ -14,7 +14,7 @@ const worlds = [
   { href: "/logic", label: "Logica" },
 ] as const;
 
-const audioWorlds = ["/english", "/math", "/italian", "/time"] as const;
+const audioWorlds = ["/english", "/math", "/italian", "/time", "/logic"] as const;
 
 function isActive(pathname: string, href: string) {
   return pathname === href || pathname.startsWith(`${href}/`);

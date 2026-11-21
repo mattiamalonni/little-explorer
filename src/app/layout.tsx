@@ -18,7 +18,7 @@ const jakarta = Plus_Jakarta_Sans({
 
 export const metadata: Metadata = {
   title: {
-    default: "Little Explorer | Tre mondi di piccole scoperte",
+    default: "Little Explorer | Cinque mondi di piccole scoperte",
     template: "%s | Little Explorer",
   },
   description:
@@ -26,10 +26,9 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
+  // Nessun blocco dello zoom: il testo deve poter essere ingrandito (WCAG 1.4.4).
   width: "device-width",
   initialScale: 1,
-  maximumScale: 1,
-  userScalable: false,
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {

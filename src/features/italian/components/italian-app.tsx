@@ -438,6 +438,7 @@ export function PlayGame({ game }: { game: Game }) {
   const [typed, setTyped] = useState("");
   const nextLock = useRef(false);
   const titleRef = useRef<HTMLHeadingElement>(null);
+  const nextRef = useRef<HTMLButtonElement>(null);
   const activeRound = round?.gameId === game.id && round.answers.length < round.questions.length ? round : null;
   const questionIndex = activeRound?.answers.length ?? 0;
 
@@ -445,6 +446,11 @@ export function PlayGame({ game }: { game: Game }) {
     titleRef.current?.focus();
     nextLock.current = false;
   }, [questionIndex]);
+
+  // Dopo la scelta l'opzione viene disabilitata: riporta il focus sul pulsante "Avanti".
+  useEffect(() => {
+    if (selected) nextRef.current?.focus();
+  }, [selected]);
 
   if (!activeRound) {
     const setupItems = game.entries.map((entry) => ({
@@ -594,7 +600,7 @@ export function PlayGame({ game }: { game: Game }) {
                 <AudioButton text={question.entry.spoken} compact />
               </span>
             </div>
-            <button className="button button-primary" onClick={nextQuestion}>
+            <button ref={nextRef} className="button button-primary" onClick={nextQuestion}>
               {questionIndex === total - 1 ? "Il mio risultato" : "Avanti"}
               <ArrowRight size={18} />
             </button>

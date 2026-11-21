@@ -404,7 +404,9 @@ export function Dashboard() {
             >
               <GameArt id={game.id} />
               <div className="game-card-body">
-                <span className="category-label">{game.english}</span>
+                <span className="category-label" lang="en">
+                  {game.english}
+                </span>
                 <h3>{game.title}</h3>
                 <p>{game.description}</p>
                 <div className="game-card-bottom">
@@ -499,6 +501,7 @@ export function PlayGame({ game }: { game: Game }) {
   const [selected, setSelected] = useState<Word | null>(null);
   const nextLock = useRef(false);
   const titleRef = useRef<HTMLHeadingElement>(null);
+  const nextRef = useRef<HTMLButtonElement>(null);
   const activeRound = round?.gameId === game.id && round.answers.length < round.questions.length ? round : null;
   const questionIndex = activeRound?.answers.length ?? 0;
 
@@ -507,10 +510,16 @@ export function PlayGame({ game }: { game: Game }) {
     nextLock.current = false;
   }, [questionIndex]);
 
+  // Dopo la scelta l'opzione viene disabilitata: riporta il focus sul pulsante "Avanti".
+  useEffect(() => {
+    if (selected) nextRef.current?.focus();
+  }, [selected]);
+
   if (!activeRound) {
     const setupItems = game.words.map((word) => ({
       id: word.english,
       label: word.english,
+      lang: "en",
       hint: word.italian,
       image: word.image,
       color: word.color,
@@ -524,7 +533,9 @@ export function PlayGame({ game }: { game: Game }) {
         </Link>
         <section className={`ready-state theme-${game.id}`}>
           <GameArt id={game.id} />
-          <span className="eyebrow">{game.english}</span>
+          <span className="eyebrow" lang="en">
+            {game.english}
+          </span>
           <h1>{game.title}</h1>
           <p>Scegli le parole e quante domande.</p>
           <GameSetup
@@ -637,7 +648,7 @@ export function PlayGame({ game }: { game: Game }) {
                 <AudioButton word={question.word.english} compact />
               </span>
             </div>
-            <button className="button button-primary" onClick={nextQuestion}>
+            <button ref={nextRef} className="button button-primary" onClick={nextQuestion}>
               {questionIndex === total - 1 ? "Il mio risultato" : "Avanti"}
               <ArrowRight size={18} />
             </button>

@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { createContext, useContext, useEffect, useRef, useState } from "react";
 import {
   ArrowDown,
@@ -19,6 +19,7 @@ import {
   Sprout,
   Star,
   Trophy,
+  Volume2,
   X,
 } from "lucide-react";
 import { LogicShape } from "@/features/logic/components/logic-shape";
@@ -46,11 +47,15 @@ import { GameSetup } from "@/features/gamification/components/game-setup";
 import { useRoundReward } from "@/features/gamification/components/use-round-reward";
 import { ProgressTrack } from "@/features/gamification/components/progress-track";
 import { useRoundController } from "@/features/gamification/hooks/use-round-controller";
+import { speakItalian, stopSpeech } from "@/features/gamification/lib/speech";
+import { useSound } from "@/features/gamification/components/sound-context";
 
 type PlayContext = {
   round: Round | null;
   start: (gameId: LogicGameId, config?: RoundConfig) => void;
   answer: (selected: string) => void;
+  speak: (text: string) => void;
+  sound: boolean;
 };
 
 const PlayContext = createContext<PlayContext | null>(null);
@@ -73,9 +78,37 @@ export function AppShell({ children }: { children: React.ReactNode }) {
       };
     },
   });
+  const { sound } = useSound();
+  const [audioError, setAudioError] = useState("");
+  const pathname = usePathname();
+
+  useEffect(() => stopSpeech, [pathname]);
+
+  useEffect(() => {
+    if (!sound) stopSpeech();
+  }, [sound]);
+
+  function speak(text: string) {
+    if (!sound) return;
+    setAudioError("");
+    speakItalian(text, {
+      rate: 0.9,
+      unavailableMessage: "Audio non disponibile in questo browser. Puoi continuare con le parole scritte.",
+      errorMessage: "La voce del dispositivo non risponde. Puoi continuare con le parole scritte.",
+      onError: setAudioError,
+    });
+  }
 
   return (
-    <PlayContext.Provider value={{ round, start, answer }}>
+    <PlayContext.Provider value={{ round, start, answer, speak, sound }}>
+      {audioError && (
+        <div className="audio-notice" role="status">
+          {audioError}
+          <button className="icon-button" onClick={() => setAudioError("")} aria-label="Chiudi avviso">
+            <X size={18} />
+          </button>
+        </div>
+      )}
       {children}
       <footer className="site-footer">
         <span>
@@ -251,12 +284,13 @@ function Sequence({ tokens }: { tokens: ShapeToken[] }) {
 
 function LogicGrid({ grid }: { grid: Grid }) {
   const cells = Array.from({ length: grid.cols * grid.rows }, (_, index) => index);
+  const position = (cell: number) => `colonna ${(cell % grid.cols) + 1}, riga ${Math.floor(cell / grid.cols) + 1}`;
   return (
     <div
       className="logic-grid"
       style={{ gridTemplateColumns: `repeat(${grid.cols}, minmax(0, 1fr))` }}
       role="img"
-      aria-label="Griglia con un esploratore e una stella da raggiungere"
+      aria-label={`Griglia ${grid.cols} colonne per ${grid.rows} righe: esploratore in ${position(grid.start)}; stella in ${position(grid.target)}.`}
     >
       {cells.map((cell) => (
         <span
@@ -305,6 +339,21 @@ function OptionVisual({ option }: { option: Option }) {
   return null;
 }
 
+function AudioButton({ text, className = "" }: { text: string; className?: string }) {
+  const { speak, sound } = usePlay();
+  return (
+    <button
+      className={`button button-secondary ${className}`}
+      onClick={() => speak(text)}
+      disabled={!sound}
+      title={sound ? `Ascolta: ${text}` : "Attiva audio in alto per ascoltare"}
+      aria-label={`Ascolta: ${text}`}
+    >
+      <Volume2 size={22} /> Ascolta
+    </button>
+  );
+}
+
 function QuestionCard({ round, game }: { round: Round; game: Game }) {
   const { answer } = usePlay();
   const router = useRouter();
@@ -350,7 +399,10 @@ function QuestionCard({ round, game }: { round: Round; game: Game }) {
         <h1 tabIndex={-1} ref={titleRef}>
           {question.prompt}
         </h1>
-        <p className="logic-instruction">{question.instruction}</p>
+        <p className="logic-instruction">
+          {question.instruction}
+          <AudioButton text={`${question.prompt}. ${question.instruction}`} />
+        </p>
       </div>
       <section className={`question-stage logic-stage art-${question.kind}`} aria-label="Sfida di logica">
         {question.kind === "patterns" && (
@@ -427,6 +479,7 @@ function QuestionCard({ round, game }: { round: Round; game: Game }) {
                 </p>
               )}
               <p>{question.explanation}</p>
+              <AudioButton text={question.explanation} className="logic-audio-button" />
             </div>
             <button ref={nextRef} className="button button-primary" onClick={next}>
               {index === total - 1 ? "Il mio risultato" : "Avanti"} <ArrowRight size={18} />

@@ -177,8 +177,15 @@
 .subject-logic .logic-instruction {
   margin-top: 8px;
   color: var(--muted);
-  font-size: 12px;
+  font-size: 13px;
   line-height: 1.7;
+}
+.subject-logic .logic-instruction .button,
+.subject-logic .answer-feedback .logic-audio-button {
+  margin-inline-start: 10px;
+}
+.subject-logic .logic-audio-button {
+  margin-top: 10px;
 }
 .subject-logic .logic-sequence {
   display: flex;

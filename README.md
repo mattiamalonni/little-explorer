@@ -114,6 +114,14 @@ I cinque mondi hanno grafica e domande diverse, ma la meccanica comune sta in un
 
 Restano specifici di ogni mondo i dati, le illustrazioni, il layout delle domande e la schermata dei risultati.
 
+### Accessibilità
+
+- Lo zoom a pinza non è bloccato: il viewport non imposta `maximumScale`/`userScalable` e il testo resta selezionabile su touch screen (WCAG 1.4.4).
+- Il testo informativo usa almeno 12–13px e `--muted` ha contrasto ≥ 5:1 sullo sfondo chiaro; le etichette `9px` restano solo per decorazioni.
+- Dopo una risposta, English e Italiano riportano il focus sul pulsante “Avanti” con lo stesso pattern di Math, Orologio e Logica.
+- Little Logica ha il pulsante “Ascolta” per consegna e spiegazione, e la griglia 4×3 espone la posizione di partenza e della stella nell'`aria-label`.
+- Le parole inglesi fuori dal gameplay (setup e card della dashboard) sono marcate `lang="en"`.
+
 ### Stili con scope
 
 Le app originali usavano nomi di classe uguali (`.game-card`, `.dashboard`, `.question-stage`…). Per conviverle senza conflitti:
