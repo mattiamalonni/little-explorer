@@ -30,7 +30,7 @@ export type GamificationContextValue = {
   retrySave: () => void;
   completeRound: (input: RoundInput) => RoundReward;
   openProgress: () => void;
-  resetProgress: () => void;
+  resetProgress: () => Promise<void>;
 };
 
 export const GamificationContext = createContext<GamificationContextValue | null>(null);

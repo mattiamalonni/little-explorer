@@ -21,6 +21,7 @@ import {
   normalizeProgress,
   WORLDS,
   type Progress,
+  type RoundInput,
   type RoundReward,
   type World,
 } from "@/features/gamification/lib/progress";
@@ -53,8 +54,8 @@ export function GamificationProvider({ children }: { children: React.ReactNode }
   const [panelOpen, setPanelOpen] = useState(false);
   const progressRef = useRef(progress);
   const rewardsRef = useRef(new Map<string, RoundReward>());
-  const pendingSaveRef = useRef<Progress | null>(null);
-  const savingRef = useRef(false);
+  const pendingRoundsRef = useRef(new Map<string, RoundInput>());
+  const savingRoundsRef = useRef(false);
   const pendingSettingsRef = useRef(new Map<string, { world: World; gameId: string; setting: GameSetting }>());
   const savingSettingsRef = useRef(false);
 
@@ -62,7 +63,7 @@ export function GamificationProvider({ children }: { children: React.ReactNode }
     const next = normalizeProgress(payload.progress);
     progressRef.current = next;
     rewardsRef.current.clear();
-    pendingSaveRef.current = null;
+    pendingRoundsRef.current.clear();
     pendingSettingsRef.current.clear();
     setProgress(next);
     setSettings(normalizeGameSettings(payload.settings));
@@ -100,40 +101,53 @@ export function GamificationProvider({ children }: { children: React.ReactNode }
     };
   }, [applySession]);
 
-  const flushSave = useCallback(async () => {
-    if (savingRef.current) return;
-    savingRef.current = true;
+  const handleSessionExpired = useCallback(() => {
+    pendingRoundsRef.current.clear();
+    pendingSettingsRef.current.clear();
+    setUser(null);
+    setHydrated(false);
+    setStatus("auth");
+    setSyncState("idle");
+    setAuthError("La sessione è scaduta. Entra di nuovo per ritrovare i tuoi progressi.");
+  }, []);
+
+  // Invia solo il delta della partita: il server ricalcola e restituisce il progresso autorevole.
+  const flushRounds = useCallback(async () => {
+    if (savingRoundsRef.current) return;
+    savingRoundsRef.current = true;
     setSyncState("saving");
 
     try {
-      while (pendingSaveRef.current) {
-        const next = pendingSaveRef.current;
-        pendingSaveRef.current = null;
+      while (pendingRoundsRef.current.size > 0) {
+        const entry = pendingRoundsRef.current.entries().next().value;
+        if (!entry) break;
+        const [roundId, input] = entry;
+        pendingRoundsRef.current.delete(roundId);
 
         try {
-          const response = await fetch("/api/progress", {
-            method: "PUT",
+          const response = await fetch("/api/progress/rounds", {
+            method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ progress: next }),
+            body: JSON.stringify(input),
           });
 
           if (response.status === 401) {
-            pendingSaveRef.current = null;
-            setUser(null);
-            setHydrated(false);
-            setStatus("auth");
-            setSyncState("idle");
-            setAuthError("La sessione è scaduta. Entra di nuovo per ritrovare i tuoi progressi.");
+            handleSessionExpired();
             return;
           }
 
           if (!response.ok) {
-            if (!pendingSaveRef.current) pendingSaveRef.current = next;
+            pendingRoundsRef.current.set(roundId, input);
             setSyncState("error");
             return;
           }
+
+          const result = (await response.json()) as { progress: Progress; reward: RoundReward };
+          progressRef.current = result.progress;
+          setProgress(result.progress);
+          rewardsRef.current.set(roundId, result.reward);
         } catch {
-          if (!pendingSaveRef.current) pendingSaveRef.current = next;
+          pendingRoundsRef.current.set(roundId, input);
           setSyncState("error");
           return;
         }
@@ -141,22 +155,13 @@ export function GamificationProvider({ children }: { children: React.ReactNode }
 
       setSyncState("saved");
     } finally {
-      savingRef.current = false;
+      savingRoundsRef.current = false;
     }
-  }, []);
-
-  const queueSave = useCallback(
-    (next: Progress) => {
-      pendingSaveRef.current = next;
-      void flushSave();
-    },
-    [flushSave],
-  );
+  }, [handleSessionExpired]);
 
   const retrySave = useCallback(() => {
-    if (!pendingSaveRef.current) pendingSaveRef.current = progressRef.current;
-    void flushSave();
-  }, [flushSave]);
+    void flushRounds();
+  }, [flushRounds]);
 
   const flushSettings = useCallback(async () => {
     if (savingSettingsRef.current) return;
@@ -176,7 +181,7 @@ export function GamificationProvider({ children }: { children: React.ReactNode }
             body: JSON.stringify({ world: update.world, gameId: update.gameId, setting: update.setting }),
           });
           if (response.status === 401) {
-            pendingSettingsRef.current.clear();
+            handleSessionExpired();
             return;
           }
         } catch {
@@ -186,7 +191,7 @@ export function GamificationProvider({ children }: { children: React.ReactNode }
     } finally {
       savingSettingsRef.current = false;
     }
-  }, []);
+  }, [handleSessionExpired]);
 
   const updateGameSetting = useCallback(
     (world: World, gameId: string, setting: GameSetting) => {
@@ -272,7 +277,7 @@ export function GamificationProvider({ children }: { children: React.ReactNode }
       // Anche senza rete, l'interfaccia torna alla schermata di accesso.
     }
 
-    pendingSaveRef.current = null;
+    pendingRoundsRef.current.clear();
     pendingSettingsRef.current.clear();
     const empty = createDefaultProgress();
     progressRef.current = empty;
@@ -289,31 +294,45 @@ export function GamificationProvider({ children }: { children: React.ReactNode }
   }, []);
 
   const completeRound = useCallback(
-    (input: Parameters<typeof applyRound>[1]) => {
+    (input: RoundInput) => {
       const cached = rewardsRef.current.get(input.roundId);
       if (cached) return cached;
 
+      // Feedback immediato; il server conferma (o corregge) il risultato in modo asincrono.
       const result = applyRound(progressRef.current, input);
       progressRef.current = result.progress;
       rewardsRef.current.set(input.roundId, result.reward);
       setProgress(result.progress);
-      queueSave(result.progress);
+      pendingRoundsRef.current.set(input.roundId, input);
+      void flushRounds();
       return result.reward;
     },
-    [queueSave],
+    [flushRounds],
   );
 
   const openProgress = useCallback(() => setPanelOpen(true), []);
   const closeProgress = useCallback(() => setPanelOpen(false), []);
 
-  const resetProgress = useCallback(() => {
+  const resetProgress = useCallback(async () => {
     const next = createDefaultProgress();
     progressRef.current = next;
     rewardsRef.current.clear();
+    pendingRoundsRef.current.clear();
     clearProgress();
     setProgress(next);
-    queueSave(next);
-  }, [queueSave]);
+    setSyncState("saving");
+
+    try {
+      const response = await fetch("/api/progress", { method: "DELETE" });
+      if (response.status === 401) {
+        handleSessionExpired();
+        return;
+      }
+      setSyncState(response.ok ? "saved" : "error");
+    } catch {
+      setSyncState("error");
+    }
+  }, [handleSessionExpired]);
 
   const value = useMemo(
     () => ({

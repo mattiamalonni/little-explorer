@@ -121,7 +121,9 @@ La gamification è condivisa dai cinque mondi e vive sopra i layout delle singol
 - la **serie di giorni** aumenta giocando in giorni consecutivi;
 - il pannello dei traguardi, aperto dalla pillola nell'header o dal banner in dashboard, mostra livelli, statistiche e badge e permette di azzerare tutto.
 
-Lo stato è gestito da `GamificationProvider` nel layout radice. All'avvio il provider chiama `GET /api/me`: senza sessione valida mostra la schermata di accesso, altrimenti carica i progressi dal database. Ogni partita aggiorna subito lo stato React e invia un `PUT /api/progress` in background; il pannello dei traguardi mostra lo stato del salvataggio e permette di riprovare. L'azzeramento riscrive i progressi iniziali.
+Lo stato è gestito da `GamificationProvider` nel layout radice. All'avvio il provider chiama `GET /api/me`: senza sessione valida mostra la schermata di accesso, altrimenti carica i progressi dal database.
+
+Il salvataggio è **autorevole lato server**: quando una partita finisce, il client applica subito il risultato all'interfaccia per dare un feedback immediato e invia solo il _delta_ (`roundId`, mondo, gioco, risposte giuste e totali) a `POST /api/progress/rounds`. Il server ricalcola stelle, badge e serie con `applyRound()` dentro una transazione `Serializable` e restituisce il progresso aggiornato, che sostituisce quello ottimistico. Il modello `Round` usa `@@unique([userId, roundId])` come chiave di idempotenza: ricaricare la pagina del risultato o inviare due volte la stessa partita non assegna stelle doppie, e due schede simultanee non possono sovrascriversi. Il pannello dei traguardi mostra lo stato del salvataggio e permette di riprovare; `DELETE /api/progress` azzera tutto.
 
 ## Prima di giocare
 
@@ -137,8 +139,8 @@ Le preferenze vengono salvate per utente e per gioco nel modello `GameSetting` (
 
 - I bambini si registrano con un **nome** (2–24 caratteri) e una **password** (almeno 4). Il nome è unico senza distinzione tra maiuscole e minuscole.
 - Le password sono salvate come hash `scrypt`. La sessione usa un cookie `httpOnly` `little-explorer-session` valido 30 giorni; nel database resta solo l'hash del token.
-- I modelli `User`, `Progress`, `GameSetting` e `Session` sono definiti in `prisma/schema.prisma`. Ogni utente ha un solo record `Progress` e può avere una preferenza `GameSetting` per ogni gioco.
-- Le API in `src/app/api` controllano la sessione lato server. `PUT /api/progress` normalizza i dati prima di salvarli, `DELETE /api/progress` li azzera.
+- I modelli `User`, `Progress`, `Round`, `GameSetting` e `Session` sono definiti in `prisma/schema.prisma`. Ogni utente ha un solo record `Progress`, una preferenza `GameSetting` per gioco e un record `Round` per partita completata (con la ricompensa calcolata dal server).
+- Le API in `src/app/api` controllano la sessione lato server. `POST /api/progress/rounds` accetta solo il delta della partita, valida l'input e ricalcola il progresso in transazione; `DELETE /api/progress` azzera tutto. Non esiste più un endpoint che accetta uno snapshot di progressi scritto dal client.
 - Se su un browser esistono ancora progressi anonimi in `localStorage` (chiave `little-explorer:progress:v1`), vengono copiati nel nuovo account al momento della registrazione e poi rimossi.
 
 ## Avvio locale
