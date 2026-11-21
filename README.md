@@ -283,7 +283,7 @@ Dopo aver aggiunto parole inglesi, genera gli MP3 mancanti prima del deploy. I t
 
 ## Deploy su Vercel
 
-Importa il repository su Vercel, seleziona il preset **Next.js** e Node.js 22.x o successivo. Aggiungi `DATABASE_URL` e `DIRECT_URL` alle variabili d'ambiente del progetto e applica le migrazioni con `npm run db:deploy` (una volta, o come passo del comando di build). Comando build: `npm run build`. Le chiavi ElevenLabs servono solo in locale per generare gli MP3.
+Importa il repository su Vercel, seleziona il preset **Next.js** e Node.js 22.x o successivo. Aggiungi `DATABASE_URL`, `DIRECT_URL` e `CRON_SECRET` alle variabili d'ambiente del progetto e applica le migrazioni con `npm run db:deploy` (una volta, o come passo del comando di build) — serve anche la nuova tabella `Round`. Comando build: `npm run build`. Le chiavi ElevenLabs servono solo in locale per generare gli MP3.
 
 ## Crediti
 
