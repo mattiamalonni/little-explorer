@@ -33,6 +33,9 @@ Gli URL sono in inglese; l'interfaccia per i bambini resta in italiano. Le parti
 src/
   app/
     page.tsx                 hub dei cinque mondi
+    error.tsx                errore recuperabile di una rotta
+    global-error.tsx         rete di sicurezza se fallisce il layout radice
+    not-found.tsx            404 in italiano
     globals.css              reset, base e stili dell'hub
     api/
       auth/                  registrazione, accesso e uscita
@@ -299,6 +302,10 @@ Il piano gratuito ElevenLabs non permette usi commerciali; l'app non commerciale
 - **Logica:** `src/features/logic/data/games.ts`. Le sfide sono sequenze, intruso, dimensioni e percorsi su griglia; le forme sono descritte da tipo, colore e dimensione e disegnate da `logic-shape.tsx`. Le sequenze usano regole ripetute (AB, ABC, AAB), colori che cambiano ogni due forme, forme che crescono o rimpiccioliscono e riquadri vuoti anche nel mezzo. L'intruso può differire per colore, dimensione o forma; le dimensioni chiedono anche il secondo più grande/piccolo; i percorsi chiedono sequenze di 2-3 frecce su una griglia 4x3. Il gioco misto alterna i quattro tipi.
 
 Dopo aver aggiunto parole inglesi, genera gli MP3 mancanti prima del deploy. I testi italiani non richiedono audio: vengono letti dal dispositivo.
+
+## Errori e pagine mancanti
+
+Se una rotta fallisce, `src/app/error.tsx` mostra un messaggio in italiano con un pulsante **Riprova** che rivaluta il segmento. Se fallisce il layout radice (sessione o provider), subentra `global-error.tsx`, che deve definire `<html>` e `<body>` propri. Le pagine risultato chiamano `notFound()` quando non c'è una partita in corso: `not-found.tsx` offre il ritorno alla home con lo stile dell'app.
 
 ## Deploy su Vercel
 
