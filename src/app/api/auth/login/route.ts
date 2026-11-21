@@ -5,7 +5,7 @@ import { checkAuthRateLimit } from "@/features/auth/lib/rate-limit";
 import { nameKey, parseCredentials } from "@/features/auth/lib/validation";
 import { gameSettingsFromRecords } from "@/features/gamification/lib/db-settings";
 import { progressFromRecord, progressToRecordData } from "@/features/gamification/lib/db-progress";
-import { createDefaultProgress } from "@/features/gamification/lib/progress";
+import { createDefaultProgress, dayKey } from "@/features/gamification/lib/progress";
 import { prisma } from "@/lib/db";
 
 export async function POST(request: Request) {
@@ -53,6 +53,7 @@ export async function POST(request: Request) {
       user: { id: user.id, name: user.name },
       progress: progressFromRecord(progress),
       settings: gameSettingsFromRecords(user.settings),
+      today: dayKey(),
     });
   } catch (error) {
     console.error("Errore durante l'accesso", error);

@@ -8,6 +8,7 @@ import type { InitialSession } from "@/features/gamification/components/gamifica
 import { SoundProvider } from "@/features/gamification/components/sound-context";
 import { gameSettingsFromRecords } from "@/features/gamification/lib/db-settings";
 import { progressFromRecord } from "@/features/gamification/lib/db-progress";
+import { dayKey } from "@/features/gamification/lib/progress";
 import "./globals.css";
 import "@/styles/gamification.css";
 import "@/styles/auth.css";
@@ -49,6 +50,7 @@ async function SessionGate({ children }: { children: React.ReactNode }) {
             user: { id: user.id, name: user.name },
             progress: progressFromRecord(user.progress),
             settings: gameSettingsFromRecords(user.settings),
+            today: dayKey(),
           },
         }
       : { status: "auth" };

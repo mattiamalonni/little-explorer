@@ -16,6 +16,8 @@ export type SessionPayload = {
   user: SessionUser;
   progress: unknown;
   settings?: unknown;
+  /** Giorno calcolato sul server: client e DB devono usare la stessa data per streak e badge. */
+  today?: string;
 };
 
 /** Risolto lato server nel layout: evita il fetch client di /api/me e lo spinner iniziale. */
@@ -29,6 +31,7 @@ export type GamificationContextValue = {
   authBusy: boolean;
   authError: string | null;
   syncState: SyncState;
+  confirmedRewards: Record<string, RoundReward>;
   hasLegacyProgress: boolean;
   settings: GameSettings;
   updateGameSetting: (world: World, gameId: string, setting: GameSetting) => void;

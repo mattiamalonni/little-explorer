@@ -23,6 +23,7 @@ import {
   applyRound,
   clearProgress,
   createDefaultProgress,
+  dayKey,
   loadProgress,
   normalizeProgress,
   WORLDS,
@@ -63,6 +64,10 @@ export function GamificationProvider({
   const [authBusy, setAuthBusy] = useState(false);
   const [authError, setAuthError] = useState<string | null>(null);
   const [syncState, setSyncState] = useState<SyncState>("idle");
+  const [confirmedRewards, setConfirmedRewards] = useState<Record<string, RoundReward>>({});
+  const [serverToday, setServerToday] = useState<string | null>(
+    initialSession.status === "ready" ? (initialSession.payload.today ?? null) : null,
+  );
   const [hasLegacyProgress, setHasLegacyProgress] = useState(() => hasMeaningfulProgress(loadProgress()));
   const [panelOpen, setPanelOpen] = useState(false);
   const progressRef = useRef(progress);
@@ -71,6 +76,8 @@ export function GamificationProvider({
   const savingRoundsRef = useRef(false);
   const pendingSettingsRef = useRef(new Map<string, { world: World; gameId: string; setting: GameSetting }>());
   const savingSettingsRef = useRef(false);
+  const pendingResetRef = useRef(false);
+  const flushingResetRef = useRef(false);
 
   const applySession = useCallback((payload: SessionPayload) => {
     const next = normalizeProgress(payload.progress);
@@ -78,6 +85,9 @@ export function GamificationProvider({
     rewardsRef.current.clear();
     pendingRoundsRef.current.clear();
     pendingSettingsRef.current.clear();
+    pendingResetRef.current = false;
+    setConfirmedRewards({});
+    setServerToday(payload.today ?? dayKey());
     setProgress(next);
     setSettings(normalizeGameSettings(payload.settings));
     setUser(payload.user);
@@ -132,6 +142,8 @@ export function GamificationProvider({
   const handleSessionExpired = useCallback(() => {
     pendingRoundsRef.current.clear();
     pendingSettingsRef.current.clear();
+    pendingResetRef.current = false;
+    setConfirmedRewards({});
     setUser(null);
     setHydrated(false);
     setStatus("auth");
@@ -157,6 +169,8 @@ export function GamificationProvider({
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(input),
+            // La partita deve arrivare anche se il bambino chiude subito la scheda.
+            keepalive: true,
           });
 
           if (response.status === 401) {
@@ -171,9 +185,14 @@ export function GamificationProvider({
           }
 
           const result = (await response.json()) as { progress: Progress; reward: RoundReward };
-          progressRef.current = result.progress;
-          setProgress(result.progress);
           rewardsRef.current.set(roundId, result.reward);
+          // La reward confermata dal DB sostituisce quella ottimistica nella schermata risultati.
+          setConfirmedRewards((current) => ({ ...current, [roundId]: result.reward }));
+          // Se nel frattempo è stato chiesto l'azzeramento, non riscrivere il progresso.
+          if (!pendingResetRef.current) {
+            progressRef.current = result.progress;
+            setProgress(result.progress);
+          }
         } catch {
           pendingRoundsRef.current.set(roundId, input);
           setSyncState("error");
@@ -187,9 +206,38 @@ export function GamificationProvider({
     }
   }, [handleSessionExpired]);
 
+  const flushReset = useCallback(async () => {
+    if (flushingResetRef.current || !pendingResetRef.current) return;
+    flushingResetRef.current = true;
+    setSyncState("saving");
+
+    try {
+      const response = await fetch("/api/progress", { method: "DELETE", keepalive: true });
+      if (response.status === 401) {
+        pendingResetRef.current = false;
+        handleSessionExpired();
+        return;
+      }
+      if (!response.ok) {
+        setSyncState("error");
+        return;
+      }
+      pendingResetRef.current = false;
+      setSyncState("saved");
+    } catch {
+      setSyncState("error");
+    } finally {
+      flushingResetRef.current = false;
+    }
+  }, [handleSessionExpired]);
+
   const retrySave = useCallback(() => {
+    if (pendingResetRef.current) {
+      void flushReset();
+      return;
+    }
     void flushRounds();
-  }, [flushRounds]);
+  }, [flushReset, flushRounds]);
 
   const flushSettings = useCallback(async () => {
     if (savingSettingsRef.current) return;
@@ -307,6 +355,8 @@ export function GamificationProvider({
 
     pendingRoundsRef.current.clear();
     pendingSettingsRef.current.clear();
+    pendingResetRef.current = false;
+    setConfirmedRewards({});
     const empty = createDefaultProgress();
     progressRef.current = empty;
     rewardsRef.current.clear();
@@ -327,7 +377,8 @@ export function GamificationProvider({
       if (cached) return cached;
 
       // Feedback immediato; il server conferma (o corregge) il risultato in modo asincrono.
-      const result = applyRound(progressRef.current, input);
+      // La data arriva dal server: streak e badge non dipendono dal fuso del browser.
+      const result = applyRound(progressRef.current, input, serverToday ?? dayKey());
       progressRef.current = result.progress;
       rewardsRef.current.set(input.roundId, result.reward);
       setProgress(result.progress);
@@ -335,7 +386,7 @@ export function GamificationProvider({
       void flushRounds();
       return result.reward;
     },
-    [flushRounds],
+    [flushRounds, serverToday],
   );
 
   const openProgress = useCallback(() => setPanelOpen(true), []);
@@ -346,21 +397,17 @@ export function GamificationProvider({
     progressRef.current = next;
     rewardsRef.current.clear();
     pendingRoundsRef.current.clear();
+    pendingResetRef.current = true;
+    setConfirmedRewards({});
     clearProgress();
     setProgress(next);
-    setSyncState("saving");
 
-    try {
-      const response = await fetch("/api/progress", { method: "DELETE" });
-      if (response.status === 401) {
-        handleSessionExpired();
-        return;
-      }
-      setSyncState(response.ok ? "saved" : "error");
-    } catch {
-      setSyncState("error");
+    // Un round già in volo deve finire prima del DELETE, altrimenti lo cancellerebbe.
+    while (savingRoundsRef.current) {
+      await new Promise((resolve) => setTimeout(resolve, 20));
     }
-  }, [handleSessionExpired]);
+    await flushReset();
+  }, [flushReset]);
 
   const value = useMemo(
     () => ({
@@ -371,6 +418,7 @@ export function GamificationProvider({
       authBusy,
       authError,
       syncState,
+      confirmedRewards,
       hasLegacyProgress,
       settings,
       updateGameSetting,
@@ -392,6 +440,7 @@ export function GamificationProvider({
       authBusy,
       authError,
       syncState,
+      confirmedRewards,
       hasLegacyProgress,
       settings,
       updateGameSetting,

@@ -14,7 +14,7 @@ type RoundRewardInput = {
 };
 
 export function useRoundReward({ roundId, world, gameId, correct, total, enabled = true }: RoundRewardInput): RoundReward | null {
-  const { hydrated, completeRound } = useGamification();
+  const { hydrated, completeRound, confirmedRewards } = useGamification();
   const [reward, setReward] = useState<RoundReward | null>(null);
   const recorded = useRef(false);
 
@@ -24,5 +24,7 @@ export function useRoundReward({ roundId, world, gameId, correct, total, enabled
     setReward(completeRound({ roundId, world, gameId, correct, total }));
   }, [enabled, hydrated, completeRound, roundId, world, gameId, correct, total]);
 
-  return reward;
+  // La reward calcolata dal browser è solo un'anteprima: appena il server conferma,
+  // la versione autorevole sostituisce la cerimonia di fine partita.
+  return confirmedRewards[roundId] ?? reward;
 }
