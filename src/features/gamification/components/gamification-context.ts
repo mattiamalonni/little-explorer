@@ -12,6 +12,15 @@ export type SessionUser = {
 export type AppStatus = "loading" | "auth" | "ready" | "error";
 export type SyncState = "idle" | "saving" | "saved" | "error";
 
+export type SessionPayload = {
+  user: SessionUser;
+  progress: unknown;
+  settings?: unknown;
+};
+
+/** Risolto lato server nel layout: evita il fetch client di /api/me e lo spinner iniziale. */
+export type InitialSession = { status: "ready"; payload: SessionPayload } | { status: "auth" } | { status: "unknown" };
+
 export type GamificationContextValue = {
   progress: Progress;
   hydrated: boolean;

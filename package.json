@@ -15,6 +15,7 @@
     "db:push": "prisma db push",
     "db:migrate": "prisma migrate dev",
     "db:deploy": "prisma migrate deploy",
+    "audio:check:english": "node --env-file-if-exists=.env --experimental-strip-types scripts/check-audio-english.mjs",
     "audio:generate:english": "node --env-file-if-exists=.env --experimental-strip-types scripts/generate-audio-english.mjs",
     "audio:generate:italian": "node --env-file-if-exists=.env --experimental-strip-types scripts/generate-audio-italian.mjs"
   },

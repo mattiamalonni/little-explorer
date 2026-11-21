@@ -95,6 +95,7 @@ prisma.config.ts             configurazione Prisma CLI (schema, migrazioni, URL 
 src/generated/prisma/        client Prisma generato (non versionato)
 scripts/
   audio-core.mjs             logica comune di generazione audio
+  check-audio-english.mjs    verifica che nessun MP3 manchi (usabile in CI)
   generate-audio-english.mjs
   generate-audio-italian.mjs
 public/
@@ -144,7 +145,7 @@ La gamification è condivisa dai cinque mondi e vive sopra i layout delle singol
 - la **serie di giorni** aumenta giocando in giorni consecutivi;
 - il pannello dei traguardi, aperto dalla pillola nell'header o dal banner in dashboard, mostra livelli, statistiche e badge e permette di azzerare tutto.
 
-Lo stato è gestito da `GamificationProvider` nel layout radice. All'avvio il provider chiama `GET /api/me`: senza sessione valida mostra la schermata di accesso, altrimenti carica i progressi dal database.
+Lo stato è gestito da `GamificationProvider` nel layout radice. La sessione viene letta **sul server** da `SessionGate` (in `src/app/layout.tsx`), dietro un confine `<Suspense>`: utente, progressi e preferenze arrivano al provider come prop iniziale, senza il round-trip client di `GET /api/me`. L'endpoint resta solo per i refresh e per il recupero dopo un errore transiente. Senza sessione valida si mostra la schermata di accesso, altrimenti i progressi arrivano dal database.
 
 Il salvataggio è **autorevole lato server**: quando una partita finisce, il client applica subito il risultato all'interfaccia per dare un feedback immediato e invia solo il _delta_ (`roundId`, mondo, gioco, risposte giuste e totali) a `POST /api/progress/rounds`. Il server ricalcola stelle, badge e serie con `applyRound()` dentro una transazione `Serializable` e restituisce il progresso aggiornato, che sostituisce quello ottimistico. Il modello `Round` usa `@@unique([userId, roundId])` come chiave di idempotenza: ricaricare la pagina del risultato o inviare due volte la stessa partita non assegna stelle doppie, e due schede simultanee non possono sovrascriversi. Il pannello dei traguardi mostra lo stato del salvataggio e permette di riprovare; `DELETE /api/progress` azzera tutto.
 
@@ -225,9 +226,11 @@ Per aggiungere un'illustrazione:
 
 ## Audio
 
-L'inglese usa MP3 locali già inclusi, generati con la voce britannica **Alice** di ElevenLabs. L'italiano non usa MP3: il pulsante Ascolta parla sempre con la voce italiana del dispositivo tramite `speechSynthesis`, scegliendo una voce `it-*` quando il browser la espone. Little Orologio usa la stessa voce italiana del dispositivo per leggere le ore ad alta voce.
+L'inglese usa MP3 locali già inclusi (441 voci del vocabolario, comprese le 48 frasi del gioco _I am / You are_), generati con la voce britannica **Alice** di ElevenLabs. L'italiano non usa MP3: il pulsante Ascolta parla sempre con la voce italiana del dispositivo tramite `speechSynthesis`, scegliendo una voce `it-*` quando il browser la espone. Little Orologio e Little Logica usano la stessa voce italiana del dispositivo.
 
-I browser non chiamano mai ElevenLabs. Il pulsante Ascolta è presente in domande, feedback e riepiloghi. Un nuovo ascolto interrompe il precedente; cambio pagina, avanzamento e disattivazione audio fermano la riproduzione.
+I browser non chiamano mai ElevenLabs. Il pulsante Ascolta è presente in domande, feedback e riepiloghi. Un nuovo ascolto interrompe il precedente; cambio pagina, avanzamento e disattivazione audio fermano la riproduzione. Se un MP3 manca o non si riproduce, English ripassa alla voce inglese del dispositivo (`en-*`): il messaggio di errore compare solo se anche quel fallback fallisce.
+
+Gli elementi audio vengono riutilizzati per parola e la parola successiva è precaricata quando appare il feedback, così il primo ascolto non paga la latenza di rete. `next.config.ts` serve `/audio` e `/illustrations` con `Cache-Control: immutable`.
 
 ### Generare gli audio
 
@@ -257,6 +260,12 @@ I browser non chiamano mai ElevenLabs. Il pulsante Ascolta è presente in domand
    ```
 
 Gli MP3 esistenti vengono riutilizzati, quindi il comando si può riprendere dopo un errore. Gli errori fermano il lotto senza retry automatici. Per rigenerare un file, rimuovilo esplicitamente. Se cambi voce o modello, sposta prima gli audio precedenti fuori dalla cartella di destinazione per non mescolare voci diverse.
+
+Prima di ogni deploy (o in CI) verifica che non manchi nessun audio:
+
+```bash
+npm run audio:check:english
+```
 
 L'inglese scrive in `public/audio/english/`, l'italiano in `public/audio/italian/`. Le due cartelle sono separate per evitare collisioni tra parole uguali nelle due lingue. Gli MP3 italiani restano supportati dallo script di generazione, ma l'app non li riproduce.
 

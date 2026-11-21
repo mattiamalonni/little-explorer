@@ -29,6 +29,7 @@ import { GameSetup } from "@/features/gamification/components/game-setup";
 import { useRoundReward } from "@/features/gamification/components/use-round-reward";
 import { ProgressTrack } from "@/features/gamification/components/progress-track";
 import { useRoundController } from "@/features/gamification/hooks/use-round-controller";
+import { speakWithDeviceVoice } from "@/features/gamification/lib/speech";
 import { useSound } from "@/features/gamification/components/sound-context";
 
 type RoundConfig = {
@@ -41,6 +42,7 @@ type PlayContext = {
   start: (gameId: GameId, config?: RoundConfig) => void;
   answer: (word: Word) => void;
   speak: (text: string) => void;
+  preload: (text: string) => void;
   sound: boolean;
 };
 
@@ -84,53 +86,70 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   const { sound } = useSound();
   const [audioError, setAudioError] = useState("");
   const pathname = usePathname();
-  const audio = useRef<HTMLAudioElement | null>(null);
+  const audioCache = useRef(new Map<string, HTMLAudioElement>());
+  const activeAudio = useRef<HTMLAudioElement | null>(null);
 
-  useEffect(() => {
-    return () => {
-      const current = audio.current;
-      audio.current = null;
-      if (current) {
-        current.onerror = null;
-        current.pause();
-        current.removeAttribute("src");
-        current.load();
-      }
-    };
-  }, [pathname]);
-
-  useEffect(() => {
-    if (sound) return;
-    const current = audio.current;
-    audio.current = null;
-    if (current) {
-      current.onerror = null;
-      current.pause();
-      current.removeAttribute("src");
-      current.load();
+  function disposeAudio() {
+    activeAudio.current = null;
+    for (const clip of audioCache.current.values()) {
+      clip.onerror = null;
+      clip.pause();
+      clip.removeAttribute("src");
+      clip.load();
     }
+    audioCache.current.clear();
+  }
+
+  useEffect(() => disposeAudio, [pathname]);
+
+  useEffect(() => {
+    if (!sound) disposeAudio();
   }, [sound]);
 
   function stopAudio() {
-    const current = audio.current;
-    audio.current = null;
+    const current = activeAudio.current;
+    activeAudio.current = null;
     if (current) {
       current.onerror = null;
       current.pause();
-      current.removeAttribute("src");
-      current.load();
+      current.currentTime = 0;
     }
+  }
+
+  function getClip(text: string): HTMLAudioElement {
+    let clip = audioCache.current.get(text);
+    if (!clip) {
+      clip = new Audio(wordAudioPath(text));
+      clip.preload = "auto";
+      audioCache.current.set(text, clip);
+    }
+    return clip;
+  }
+
+  function preload(text: string) {
+    if (sound && text) getClip(text);
   }
 
   function speak(text: string) {
     if (!sound) return;
     stopAudio();
-    const clip = new Audio(wordAudioPath(text));
-    audio.current = clip;
+    const clip = getClip(text);
+    activeAudio.current = clip;
     setAudioError("");
+    let failed = false;
     function reportError() {
-      if (audio.current !== clip) return;
-      setAudioError("Audio non disponibile. Riprova premendo Ascolta oppure continua con le parole scritte.");
+      if (failed || activeAudio.current !== clip) return;
+      failed = true;
+      activeAudio.current = null;
+      // Se l'MP3 non c'è o non si riproduce, la voce inglese del dispositivo copre il buco.
+      speakWithDeviceVoice(text, {
+        lang: "en-US",
+        voicePrefix: "en",
+        rate: 0.9,
+        unavailableMessage: "Audio non disponibile. Continua pure con le parole scritte.",
+        errorMessage: "La voce non risponde. Continua pure con le parole scritte.",
+        onError: setAudioError,
+      });
     }
     clip.onerror = reportError;
     void clip.play().catch(reportError);
@@ -147,7 +166,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   }
 
   return (
-    <PlayContext.Provider value={{ round, start, answer, speak, sound }}>
+    <PlayContext.Provider value={{ round, start, answer, speak, preload, sound }}>
       {audioError && (
         <div className="audio-notice" role="status">
           {audioError}
@@ -496,7 +515,7 @@ function WordArt({ word, small = false }: { word: Word; small?: boolean }) {
 }
 
 export function PlayGame({ game }: { game: Game }) {
-  const { round, start, answer } = usePlay();
+  const { round, start, answer, preload } = usePlay();
   const router = useRouter();
   const [selected, setSelected] = useState<Word | null>(null);
   const nextLock = useRef(false);
@@ -514,6 +533,12 @@ export function PlayGame({ game }: { game: Game }) {
   useEffect(() => {
     if (selected) nextRef.current?.focus();
   }, [selected]);
+
+  // Scarica in anticipo l'audio della parola successiva, così il primo "Ascolta" non attende la rete.
+  useEffect(() => {
+    const next = activeRound?.questions[questionIndex + 1];
+    if (next) preload(next.word.english);
+  }, [activeRound, questionIndex, preload]);
 
   if (!activeRound) {
     const setupItems = game.words.map((word) => ({

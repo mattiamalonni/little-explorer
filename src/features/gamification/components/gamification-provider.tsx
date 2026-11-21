@@ -3,7 +3,13 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { AuthScreen } from "@/features/auth/components/auth-screen";
 import { AppLoading } from "@/features/gamification/components/app-loading";
-import { GamificationContext, type SessionUser, type SyncState } from "@/features/gamification/components/gamification-context";
+import {
+  GamificationContext,
+  type InitialSession,
+  type SessionPayload,
+  type SessionUser,
+  type SyncState,
+} from "@/features/gamification/components/gamification-context";
 import { ProgressPanel } from "@/features/gamification/components/progress-panel";
 import { SiteHeader } from "@/features/gamification/components/site-header";
 import {
@@ -25,12 +31,6 @@ import {
   type RoundReward,
   type World,
 } from "@/features/gamification/lib/progress";
-type SessionPayload = {
-  user: SessionUser;
-  progress: unknown;
-  settings?: unknown;
-};
-
 function hasMeaningfulProgress(progress: Progress): boolean {
   return (
     progress.stars > 0 ||
@@ -41,13 +41,25 @@ function hasMeaningfulProgress(progress: Progress): boolean {
   );
 }
 
-export function GamificationProvider({ children }: { children: React.ReactNode }) {
-  const [progress, setProgress] = useState<Progress>(createDefaultProgress);
-  const [settings, setSettings] = useState<GameSettings>({});
-  const [hydrated, setHydrated] = useState(false);
-  const [status, setStatus] = useState<"loading" | "auth" | "ready" | "error">("loading");
+export function GamificationProvider({
+  children,
+  initialSession = { status: "unknown" },
+}: {
+  children: React.ReactNode;
+  initialSession?: InitialSession;
+}) {
+  const [progress, setProgress] = useState<Progress>(() =>
+    initialSession.status === "ready" ? normalizeProgress(initialSession.payload.progress) : createDefaultProgress(),
+  );
+  const [settings, setSettings] = useState<GameSettings>(() =>
+    initialSession.status === "ready" ? normalizeGameSettings(initialSession.payload.settings) : {},
+  );
+  const [hydrated, setHydrated] = useState(initialSession.status === "ready");
+  const [status, setStatus] = useState<"loading" | "auth" | "ready" | "error">(
+    initialSession.status === "ready" ? "ready" : initialSession.status === "auth" ? "auth" : "loading",
+  );
   const [bootstrapAttempt, setBootstrapAttempt] = useState(0);
-  const [user, setUser] = useState<SessionUser | null>(null);
+  const [user, setUser] = useState<SessionUser | null>(initialSession.status === "ready" ? initialSession.payload.user : null);
   const [authBusy, setAuthBusy] = useState(false);
   const [authError, setAuthError] = useState<string | null>(null);
   const [syncState, setSyncState] = useState<SyncState>("idle");
@@ -76,6 +88,9 @@ export function GamificationProvider({ children }: { children: React.ReactNode }
   }, []);
 
   useEffect(() => {
+    // Il layout risolve già la sessione sul server: niente round-trip iniziale.
+    if (initialSession.status !== "unknown") return;
+
     let cancelled = false;
 
     async function bootstrap() {
@@ -106,7 +121,7 @@ export function GamificationProvider({ children }: { children: React.ReactNode }
     return () => {
       cancelled = true;
     };
-  }, [applySession, bootstrapAttempt]);
+  }, [applySession, bootstrapAttempt, initialSession.status]);
 
   const retryBootstrap = useCallback(() => {
     setStatus("loading");
