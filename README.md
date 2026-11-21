@@ -37,7 +37,7 @@ src/
     api/
       auth/                  registrazione, accesso e uscita
       me/                    sessione, progressi e preferenze correnti
-      progress/              salvataggio e azzeramento dei progressi
+      progress/              azzeramento dei progressi e registrazione partite (`rounds/`)
       settings/              salvataggio delle preferenze di gioco
     english/                 rotte di Little English
     math/                    rotte di Little Math
@@ -71,6 +71,10 @@ src/
     gamification/
       components/            accesso, pillola, banner, pannello traguardi, provider React
       components/game-setup.tsx  schermata pre-gioco condivisa
+      components/progress-track.tsx  barra avanzamento domande condivisa
+      hooks/use-round-controller.ts  stato partita condiviso dai cinque mondi
+      lib/speech.ts          sintesi vocale: guard, voce italiana e errori in un posto solo
+      lib/db-rounds.ts       registrazione partite in transazione e idempotente
       lib/progress.ts        stelle, livelli, badge e logica pura
       lib/db-progress.ts     mappatura tra progressi e database
       lib/game-settings.ts   preferenze di gioco per utente
@@ -84,7 +88,7 @@ src/
     time.css                 override e orologio di Little Orologio
     logic.css                override e forme di Little Logica
 prisma/
-  schema.prisma              modelli User, Progress, GameSetting e Session
+  schema.prisma              modelli User, Progress, Round, GameSetting e Session
   migrations/                migrazioni SQL versionate
 prisma.config.ts             configurazione Prisma CLI (schema, migrazioni, URL diretto)
 src/generated/prisma/        client Prisma generato (non versionato)
@@ -99,6 +103,16 @@ public/
 ```
 
 Ogni feature è autosufficiente: dati, componenti e audio vivono nella propria cartella. Per aggiungere un mondo nuovo basta creare `src/features/<mondo>`, una cartella di rotte in `src/app/<mondo>` e un foglio di stile con scope.
+
+### Pezzi condivisi dai giochi
+
+I cinque mondi hanno grafica e domande diverse, ma la meccanica comune sta in un solo posto:
+
+- `useRoundController<TRound, TStartArgs, TAnswerArgs>` gestisce lo stato della partita (`round`, `start`, `answer`). Ogni mondo passa soltanto il proprio `createRound` e il proprio `recordAnswer`: così correzioni e nuove behaviour non vanno replicate cinque volte.
+- `ProgressTrack` è la barra di avanzamento delle domande, con lo stesso markup e gli stessi attributi ARIA in tutti i mondi.
+- `speakItalian` / `stopSpeech` centralizzano il controllo `speechSynthesis`, la scelta della voce `it-*`, i messaggi di errore e la gestione di `interrupted`/`canceled`. English continua a usare i propri MP3 con lo stesso pattern di errore.
+
+Restano specifici di ogni mondo i dati, le illustrazioni, il layout delle domande e la schermata dei risultati.
 
 ### Stili con scope
 

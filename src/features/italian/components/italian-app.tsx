@@ -36,6 +36,9 @@ import { ProgressBanner } from "@/features/gamification/components/progress-bann
 import { RoundRewards } from "@/features/gamification/components/round-rewards";
 import { GameSetup } from "@/features/gamification/components/game-setup";
 import { useRoundReward } from "@/features/gamification/components/use-round-reward";
+import { ProgressTrack } from "@/features/gamification/components/progress-track";
+import { useRoundController } from "@/features/gamification/hooks/use-round-controller";
+import { speakItalian, stopSpeech } from "@/features/gamification/lib/speech";
 import { useSound } from "@/features/gamification/components/sound-context";
 
 type RoundConfig = {
@@ -72,64 +75,16 @@ export function Illustration({ asset, className = "", alt = "" }: { asset: strin
   );
 }
 
-function stopSpeech() {
-  if (typeof window !== "undefined" && "speechSynthesis" in window) {
-    window.speechSynthesis.cancel();
-  }
-}
-
 export function AppShell({ children }: { children: React.ReactNode }) {
-  const [round, setRound] = useState<Round | null>(null);
-  const { sound } = useSound();
-  const [audioError, setAudioError] = useState("");
-  const pathname = usePathname();
-
-  useEffect(() => {
-    return () => {
-      stopSpeech();
-    };
-  }, [pathname]);
-
-  useEffect(() => {
-    if (!sound) stopSpeech();
-  }, [sound]);
-
-  function speak(text: string) {
-    if (!sound) return;
-    stopSpeech();
-    setAudioError("");
-
-    if (typeof window === "undefined" || !("speechSynthesis" in window)) {
-      setAudioError("Audio non disponibile in questo browser. Puoi continuare con le parole scritte.");
-      return;
-    }
-
-    const utterance = new SpeechSynthesisUtterance(text);
-    utterance.lang = "it-IT";
-    utterance.rate = 0.92;
-    const italianVoice = window.speechSynthesis.getVoices().find((voice) => voice.lang.toLowerCase().startsWith("it"));
-    if (italianVoice) utterance.voice = italianVoice;
-    utterance.onerror = (event) => {
-      if (event.error !== "interrupted" && event.error !== "canceled") {
-        setAudioError("La voce del dispositivo non risponde. Puoi continuare con le parole scritte.");
-      }
-    };
-
-    window.speechSynthesis.cancel();
-    window.speechSynthesis.speak(utterance);
-  }
-
-  function start(gameId: GameId, config?: RoundConfig) {
-    stopSpeech();
-    setRound((previous) =>
+  const {
+    round,
+    start: startRound,
+    answer: recordAnswer,
+  } = useRoundController<Round, [GameId, RoundConfig?], [string]>({
+    create: (previous, gameId, config) =>
       createRound(gameId, { entries: config?.selected, length: config?.roundLength }, previous ?? undefined),
-    );
-  }
-
-  function answer(selected: string) {
-    stopSpeech();
-    setRound((current) => {
-      if (!current || current.answers.length >= current.questions.length) return current;
+    record: (current, selected) => {
+      if (current.answers.length >= current.questions.length) return current;
       const game = games.find((entry) => entry.id === current.gameId);
       const entry = current.questions[current.answers.length].entry;
       if (!game) return current;
@@ -145,7 +100,37 @@ export function AppShell({ children }: { children: React.ReactNode }) {
           },
         ],
       };
+    },
+  });
+  const { sound } = useSound();
+  const [audioError, setAudioError] = useState("");
+  const pathname = usePathname();
+
+  useEffect(() => stopSpeech, [pathname]);
+
+  useEffect(() => {
+    if (!sound) stopSpeech();
+  }, [sound]);
+
+  function speak(text: string) {
+    if (!sound) return;
+    setAudioError("");
+    speakItalian(text, {
+      rate: 0.92,
+      unavailableMessage: "Audio non disponibile in questo browser. Puoi continuare con le parole scritte.",
+      errorMessage: "La voce del dispositivo non risponde. Puoi continuare con le parole scritte.",
+      onError: setAudioError,
     });
+  }
+
+  function start(gameId: GameId, config?: RoundConfig) {
+    stopSpeech();
+    startRound(gameId, config);
+  }
+
+  function answer(selected: string) {
+    stopSpeech();
+    recordAnswer(selected);
   }
 
   return (
@@ -520,16 +505,7 @@ export function PlayGame({ game }: { game: Game }) {
           {questionIndex + 1} <span>/ {total}</span>
         </span>
       </div>
-      <div
-        className="progress-track"
-        role="progressbar"
-        aria-label="Domande completate"
-        aria-valuemin={0}
-        aria-valuemax={total}
-        aria-valuenow={questionIndex}
-      >
-        <span style={{ width: `${(questionIndex / total) * 100}%` }} />
-      </div>
+      <ProgressTrack index={questionIndex} total={total} />
       <div className="question-heading">
         <span className="eyebrow">{game.label}</span>
         <h1 ref={titleRef} tabIndex={-1}>

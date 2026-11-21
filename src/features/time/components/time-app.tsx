@@ -43,6 +43,9 @@ import { ProgressBanner } from "@/features/gamification/components/progress-bann
 import { RoundRewards } from "@/features/gamification/components/round-rewards";
 import { GameSetup } from "@/features/gamification/components/game-setup";
 import { useRoundReward } from "@/features/gamification/components/use-round-reward";
+import { ProgressTrack } from "@/features/gamification/components/progress-track";
+import { useRoundController } from "@/features/gamification/hooks/use-round-controller";
+import { speakItalian, stopSpeech } from "@/features/gamification/lib/speech";
 import { useSound } from "@/features/gamification/components/sound-context";
 
 const sampleTimes: Record<TimeGameId, { hour: number; minute: Minute }> = {
@@ -75,23 +78,27 @@ function usePlay() {
   return context;
 }
 
-function stopSpeech() {
-  if (typeof window !== "undefined" && "speechSynthesis" in window) {
-    window.speechSynthesis.cancel();
-  }
-}
-
 export function AppShell({ children }: { children: React.ReactNode }) {
-  const [round, setRound] = useState<Round | null>(null);
+  const {
+    round,
+    start: startRound,
+    answer: recordAnswer,
+  } = useRoundController<Round, [TimeGameId, RoundConfig?], [string]>({
+    create: (previous, gameId, config) => createRound(gameId, config ?? {}, previous ?? undefined),
+    record: (current, selected) => {
+      if (current.answers.length >= current.questions.length) return current;
+      const question = current.questions[current.answers.length];
+      return {
+        ...current,
+        answers: [...current.answers, { question, selected, correct: selected === question.answer }],
+      };
+    },
+  });
   const { sound } = useSound();
   const [audioError, setAudioError] = useState("");
   const pathname = usePathname();
 
-  useEffect(() => {
-    return () => {
-      stopSpeech();
-    };
-  }, [pathname]);
+  useEffect(() => stopSpeech, [pathname]);
 
   useEffect(() => {
     if (!sound) stopSpeech();
@@ -99,51 +106,23 @@ export function AppShell({ children }: { children: React.ReactNode }) {
 
   function speak(text: string) {
     if (!sound) return;
-    stopSpeech();
     setAudioError("");
-
-    if (typeof window === "undefined" || !("speechSynthesis" in window)) {
-      setAudioError("L'audio non è disponibile in questo browser. Puoi continuare con le ore scritte.");
-      return;
-    }
-
-    const utterance = new SpeechSynthesisUtterance(text);
-    utterance.lang = "it-IT";
-    utterance.rate = 0.82;
-    const italianVoice = window.speechSynthesis.getVoices().find((voice) => voice.lang.toLowerCase().startsWith("it"));
-    if (italianVoice) utterance.voice = italianVoice;
-    utterance.onerror = (event) => {
-      if (event.error !== "interrupted" && event.error !== "canceled") {
-        setAudioError("La voce del dispositivo non risponde. Puoi continuare con le ore scritte.");
-      }
-    };
-
-    window.speechSynthesis.cancel();
-    window.speechSynthesis.speak(utterance);
+    speakItalian(text, {
+      rate: 0.82,
+      unavailableMessage: "L'audio non è disponibile in questo browser. Puoi continuare con le ore scritte.",
+      errorMessage: "La voce del dispositivo non risponde. Puoi continuare con le ore scritte.",
+      onError: setAudioError,
+    });
   }
 
   function start(gameId: TimeGameId, config?: RoundConfig) {
     stopSpeech();
-    setRound((previous) => createRound(gameId, config ?? {}, previous ?? undefined));
+    startRound(gameId, config);
   }
 
   function answer(selected: string) {
     stopSpeech();
-    setRound((current) => {
-      if (!current || current.answers.length >= current.questions.length) return current;
-      const question = current.questions[current.answers.length];
-      return {
-        ...current,
-        answers: [
-          ...current.answers,
-          {
-            question,
-            selected,
-            correct: selected === question.answer,
-          },
-        ],
-      };
-    });
+    recordAnswer(selected);
   }
 
   return (
@@ -332,16 +311,7 @@ function QuestionCard({ round, game }: { round: Round; game: Game }) {
           {index + 1} <span>/ {total}</span>
         </span>
       </div>
-      <div
-        className="progress-track"
-        role="progressbar"
-        aria-label="Domande completate"
-        aria-valuemin={0}
-        aria-valuemax={total}
-        aria-valuenow={index}
-      >
-        <span style={{ width: `${(index / total) * 100}%` }} />
-      </div>
+      <ProgressTrack index={index} total={total} />
       <div className="question-heading">
         <span className="eyebrow">{game.subtitle.toUpperCase()}</span>
         <h1 tabIndex={-1} ref={titleRef}>

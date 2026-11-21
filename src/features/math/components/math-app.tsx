@@ -7,6 +7,9 @@ import { ProgressBanner } from "@/features/gamification/components/progress-bann
 import { RoundRewards } from "@/features/gamification/components/round-rewards";
 import { GameSetup } from "@/features/gamification/components/game-setup";
 import { useRoundReward } from "@/features/gamification/components/use-round-reward";
+import { ProgressTrack } from "@/features/gamification/components/progress-track";
+import { useRoundController } from "@/features/gamification/hooks/use-round-controller";
+import { speakItalian, stopSpeech } from "@/features/gamification/lib/speech";
 import { useSound } from "@/features/gamification/components/sound-context";
 import { CalculationHelp } from "@/features/math/components/calculation-help";
 import {
@@ -77,52 +80,28 @@ function usePlay() {
 }
 
 export function AppShell({ children }: { children: React.ReactNode }) {
-  const [round, setRound] = useState<Round | null>(null);
+  const { round, start, answer } = useRoundController<Round, [GameId, Limit, { length?: number }?], [string, number]>({
+    create: (previous, id, nextLimit, options) => createRound(id, nextLimit, { length: options?.length }, previous ?? undefined),
+    record: (current, questionId, selected) => recordAnswer(current, questionId, selected),
+  });
   const { sound } = useSound();
   const [audioError, setAudioError] = useState("");
   const pathname = usePathname();
-  const utterance = useRef<SpeechSynthesisUtterance | null>(null);
 
-  useEffect(
-    () => () => {
-      window.speechSynthesis?.cancel();
-    },
-    [pathname],
-  );
+  useEffect(() => stopSpeech, [pathname]);
 
   useEffect(() => {
-    if (!sound) window.speechSynthesis?.cancel();
+    if (!sound) stopSpeech();
   }, [sound]);
 
   function speak(text: string) {
     if (!sound) return;
-    if (!("speechSynthesis" in window)) {
-      setAudioError("Audio non disponibile in questo browser. Puoi continuare con i numeri scritti.");
-      return;
-    }
-    window.speechSynthesis.cancel();
-    const speech = new SpeechSynthesisUtterance(text);
-    speech.voice = window.speechSynthesis.getVoices().find((voice) => voice.lang.startsWith("it")) ?? null;
-    speech.lang = "it-IT";
-    speech.rate = 0.85;
-    speech.onerror = (event) => {
-      if (event.error !== "interrupted" && event.error !== "canceled") {
-        setAudioError("La voce non risponde. Puoi continuare con i numeri scritti.");
-      }
-    };
-    utterance.current = speech;
     setAudioError("");
-    window.speechSynthesis.speak(speech);
-  }
-
-  function start(id: GameId, nextLimit: Limit, options?: { length?: number }) {
-    setRound((previous) => createRound(id, nextLimit, { length: options?.length }, previous ?? undefined));
-  }
-
-  function answer(questionId: string, selected: number) {
-    setRound((current) => {
-      if (!current) throw new Error("Nessuna partita in corso.");
-      return recordAnswer(current, questionId, selected);
+    speakItalian(text, {
+      rate: 0.85,
+      unavailableMessage: "Audio non disponibile in questo browser. Puoi continuare con i numeri scritti.",
+      errorMessage: "La voce non risponde. Puoi continuare con i numeri scritti.",
+      onError: setAudioError,
     });
   }
 
@@ -302,16 +281,7 @@ function QuestionCard({ round, game }: { round: Round; game: Game }) {
           {index + 1} <span>/ {total}</span>
         </span>
       </div>
-      <div
-        className="progress-track"
-        role="progressbar"
-        aria-label="Domande completate"
-        aria-valuemin={0}
-        aria-valuemax={total}
-        aria-valuenow={index}
-      >
-        <span style={{ width: `${(index / total) * 100}%` }} />
-      </div>
+      <ProgressTrack index={index} total={total} />
       <div className="question-heading">
         <span className="eyebrow">{operationPrompts[question.gameId]}</span>
         <h1 tabIndex={-1} ref={titleRef}>

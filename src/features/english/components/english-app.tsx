@@ -27,6 +27,8 @@ import { ProgressBanner } from "@/features/gamification/components/progress-bann
 import { RoundRewards } from "@/features/gamification/components/round-rewards";
 import { GameSetup } from "@/features/gamification/components/game-setup";
 import { useRoundReward } from "@/features/gamification/components/use-round-reward";
+import { ProgressTrack } from "@/features/gamification/components/progress-track";
+import { useRoundController } from "@/features/gamification/hooks/use-round-controller";
 import { useSound } from "@/features/gamification/components/sound-context";
 
 type RoundConfig = {
@@ -64,7 +66,21 @@ export function Illustration({ asset, className = "", alt = "" }: { asset: strin
 }
 
 export function AppShell({ children }: { children: React.ReactNode }) {
-  const [round, setRound] = useState<Round | null>(null);
+  const {
+    round,
+    start: startRound,
+    answer: recordAnswer,
+  } = useRoundController<Round, [GameId, RoundConfig?], [Word]>({
+    create: (previous, gameId, config) =>
+      createRound(gameId, { words: config?.selected, length: config?.roundLength }, previous ?? undefined),
+    record: (current, selected) => {
+      if (current.answers.length >= current.questions.length) return current;
+      return {
+        ...current,
+        answers: [...current.answers, { word: current.questions[current.answers.length].word, selected }],
+      };
+    },
+  });
   const { sound } = useSound();
   const [audioError, setAudioError] = useState("");
   const pathname = usePathname();
@@ -122,18 +138,12 @@ export function AppShell({ children }: { children: React.ReactNode }) {
 
   function start(gameId: GameId, config?: RoundConfig) {
     stopAudio();
-    setRound((previous) => createRound(gameId, { words: config?.selected, length: config?.roundLength }, previous ?? undefined));
+    startRound(gameId, config);
   }
 
   function answer(selected: Word) {
     stopAudio();
-    setRound((current) => {
-      if (!current || current.answers.length >= current.questions.length) return current;
-      return {
-        ...current,
-        answers: [...current.answers, { word: current.questions[current.answers.length].word, selected }],
-      };
-    });
+    recordAnswer(selected);
   }
 
   return (
@@ -557,16 +567,7 @@ export function PlayGame({ game }: { game: Game }) {
           {questionIndex + 1} <span>/ {total}</span>
         </span>
       </div>
-      <div
-        className="progress-track"
-        role="progressbar"
-        aria-label="Domande completate"
-        aria-valuemin={0}
-        aria-valuemax={total}
-        aria-valuenow={questionIndex}
-      >
-        <span style={{ width: `${(questionIndex / total) * 100}%` }} />
-      </div>
+      <ProgressTrack index={questionIndex} total={total} />
       <div className="question-heading">
         <span className="eyebrow">{game.label}</span>
         <h1 ref={titleRef} tabIndex={-1}>

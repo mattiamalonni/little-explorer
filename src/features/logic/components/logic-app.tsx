@@ -44,6 +44,8 @@ import { ProgressBanner } from "@/features/gamification/components/progress-bann
 import { RoundRewards } from "@/features/gamification/components/round-rewards";
 import { GameSetup } from "@/features/gamification/components/game-setup";
 import { useRoundReward } from "@/features/gamification/components/use-round-reward";
+import { ProgressTrack } from "@/features/gamification/components/progress-track";
+import { useRoundController } from "@/features/gamification/hooks/use-round-controller";
 
 type PlayContext = {
   round: Round | null;
@@ -60,29 +62,17 @@ function usePlay() {
 }
 
 export function AppShell({ children }: { children: React.ReactNode }) {
-  const [round, setRound] = useState<Round | null>(null);
-
-  function start(gameId: LogicGameId, config?: RoundConfig) {
-    setRound((previous) => createRound(gameId, config ?? {}, previous ?? undefined));
-  }
-
-  function answer(selected: string) {
-    setRound((current) => {
-      if (!current || current.answers.length >= current.questions.length) return current;
+  const { round, start, answer } = useRoundController<Round, [LogicGameId, RoundConfig?], [string]>({
+    create: (previous, gameId, config) => createRound(gameId, config ?? {}, previous ?? undefined),
+    record: (current, selected) => {
+      if (current.answers.length >= current.questions.length) return current;
       const question = current.questions[current.answers.length];
       return {
         ...current,
-        answers: [
-          ...current.answers,
-          {
-            question,
-            selected,
-            correct: selected === question.answer,
-          },
-        ],
+        answers: [...current.answers, { question, selected, correct: selected === question.answer }],
       };
-    });
-  }
+    },
+  });
 
   return (
     <PlayContext.Provider value={{ round, start, answer }}>
@@ -354,16 +344,7 @@ function QuestionCard({ round, game }: { round: Round; game: Game }) {
           {index + 1} <span>/ {total}</span>
         </span>
       </div>
-      <div
-        className="progress-track"
-        role="progressbar"
-        aria-label="Domande completate"
-        aria-valuemin={0}
-        aria-valuemax={total}
-        aria-valuenow={index}
-      >
-        <span style={{ width: `${(index / total) * 100}%` }} />
-      </div>
+      <ProgressTrack index={index} total={total} />
       <div className="question-heading">
         <span className="eyebrow">{game.subtitle.toUpperCase()}</span>
         <h1 tabIndex={-1} ref={titleRef}>
