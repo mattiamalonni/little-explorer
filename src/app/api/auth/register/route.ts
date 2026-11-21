@@ -5,7 +5,7 @@ import { hashPassword } from "@/features/auth/lib/password";
 import { checkAuthRateLimit } from "@/features/auth/lib/rate-limit";
 import { nameKey, parseCredentials } from "@/features/auth/lib/validation";
 import { progressFromRecord, progressToRecordData } from "@/features/gamification/lib/db-progress";
-import { createDefaultProgress, dayKey, normalizeProgress, type Progress } from "@/features/gamification/lib/progress";
+import { createDefaultProgress, dayKey, reconcileMigration, type Progress } from "@/features/gamification/lib/progress";
 import { prisma } from "@/lib/db";
 
 const REGISTER_MESSAGE = "Non siamo riusciti a creare il tuo nome. Controlla i dati e riprova tra poco.";
@@ -29,7 +29,7 @@ export async function POST(request: Request) {
   const record = payload as Record<string, unknown>;
   const initialProgress: Progress =
     record.initialProgress && typeof record.initialProgress === "object"
-      ? normalizeProgress(record.initialProgress)
+      ? reconcileMigration(record.initialProgress)
       : createDefaultProgress();
 
   try {

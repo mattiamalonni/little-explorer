@@ -313,6 +313,38 @@ export function normalizeProgress(value: unknown): Progress {
   };
 }
 
+/**
+ * Sanifica i progressi anonimi migrati alla registrazione.
+ * `normalizeProgress` controlla i tipi; qui ripristiniamo le invarianti che
+ * `applyRound` garantisce, così un payload costruito a mano non può seminare
+ * stelle, badge o serie impossibili in un account nuovo.
+ */
+export function reconcileMigration(value: unknown, today = dayKey()): Progress {
+  const progress = normalizeProgress(value);
+  const correctTotal = Object.values(progress.correct).reduce((sum, count) => sum + count, 0);
+  const scale = correctTotal > progress.stars && correctTotal > 0 ? progress.stars / correctTotal : 1;
+  const correct = {
+    english: Math.floor(progress.correct.english * scale),
+    math: Math.floor(progress.correct.math * scale),
+    italian: Math.floor(progress.correct.italian * scale),
+    time: Math.floor(progress.correct.time * scale),
+    logic: Math.floor(progress.correct.logic * scale),
+  };
+
+  const base: Progress = {
+    ...progress,
+    correct,
+    perfectRounds: Math.min(progress.perfectRounds, progress.rounds),
+    games: progress.games.slice(0, progress.rounds),
+    streak: Math.min(progress.streak, Math.max(1, progress.rounds)),
+    lastPlayed: progress.lastPlayed && progress.lastPlayed > today ? today : progress.lastPlayed,
+  };
+
+  // `streak-3` non è monotono: resta sbloccato anche se la serie ricade a 1.
+  const allowed = new Set(BADGES.filter((badge) => badge.id === "streak-3" || badge.isUnlocked(base)).map((badge) => badge.id));
+  return { ...base, badges: progress.badges.filter((id) => allowed.has(id)) };
+}
+
 export function loadProgress(): Progress {
   if (typeof window === "undefined") return createDefaultProgress();
   try {

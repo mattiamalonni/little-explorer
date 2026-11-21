@@ -7,6 +7,7 @@ import {
   levelForStars,
   levelProgress,
   normalizeProgress,
+  reconcileMigration,
   PERFECT_BONUS,
   type RoundInput,
 } from "../src/features/gamification/lib/progress.ts";
@@ -115,6 +116,35 @@ test("normalizeProgress scarta valori sporchi e badge sconosciuti", () => {
   assert.equal(clean.lastPlayed, "2026-01-01");
   assert.equal(normalizeProgress(null).stars, 0);
   assert.equal(normalizeProgress({ lastPlayed: "01/01/2026" }).lastPlayed, null);
+});
+
+test("reconcileMigration ripristina le invarianti dei progressi migrati", () => {
+  const result = reconcileMigration(
+    {
+      stars: 10,
+      rounds: 2,
+      perfectRounds: 99,
+      correct: { english: 400, math: 400, italian: 400, time: 400, logic: 400 },
+      games: ["english:colors", "math:addition", "italian:gn", "time:read", "logic:patterns"],
+      streak: 365,
+      lastPlayed: "2099-12-31",
+      badges: ["first-round", "crown", "streak-3", "invented"],
+    },
+    "2026-03-01",
+  );
+
+  assert.equal(result.perfectRounds, 2);
+  assert.equal(result.games.length, 2);
+  assert.equal(result.streak, 2);
+  assert.equal(result.lastPlayed, "2026-03-01");
+  const correctTotal = Object.values(result.correct).reduce((sum, count) => sum + count, 0);
+  assert.ok(correctTotal <= result.stars);
+  assert.deepEqual(result.badges.sort(), ["first-round", "streak-3"]);
+});
+
+test("reconcileMigration non penalizza una migrazione legittima", () => {
+  const legitimate = applyRound(createDefaultProgress(), input()).progress;
+  assert.deepEqual(reconcileMigration(legitimate, dayKey()), legitimate);
 });
 
 test("dayKey produce sempre una data yyyy-mm-dd", () => {
