@@ -229,6 +229,8 @@ npm run build
 
 I test usano il test runner integrato di Node con `--experimental-strip-types`: importano i moduli `.ts` direttamente, senza alias o transpilazione. Coprono `applyRound` e la normalizzazione dei progressi, la validazione dell'input delle partite, name/password, rate limit, preferenze di gioco e la logica deterministica dei round di English e Math (con `random` iniettato).
 
+Gli stessi comandi girano in `.github/workflows/ci.yml` a ogni push su `main` e a ogni pull request. Il job non ha bisogno di database: imposta solo un `DIRECT_URL` segnaposto perché `postinstall` esegua `prisma generate`, che non apre connessioni. La build non richiede `DATABASE_URL` perché la sessione viene letta a request time dietro `<Suspense>`.
+
 ## Illustrazioni
 
 Tutte le immagini sono SVG locali in `public/illustrations`, con nomi inglesi leggibili in minuscolo e trattini tra le parole (`cat.svg`, `teddy-bear.svg`). L'app applica dimensioni, rotazioni e composizione tramite CSS; non usa emoji di sistema. Little Orologio e Little Logica non richiedono nuove illustrazioni: il quadrante e le forme geometriche sono SVG disegnati direttamente nei componenti.

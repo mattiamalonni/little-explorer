@@ -1,0 +1,47 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+env:
+  # `prisma generate` richiede che la variabile esista, ma non apre connessioni.
+  # È un placeholder: nessun segreto e nessun database nei job di CI.
+  DIRECT_URL: postgresql://placeholder:placeholder@127.0.0.1:5432/placeholder
+  NEXT_TELEMETRY_DISABLED: "1"
+
+jobs:
+  checks:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22.22.0"
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Typecheck
+        run: npm run typecheck
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Format
+        run: npm run format:check
+
+      - name: Unit tests
+        run: npm test
+
+      - name: Audio assets
+        run: npm run audio:check:english
+
+      - name: Build
+        run: npm run build
