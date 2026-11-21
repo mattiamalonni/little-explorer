@@ -1,4 +1,4 @@
-import { WORLDS, type World } from "@/features/gamification/lib/progress";
+import { WORLDS, type World } from "./progress.ts";
 
 export type GameSetting = {
   /** Voci scelte per il gioco. `null` significa tutte quelle disponibili. */

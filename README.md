@@ -76,6 +76,7 @@ src/
       hooks/use-round-controller.ts  stato partita condiviso dai cinque mondi
       lib/speech.ts          sintesi vocale: guard, voce italiana e errori in un posto solo
       lib/db-rounds.ts       registrazione partite in transazione e idempotente
+      lib/round-input.ts     validazione del delta di partita (testabile da sola)
       lib/progress.ts        stelle, livelli, badge e logica pura
       lib/db-progress.ts     mappatura tra progressi e database
       lib/game-settings.ts   preferenze di gioco per utente
@@ -93,6 +94,7 @@ prisma/
   migrations/                migrazioni SQL versionate
 prisma.config.ts             configurazione Prisma CLI (schema, migrazioni, URL diretto)
 src/generated/prisma/        client Prisma generato (non versionato)
+tests/                       test unitari node:test della logica pura
 scripts/
   audio-core.mjs             logica comune di generazione audio
   check-audio-english.mjs    verifica che nessun MP3 manchi (usabile in CI)
@@ -214,7 +216,18 @@ npm run db:migrate    # crea e applica una migrazione in sviluppo
 npm run db:deploy     # applica le migrazioni esistenti
 ```
 
-Non è presente una suite di test: la verifica avviene con lint, controllo della formattazione, build e controllo manuale delle rotte e degli endpoint.
+La verifica automatica è:
+
+```bash
+npm test              # 36 test unitari con node:test (nessun framework, nessun DB)
+npm run typecheck     # tsc --noEmit
+npm run lint
+npm run format:check
+npm run audio:check:english
+npm run build
+```
+
+I test usano il test runner integrato di Node con `--experimental-strip-types`: importano i moduli `.ts` direttamente, senza alias o transpilazione. Coprono `applyRound` e la normalizzazione dei progressi, la validazione dell'input delle partite, name/password, rate limit, preferenze di gioco e la logica deterministica dei round di English e Math (con `random` iniettato).
 
 ## Illustrazioni
 
