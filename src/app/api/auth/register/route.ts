@@ -2,16 +2,27 @@ import { Prisma } from "@/generated/prisma/client";
 import { NextResponse } from "next/server";
 import { createSession } from "@/features/auth/lib/session";
 import { hashPassword } from "@/features/auth/lib/password";
+import { checkAuthRateLimit } from "@/features/auth/lib/rate-limit";
 import { nameKey, parseCredentials } from "@/features/auth/lib/validation";
 import { progressFromRecord, progressToRecordData } from "@/features/gamification/lib/db-progress";
 import { createDefaultProgress, normalizeProgress, type Progress } from "@/features/gamification/lib/progress";
 import { prisma } from "@/lib/db";
 
+const REGISTER_MESSAGE = "Non siamo riusciti a creare il tuo nome. Controlla i dati e riprova tra poco.";
+
 export async function POST(request: Request) {
   const payload = await request.json().catch(() => null);
-  const parsed = parseCredentials(payload);
+  const parsed = parseCredentials(payload, { minPasswordLength: 8 });
   if (!parsed.ok) {
     return NextResponse.json({ error: parsed.error }, { status: 400 });
+  }
+
+  const limit = checkAuthRateLimit(request, parsed.credentials.name);
+  if (!limit.ok) {
+    return NextResponse.json(
+      { error: "Troppi tentativi ravvicinati. Aspetta un momento e riprova." },
+      { status: 429, headers: { "Retry-After": String(limit.retryAfter) } },
+    );
   }
 
   const { name, password } = parsed.credentials;
@@ -26,7 +37,7 @@ export async function POST(request: Request) {
       data: {
         name,
         nameKey: nameKey(name),
-        passwordHash: hashPassword(password),
+        passwordHash: await hashPassword(password),
         progress: {
           create: progressToRecordData(initialProgress),
         },
@@ -43,9 +54,10 @@ export async function POST(request: Request) {
     });
   } catch (error) {
     if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === "P2002") {
-      return NextResponse.json({ error: "Questo nome è già stato scelto. Provane un altro." }, { status: 409 });
+      // Risposta generica: non rivelare quali nomi sono già occupati.
+      return NextResponse.json({ error: REGISTER_MESSAGE }, { status: 409 });
     }
     console.error("Errore durante la registrazione", error);
-    return NextResponse.json({ error: "Non siamo riusciti a creare il tuo nome. Riprova tra poco." }, { status: 500 });
+    return NextResponse.json({ error: REGISTER_MESSAGE }, { status: 500 });
   }
 }

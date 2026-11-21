@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { createSession } from "@/features/auth/lib/session";
 import { verifyPassword } from "@/features/auth/lib/password";
+import { checkAuthRateLimit } from "@/features/auth/lib/rate-limit";
 import { nameKey, parseCredentials } from "@/features/auth/lib/validation";
 import { gameSettingsFromRecords } from "@/features/gamification/lib/db-settings";
 import { progressFromRecord, progressToRecordData } from "@/features/gamification/lib/db-progress";
@@ -14,6 +15,14 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: parsed.error }, { status: 400 });
   }
 
+  const limit = checkAuthRateLimit(request, parsed.credentials.name);
+  if (!limit.ok) {
+    return NextResponse.json(
+      { error: "Troppi tentativi ravvicinati. Aspetta un momento e riprova." },
+      { status: 429, headers: { "Retry-After": String(limit.retryAfter) } },
+    );
+  }
+
   const { name, password } = parsed.credentials;
 
   try {
@@ -22,7 +31,7 @@ export async function POST(request: Request) {
       include: { progress: true, settings: true },
     });
 
-    if (!user || !verifyPassword(password, user.passwordHash)) {
+    if (!user || !(await verifyPassword(password, user.passwordHash))) {
       return NextResponse.json({ error: "Nome o password non sono giusti. Riprova." }, { status: 401 });
     }
 
@@ -36,9 +45,8 @@ export async function POST(request: Request) {
       });
     }
 
-    await prisma.session.deleteMany({
-      where: { userId: user.id, expiresAt: { lt: new Date() } },
-    });
+    // Una sola sessione attiva per utente: le precedenti non restano valide.
+    await prisma.session.deleteMany({ where: { userId: user.id } });
     await createSession(user.id);
 
     return NextResponse.json({

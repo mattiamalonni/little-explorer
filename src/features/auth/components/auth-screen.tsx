@@ -125,12 +125,13 @@ export function AuthScreen() {
                   required
                   aria-required="true"
                   aria-describedby={isLogin ? undefined : "auth-password-hint"}
-                  placeholder={isLogin ? "La tua password" : "Almeno 4 caratteri"}
+                  placeholder={isLogin ? "La tua password" : "Almeno 8 caratteri"}
+                  minLength={isLogin ? undefined : 8}
                 />
               </span>
               {!isLogin && (
                 <small id="auth-password-hint" className="auth-hint">
-                  Scegli qualcosa di semplice da ricordare, ma non dirlo a nessuno.
+                  Almeno 8 caratteri: scegli qualcosa di semplice da ricordare, ma non dirlo a nessuno.
                 </small>
               )}
             </label>

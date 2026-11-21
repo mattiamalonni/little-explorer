@@ -9,7 +9,7 @@ export type SessionUser = {
   name: string;
 };
 
-export type AppStatus = "loading" | "auth" | "ready";
+export type AppStatus = "loading" | "auth" | "ready" | "error";
 export type SyncState = "idle" | "saving" | "saved" | "error";
 
 export type GamificationContextValue = {
@@ -26,6 +26,7 @@ export type GamificationContextValue = {
   login: (name: string, password: string) => Promise<void>;
   register: (name: string, password: string) => Promise<void>;
   clearAuthError: () => void;
+  retryBootstrap: () => void;
   logout: () => Promise<void>;
   retrySave: () => void;
   completeRound: (input: RoundInput) => RoundReward;

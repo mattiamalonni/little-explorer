@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { getSessionUser } from "@/features/auth/lib/session";
+import { getSessionUserId } from "@/features/auth/lib/session";
 import { gameSettingToRecordData, gameSettingsFromRecords } from "@/features/gamification/lib/db-settings";
 import { normalizeGameSetting } from "@/features/gamification/lib/game-settings";
 import { WORLDS, type World } from "@/features/gamification/lib/progress";
@@ -10,13 +10,19 @@ function parseWorld(value: unknown): World | null {
 }
 
 export async function GET() {
-  const user = await getSessionUser();
-  if (!user) {
+  let userId;
+  try {
+    userId = await getSessionUserId();
+  } catch (error) {
+    console.error("Errore durante la lettura della sessione", error);
+    return NextResponse.json({ error: "Non siamo riusciti a verificare la sessione. Riprova." }, { status: 500 });
+  }
+  if (!userId) {
     return NextResponse.json({ error: "Non sei ancora entrato." }, { status: 401 });
   }
 
   try {
-    const records = await prisma.gameSetting.findMany({ where: { userId: user.id } });
+    const records = await prisma.gameSetting.findMany({ where: { userId } });
     return NextResponse.json({ settings: gameSettingsFromRecords(records) });
   } catch (error) {
     console.error("Errore durante la lettura delle preferenze", error);
@@ -25,8 +31,14 @@ export async function GET() {
 }
 
 export async function PUT(request: Request) {
-  const user = await getSessionUser();
-  if (!user) {
+  let userId;
+  try {
+    userId = await getSessionUserId();
+  } catch (error) {
+    console.error("Errore durante la lettura della sessione", error);
+    return NextResponse.json({ error: "Non siamo riusciti a verificare la sessione. Riprova." }, { status: 500 });
+  }
+  if (!userId) {
     return NextResponse.json({ error: "Non sei ancora entrato." }, { status: 401 });
   }
 
@@ -47,8 +59,8 @@ export async function PUT(request: Request) {
   try {
     const data = gameSettingToRecordData(setting);
     const saved = await prisma.gameSetting.upsert({
-      where: { userId_world_gameId: { userId: user.id, world, gameId } },
-      create: { userId: user.id, world, gameId, ...data },
+      where: { userId_world_gameId: { userId, world, gameId } },
+      create: { userId, world, gameId, ...data },
       update: data,
     });
     return NextResponse.json({ setting: gameSettingToRecordData(saved) });

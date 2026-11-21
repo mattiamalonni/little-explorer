@@ -36,6 +36,7 @@ src/
     globals.css              reset, base e stili dell'hub
     api/
       auth/                  registrazione, accesso e uscita
+      cron/cleanup/          pulizia notturna delle sessioni scadute
       me/                    sessione, progressi e preferenze correnti
       progress/              azzeramento dei progressi e registrazione partite (`rounds/`)
       settings/              salvataggio delle preferenze di gioco
@@ -159,8 +160,10 @@ Le preferenze vengono salvate per utente e per gioco nel modello `GameSetting` (
 
 ## Account e database
 
-- I bambini si registrano con un **nome** (2–24 caratteri) e una **password** (almeno 4). Il nome è unico senza distinzione tra maiuscole e minuscole.
-- Le password sono salvate come hash `scrypt`. La sessione usa un cookie `httpOnly` `little-explorer-session` valido 30 giorni; nel database resta solo l'hash del token.
+- I bambini si registrano con un **nome** (2–24 caratteri) e una **password** di almeno **8 caratteri**. L'accesso accetta anche password più corte, così gli account creati in precedenza restano utilizzabili. Il nome è unico senza distinzione tra maiuscole e minuscole.
+- Le password sono salvate come hash `scrypt` calcolato in modo asincrono (`promisify`), così login e registrazione non bloccano l'event loop. La sessione usa un cookie `httpOnly` `little-explorer-session` valido 30 giorni; nel database resta solo l'hash del token. Ogni nuovo accesso invalida le sessioni precedenti dello stesso utente.
+- Login e registrazione hanno un rate limit in memoria (20 tentativi/IP e 8 per nome ogni minuto, con header `Retry-After`); la registrazione restituisce un messaggio generico se il nome è occupato, per non rivelare quali nomi esistono. Su piattaforme multi-istanza va affiancato un limite distribuito (WAF/Redis).
+- Le letture della sessione nelle API che servono solo progressi o preferenze usano `getSessionUserId()` con `select` minimale; `/api/me` continua a caricare progressi e preferenze. Un errore del database restituisce JSON 500 e non viene più interpretato come "utente non autenticato": solo un 401 porta alla schermata di accesso, mentre i 5xx mostrano una schermata di errore con pulsante **Riprova**.
 - I modelli `User`, `Progress`, `Round`, `GameSetting` e `Session` sono definiti in `prisma/schema.prisma`. Ogni utente ha un solo record `Progress`, una preferenza `GameSetting` per gioco e un record `Round` per partita completata (con la ricompensa calcolata dal server).
 - Le API in `src/app/api` controllano la sessione lato server. `POST /api/progress/rounds` accetta solo il delta della partita, valida l'input e ricalcola il progresso in transazione; `DELETE /api/progress` azzera tutto. Non esiste più un endpoint che accetta uno snapshot di progressi scritto dal client.
 - Se su un browser esistono ancora progressi anonimi in `localStorage` (chiave `little-explorer:progress:v1`), vengono copiati nel nuovo account al momento della registrazione e poi rimossi.
@@ -177,7 +180,10 @@ cp .env.example .env
 Compila in `.env`:
 
 - `DATABASE_URL`: URL PostgreSQL con pooler, usato dall'app;
-- `DIRECT_URL`: URL diretto dello stesso database, usato dalle migrazioni Prisma.
+- `DIRECT_URL`: URL diretto dello stesso database, usato dalle migrazioni Prisma;
+- `CRON_SECRET`: segreto per il cron di pulizia sessioni (facoltativo in locale; obbligatorio su Vercel per abilitare il cron).
+
+`vercel.json` schedula `GET /api/cron/cleanup` ogni notte alle 03:00 UTC per eliminare le sessioni scadute; l'endpoint risponde 503 se `CRON_SECRET` non è impostato e 401 senza l'header `Authorization: Bearer <CRON_SECRET>`.
 
 Poi applica lo schema e avvia:
 

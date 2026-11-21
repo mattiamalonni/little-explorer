@@ -45,7 +45,8 @@ export function GamificationProvider({ children }: { children: React.ReactNode }
   const [progress, setProgress] = useState<Progress>(createDefaultProgress);
   const [settings, setSettings] = useState<GameSettings>({});
   const [hydrated, setHydrated] = useState(false);
-  const [status, setStatus] = useState<"loading" | "auth" | "ready">("loading");
+  const [status, setStatus] = useState<"loading" | "auth" | "ready" | "error">("loading");
+  const [bootstrapAttempt, setBootstrapAttempt] = useState(0);
   const [user, setUser] = useState<SessionUser | null>(null);
   const [authBusy, setAuthBusy] = useState(false);
   const [authError, setAuthError] = useState<string | null>(null);
@@ -87,11 +88,17 @@ export function GamificationProvider({ children }: { children: React.ReactNode }
           return;
         }
 
-        setStatus("auth");
+        // Solo 401 significa "non sei entrato": un 5xx è un errore temporaneo, non un logout.
+        if (response.status === 401) {
+          setStatus("auth");
+          return;
+        }
+        setStatus("error");
+        setAuthError("Non riusciamo a caricare i tuoi progressi. Controlla la connessione e riprova.");
       } catch {
         if (cancelled) return;
-        setStatus("auth");
-        setAuthError("Non riusciamo a collegarci. Controlla la connessione e ricarica la pagina.");
+        setStatus("error");
+        setAuthError("Non riusciamo a collegarci. Controlla la connessione e riprova.");
       }
     }
 
@@ -99,7 +106,13 @@ export function GamificationProvider({ children }: { children: React.ReactNode }
     return () => {
       cancelled = true;
     };
-  }, [applySession]);
+  }, [applySession, bootstrapAttempt]);
+
+  const retryBootstrap = useCallback(() => {
+    setStatus("loading");
+    setAuthError(null);
+    setBootstrapAttempt((attempt) => attempt + 1);
+  }, []);
 
   const handleSessionExpired = useCallback(() => {
     pendingRoundsRef.current.clear();
@@ -349,6 +362,7 @@ export function GamificationProvider({ children }: { children: React.ReactNode }
       login,
       register,
       clearAuthError,
+      retryBootstrap,
       logout,
       retrySave,
       completeRound,
@@ -369,6 +383,7 @@ export function GamificationProvider({ children }: { children: React.ReactNode }
       login,
       register,
       clearAuthError,
+      retryBootstrap,
       logout,
       retrySave,
       completeRound,
@@ -383,6 +398,16 @@ export function GamificationProvider({ children }: { children: React.ReactNode }
         <AppLoading />
       ) : status === "auth" ? (
         <AuthScreen />
+      ) : status === "error" ? (
+        <main className="auth-shell">
+          <section className="auth-card auth-loading" aria-labelledby="load-error-title">
+            <h1 id="load-error-title">Un piccolo intoppo</h1>
+            <p>{authError}</p>
+            <button className="button button-primary" onClick={retryBootstrap}>
+              Riprova
+            </button>
+          </section>
+        </main>
       ) : (
         <>
           <SiteHeader />

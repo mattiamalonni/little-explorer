@@ -2,8 +2,15 @@ import { NextResponse } from "next/server";
 import { getSessionUser } from "@/features/auth/lib/session";
 import { gameSettingsFromRecords } from "@/features/gamification/lib/db-settings";
 import { progressFromRecord } from "@/features/gamification/lib/db-progress";
+
 export async function GET() {
-  const user = await getSessionUser();
+  let user;
+  try {
+    user = await getSessionUser();
+  } catch (error) {
+    console.error("Errore durante la lettura della sessione", error);
+    return NextResponse.json({ error: "Non siamo riusciti a verificare la sessione. Riprova." }, { status: 500 });
+  }
   if (!user) {
     return NextResponse.json({ error: "Non sei ancora entrato." }, { status: 401 });
   }

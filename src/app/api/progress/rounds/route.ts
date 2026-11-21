@@ -1,16 +1,16 @@
 import { NextResponse } from "next/server";
-import { getSessionUser } from "@/features/auth/lib/session";
+import { getSessionUserId } from "@/features/auth/lib/session";
 import { parseRoundInput, recordRound } from "@/features/gamification/lib/db-rounds";
 
 export async function POST(request: Request) {
-  let user;
+  let userId;
   try {
-    user = await getSessionUser();
+    userId = await getSessionUserId();
   } catch (error) {
     console.error("Errore durante la lettura della sessione", error);
     return NextResponse.json({ error: "Non siamo riusciti a verificare la sessione. Riprova." }, { status: 500 });
   }
-  if (!user) {
+  if (!userId) {
     return NextResponse.json({ error: "Non sei ancora entrato." }, { status: 401 });
   }
 
@@ -21,7 +21,7 @@ export async function POST(request: Request) {
   }
 
   try {
-    const result = await recordRound(user.id, input);
+    const result = await recordRound(userId, input);
     return NextResponse.json(result);
   } catch (error) {
     console.error("Errore durante la registrazione della partita", error);

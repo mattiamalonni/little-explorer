@@ -31,6 +31,24 @@ export async function createSession(userId: string): Promise<void> {
   });
 }
 
+/** Variante leggera per le API che non servono progressi e preferenze dell'utente. */
+export async function getSessionUserId(): Promise<string | null> {
+  const store = await cookies();
+  const token = store.get(SESSION_COOKIE)?.value;
+  if (!token) return null;
+
+  const session = await prisma.session.findUnique({
+    where: { tokenHash: hashToken(token) },
+    select: { id: true, userId: true, expiresAt: true },
+  });
+  if (!session) return null;
+  if (session.expiresAt.getTime() <= Date.now()) {
+    await prisma.session.delete({ where: { id: session.id } }).catch(() => {});
+    return null;
+  }
+  return session.userId;
+}
+
 export async function getSessionUser() {
   const store = await cookies();
   const token = store.get(SESSION_COOKIE)?.value;
