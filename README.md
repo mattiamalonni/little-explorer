@@ -303,6 +303,10 @@ Il piano gratuito ElevenLabs non permette usi commerciali; l'app non commerciale
 
 Dopo aver aggiunto parole inglesi, genera gli MP3 mancanti prima del deploy. I testi italiani non richiedono audio: vengono letti dal dispositivo.
 
+## Sicurezza HTTP
+
+`next.config.ts` aggiunge a tutte le risposte `X-Content-Type-Options: nosniff`, `Referrer-Policy: strict-origin-when-cross-origin`, `X-Frame-Options: DENY` e una `Permissions-Policy` che disabilita sensori non usati. In produzione aggiunge anche HSTS e una CSP con `default-src 'self'`. La CSP usa `'unsafe-inline'` per script e stili generati da Next: i nonce sono incompatibili con Cache Components/PPR, perché lo script della shell statica non avrebbe il nonce della richiesta. Non esiste HTML scritto dagli utenti né `dangerouslySetInnerHTML`. Se in futuro serve una CSP rigorosa, valuta `experimental.sri` invece dei nonce.
+
 ## Errori e pagine mancanti
 
 Se una rotta fallisce, `src/app/error.tsx` mostra un messaggio in italiano con un pulsante **Riprova** che rivaluta il segmento. Se fallisce il layout radice (sessione o provider), subentra `global-error.tsx`, che deve definire `<html>` e `<body>` propri. Le pagine risultato chiamano `notFound()` quando non c'è una partita in corso: `not-found.tsx` offre il ritorno alla home con lo stile dell'app.
