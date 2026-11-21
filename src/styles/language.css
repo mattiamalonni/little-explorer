@@ -333,6 +333,9 @@
 .subject-language .art-double-consonants {
   background-color: #fae8e1;
 }
+.subject-language .art-doppie-scegli {
+  background-color: #f4ead7;
+}
 .subject-language .art-accents {
   background-color: #eeebf7;
 }
@@ -368,6 +371,10 @@
 .subject-language .card-double-consonants .category-label,
 .subject-language .art-double-consonants .art-spark {
   color: #b8775c;
+}
+.subject-language .card-doppie-scegli .category-label,
+.subject-language .art-doppie-scegli .art-spark {
+  color: #a5723b;
 }
 .subject-language .card-accents .category-label,
 .subject-language .art-accents .art-spark {
@@ -1216,6 +1223,9 @@
 .subject-language .text-answers {
   grid-template-columns: repeat(2, minmax(0, 1fr));
   max-width: 700px;
+}
+.subject-language .choices-answers .answer-option {
+  letter-spacing: 0.01em;
 }
 .subject-language .write-answer {
   width: min(100%, 640px);

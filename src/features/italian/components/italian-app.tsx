@@ -232,6 +232,13 @@ function GameArt({ id }: { id: GameId }) {
           <span className="art-sticker">palla e gatto</span>
         </>
       )}
+      {id === "doppie-scegli" && (
+        <>
+          <Illustration asset="onion" className="art-main" />
+          <Illustration asset="hat" className="art-side" />
+          <span className="art-sticker">cipolla e cappello</span>
+        </>
+      )}
       {id === "accents" && (
         <>
           <Illustration asset="cup" className="art-main" />
@@ -404,6 +411,22 @@ function PatternText({ text }: { text: string }) {
 }
 
 function QuestionVisual({ entry, game }: { entry: Entry; game: Game }) {
+  if (game.mode === "choices") {
+    return (
+      <div className="question-visual choices-visual">
+        {entry.image && <Illustration asset={entry.image} className="question-image" alt={entry.solution} />}
+        {entry.color && (
+          <span className="color-swatch" style={{ backgroundColor: entry.color }} role="img" aria-label={entry.solution} />
+        )}
+        {entry.number !== undefined && (
+          <span className="number-pill" role="img" aria-label={String(entry.number)}>
+            {entry.number}
+          </span>
+        )}
+        {entry.hint && <span className="pattern-hint">{entry.hint}</span>}
+      </div>
+    );
+  }
   return (
     <div className={`question-visual ${game.mode === "words" ? "words-visual" : "letters-visual"}`}>
       {entry.image && <Illustration asset={entry.image} className="question-image" />}
@@ -517,46 +540,73 @@ export function PlayGame({ game }: { game: Game }) {
         <QuestionVisual entry={question.entry} game={game} />
         <AudioButton text={question.entry.spoken} />
       </div>
-      <form
-        className="write-answer"
-        onSubmit={(event) => {
-          event.preventDefault();
-          if (selected) return;
-          const value = typed.trim();
-          if (!value) return;
-          setSelected(value);
-        }}
-      >
-        <label className="write-answer-label" htmlFor="word-answer">
-          La tua risposta
-        </label>
-        <div className="write-answer-row">
-          <input
-            id="word-answer"
-            name="answer"
-            className={`write-answer-input ${selected ? (correct ? "input-correct" : "input-wrong") : ""}`}
-            value={typed}
-            onChange={(event) => setTyped(event.target.value)}
-            disabled={!!selected}
-            lang="it"
-            autoComplete="off"
-            autoCapitalize="none"
-            autoCorrect="off"
-            spellCheck={false}
-            enterKeyHint="done"
-            placeholder="Scrivi qui…"
-            aria-describedby="word-answer-help"
-          />
-          <button type="submit" className="button button-primary write-answer-submit" disabled={!!selected || !typed.trim()}>
-            <Check size={18} /> Controlla
-          </button>
+      {game.mode === "choices" ? (
+        <div className="answer-grid text-answers choices-answers" role="group" aria-label="Scegli la parola scritta bene">
+          {question.options.map((option, index) => {
+            const isSelected = selected === option;
+            const isCorrect = isAnswerCorrect(game, question.entry, option);
+            const feedbackClass = selected ? (isCorrect ? "answer-correct" : isSelected ? "answer-wrong" : "answer-muted") : "";
+            return (
+              <button
+                key={`${question.entry.id}-${option}`}
+                className={`answer-option ${feedbackClass}`}
+                disabled={!!selected}
+                aria-pressed={isSelected}
+                onClick={() => setSelected(option)}
+              >
+                <span className="option-number">{index + 1}</span>
+                <span className={option.length > 8 ? "long-answer" : undefined} lang="it">
+                  {option}
+                </span>
+                {selected && (isCorrect || isSelected) && (
+                  <span className="answer-indicator">{isCorrect ? <Check size={21} /> : <X size={21} />}</span>
+                )}
+              </button>
+            );
+          })}
         </div>
-        <p className="write-answer-help" id="word-answer-help">
-          {game.mode === "words"
-            ? "Scrivi solo la parola che manca, con le lettere giuste."
-            : "Guarda le lettere mancanti e scrivi tutta la parola."}
-        </p>
-      </form>
+      ) : (
+        <form
+          className="write-answer"
+          onSubmit={(event) => {
+            event.preventDefault();
+            if (selected) return;
+            const value = typed.trim();
+            if (!value) return;
+            setSelected(value);
+          }}
+        >
+          <label className="write-answer-label" htmlFor="word-answer">
+            La tua risposta
+          </label>
+          <div className="write-answer-row">
+            <input
+              id="word-answer"
+              name="answer"
+              className={`write-answer-input ${selected ? (correct ? "input-correct" : "input-wrong") : ""}`}
+              value={typed}
+              onChange={(event) => setTyped(event.target.value)}
+              disabled={!!selected}
+              lang="it"
+              autoComplete="off"
+              autoCapitalize="none"
+              autoCorrect="off"
+              spellCheck={false}
+              enterKeyHint="done"
+              placeholder="Scrivi qui…"
+              aria-describedby="word-answer-help"
+            />
+            <button type="submit" className="button button-primary write-answer-submit" disabled={!!selected || !typed.trim()}>
+              <Check size={18} /> Controlla
+            </button>
+          </div>
+          <p className="write-answer-help" id="word-answer-help">
+            {game.mode === "words"
+              ? "Scrivi solo la parola che manca, con le lettere giuste."
+              : "Guarda le lettere mancanti e scrivi tutta la parola."}
+          </p>
+        </form>
+      )}
       <div className="feedback-space">
         {selected ? (
           <div className={`answer-feedback ${correct ? "feedback-correct" : "feedback-wrong"}`}>
