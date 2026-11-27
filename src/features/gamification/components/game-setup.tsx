@@ -17,6 +17,13 @@ export type SetupItem = {
   color?: string;
   number?: number;
   text?: string;
+  /** Gruppo della voce, per la scelta rapida (per esempio "bisillaba"). */
+  group?: string;
+};
+
+export type SetupGroup = {
+  id: string;
+  label: string;
 };
 
 export type SetupConfig = {
@@ -34,6 +41,8 @@ type Props = {
   world: World;
   gameId: string;
   items?: readonly SetupItem[];
+  /** Pulsanti di scelta rapida: selezionano solo le voci di quel gruppo. */
+  groups?: readonly SetupGroup[];
   limits?: readonly LimitOption[];
   intro?: string;
   startLabel?: string;
@@ -61,7 +70,7 @@ function selectionToSetting(
   };
 }
 
-export function GameSetup({ world, gameId, items = [], limits, intro, startLabel = "Cominciamo", onStart }: Props) {
+export function GameSetup({ world, gameId, items = [], groups, limits, intro, startLabel = "Cominciamo", onStart }: Props) {
   const { settings, updateGameSetting } = useGamification();
   const stored = settingFor(settings, world, gameId);
   const allIds = useMemo(() => items.map((item) => item.id), [items]);
@@ -137,6 +146,25 @@ export function GameSetup({ world, gameId, items = [], limits, intro, startLabel
               </button>
             </div>
           </div>
+          {groups && groups.length > 0 && (
+            <div className="game-setup-groups" role="group" aria-label="Scelta rapida">
+              {groups.map((group) => {
+                const ids = items.filter((item) => item.group === group.id).map((item) => item.id);
+                const only = ids.length > 0 && ids.length === selected.length && ids.every((id) => selected.includes(id));
+                return (
+                  <button
+                    key={group.id}
+                    type="button"
+                    aria-pressed={only}
+                    disabled={ids.length === 0}
+                    onClick={() => changeSelected(ids)}
+                  >
+                    {group.label} <span>{ids.length}</span>
+                  </button>
+                );
+              })}
+            </div>
+          )}
           <div className="game-setup-items" role="group" aria-label="Voci disponibili">
             {items.map((item) => {
               const isSelected = selected.includes(item.id);

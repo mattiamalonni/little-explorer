@@ -1,7 +1,16 @@
 import assert from "node:assert/strict";
 import { existsSync } from "node:fs";
 import test from "node:test";
-import { createRound, games, hasSound, isAnswerCorrect, pickEntries, splitWord } from "../src/features/italian/data/games.ts";
+import {
+  createRound,
+  games,
+  hasSound,
+  isAnswerCorrect,
+  pickEntries,
+  splitWord,
+  syllableCount,
+  syllableKind,
+} from "../src/features/italian/data/games.ts";
 
 const gli = games.find((game) => game.id === "gli")!;
 const sillabe = games.find((game) => game.id === "sillabe")!;
@@ -18,7 +27,7 @@ test("Italiano: ogni voce ha id unici e alternative diverse dalla risposta", () 
     const ids = game.entries.map((entry) => entry.id);
     assert.equal(new Set(ids).size, ids.length, `id duplicati in ${game.id}`);
     for (const entry of game.entries) {
-      assert.equal(entry.options.length, game.id === "gli-li" ? 1 : 3, `${game.id}/${entry.id}`);
+      assert.equal(entry.options.length, game.id === "gli-li" ? 1 : game.mode === "syllables" ? 0 : 3, `${game.id}/${entry.id}`);
       assert.equal(new Set([entry.answer, ...entry.options]).size, entry.options.length + 1, `${game.id}/${entry.id}`);
     }
   }
@@ -46,15 +55,12 @@ test("Italiano: nei giochi a lettere la parola completa la traccia", () => {
 });
 
 test("Sillabe: tutte le divisioni usano le lettere della parola, ma solo una è giusta", () => {
-  assert.ok(sillabe.entries.length >= 50);
+  assert.ok(sillabe.entries.length >= 100);
   for (const entry of sillabe.entries) {
     const word = entry.pattern.toLowerCase();
     assert.equal(entry.answer.replaceAll("-", ""), word, entry.id);
-    for (const option of entry.options) {
-      assert.equal(option.replaceAll("-", ""), word, `${entry.id}: ${option}`);
-      assert.equal(isAnswerCorrect(sillabe, entry, option), false, `${entry.id}: ${option}`);
-    }
     assert.ok(isAnswerCorrect(sillabe, entry, entry.answer));
+    assert.ok(syllableCount(entry) >= 2, `${entry.id}: serve almeno una stanghetta`);
   }
 });
 
@@ -113,4 +119,17 @@ test("GLI o LI: ogni parola ha una sola alternativa, uguale tranne GLI/LI", () =
     assert.equal(fixed, entry.answer, entry.id);
     assert.equal(isAnswerCorrect(game, entry, wrong), false, entry.id);
   }
+});
+
+test("Sillabe: ci sono parole bisillabe, trisillabe, quadrisillabe e polisillabe", () => {
+  const counts = new Map<string, number>();
+  for (const entry of sillabe.entries) {
+    const kind = syllableKind(syllableCount(entry));
+    counts.set(kind, (counts.get(kind) ?? 0) + 1);
+  }
+  for (const kind of ["bisillaba", "trisillaba", "quadrisillaba", "polisillaba"]) {
+    assert.ok((counts.get(kind) ?? 0) >= 15, `${kind}: ${counts.get(kind) ?? 0}`);
+  }
+  assert.equal(syllableKind(2), "bisillaba");
+  assert.equal(syllableKind(6), "polisillaba");
 });

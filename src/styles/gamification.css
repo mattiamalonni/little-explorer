@@ -795,6 +795,35 @@
   color: #b7b0a2;
   cursor: default;
 }
+.game-setup-groups {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+.game-setup-groups button {
+  min-height: 36px;
+  padding: 6px 13px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: white;
+  color: var(--ink);
+  font-weight: 700;
+  font-size: 13px;
+  cursor: pointer;
+}
+.game-setup-groups button span {
+  color: var(--muted);
+  font-weight: 600;
+}
+.game-setup-groups button[aria-pressed="true"] {
+  border-color: var(--world, var(--green));
+  background: var(--world-soft, var(--mint));
+}
+.game-setup-groups button:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
 .game-setup-items {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(142px, 1fr));

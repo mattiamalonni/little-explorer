@@ -1310,6 +1310,42 @@
   padding-inline: 26px;
   font-size: 15px;
 }
+.subject-language .syllable-rules {
+  width: min(100%, 640px);
+  margin: 4px auto 0;
+  padding: 10px 16px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: white;
+  text-align: left;
+  font-size: 14px;
+  line-height: 1.55;
+}
+.subject-language .syllable-rules summary {
+  color: var(--green-dark);
+  font-weight: 800;
+  cursor: pointer;
+}
+.subject-language .syllable-rules ul {
+  margin: 8px 0 0;
+  padding-left: 20px;
+}
+.subject-language .syllable-rules li {
+  margin: 4px 0;
+}
+.subject-language .syllable-rules li span {
+  color: var(--green-dark);
+  font-weight: 800;
+  white-space: nowrap;
+}
+.subject-language .syllable-kinds {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 14px;
+  margin: 10px 0 0;
+  color: var(--muted);
+  font-size: 13px;
+}
 .subject-language .syllable-splitter {
   display: flex;
   flex-wrap: nowrap;

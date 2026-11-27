@@ -28,6 +28,10 @@ import {
   isAnswerCorrect,
   scoreRound,
   splitWord,
+  SYLLABLE_KINDS,
+  SYLLABLE_RULES,
+  syllableCount,
+  syllableKind,
   type Entry,
   type Game,
   type GameId,
@@ -412,6 +416,33 @@ function PatternText({ text }: { text: string }) {
   );
 }
 
+function SyllableRules({ open = false }: { open?: boolean }) {
+  return (
+    <details className="syllable-rules" open={open}>
+      <summary>Le regole delle sillabe</summary>
+      <ul>
+        {SYLLABLE_RULES.map((item) => (
+          <li key={item.rule}>
+            {item.rule} <span lang="it">{item.example}</span>
+          </li>
+        ))}
+      </ul>
+      <p className="syllable-kinds">
+        {SYLLABLE_KINDS.map((item) => (
+          <span key={item.kind}>
+            <strong>{item.label}</strong>: {item.description} ({item.example})
+          </span>
+        ))}
+      </p>
+    </details>
+  );
+}
+
+function syllableSummary(entry: Entry) {
+  const count = syllableCount(entry);
+  return `${count} ${count === 1 ? "sillaba" : "sillabe"}: parola ${syllableKind(count)}.`;
+}
+
 function SyllableSplitter({
   word,
   cuts,
@@ -518,10 +549,13 @@ export function PlayGame({ game }: { game: Game }) {
   }, [selected]);
 
   if (!activeRound) {
+    const syllables = game.mode === "syllables";
     const setupItems = game.entries.map((entry) => ({
       id: entry.id,
-      label: entry.solution,
-      hint: entry.hint,
+      // Nel gioco delle sillabe la soluzione è la divisione: mostriamo solo la parola.
+      label: syllables ? entry.pattern.toLocaleLowerCase("it") : entry.solution,
+      hint: syllables ? `${syllableCount(entry)} sillabe · ${syllableKind(syllableCount(entry))}` : entry.hint,
+      group: syllables ? syllableKind(syllableCount(entry)) : undefined,
       image: entry.image,
       color: entry.color,
       number: entry.number,
@@ -536,11 +570,13 @@ export function PlayGame({ game }: { game: Game }) {
           <span className="eyebrow">{game.focus}</span>
           <h1>{game.title}</h1>
           <p>Scegli le voci e quante domande.</p>
+          {syllables && <SyllableRules />}
           <GameSetup
             key={game.id}
             world="italian"
             gameId={game.id}
             items={setupItems}
+            groups={syllables ? SYLLABLE_KINDS.map((item) => ({ id: item.kind, label: item.label })) : undefined}
             onStart={({ selected: chosen, roundLength }) => {
               setSelected(null);
               setTyped("");
@@ -617,6 +653,7 @@ export function PlayGame({ game }: { game: Game }) {
             <Check size={18} /> Controlla
           </button>
           <p className="write-answer-help">Tocca tra due lettere per mettere o togliere la stanghetta.</p>
+          <SyllableRules />
         </form>
       ) : game.mode === "choices" ? (
         <div className="answer-grid text-answers choices-answers" role="group" aria-label={game.prompt}>
@@ -692,7 +729,10 @@ export function PlayGame({ game }: { game: Game }) {
               <strong>{correct ? "Sì! Proprio così!" : "Quasi! Guarda come si scrive."}</strong>
               <span className="feedback-line">
                 <b className="feedback-solution">{question.entry.solution}</b>
-                <span className="feedback-note">{question.entry.note}</span>
+                <span className="feedback-note">
+                  {question.entry.note}
+                  {game.mode === "syllables" && ` ${syllableSummary(question.entry)}`}
+                </span>
                 <AudioButton text={question.entry.spoken} compact />
               </span>
             </div>

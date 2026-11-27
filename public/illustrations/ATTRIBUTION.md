@@ -167,6 +167,14 @@ esteso. Nessun servizio di generazione immagini è stato usato.
 | giocoliere      | `juggler.svg`        | `1f939.svg`            |
 | vigilia         | `christmas-tree.svg` | `1f384.svg`            |
 | Giulia          | `girl.svg`           | `1f467.svg`            |
+| girasole        | `sunflower.svg`      | `1f33b.svg`            |
+| ippopotamo      | `hippo.svg`          | `1f99b.svg`            |
+| elicottero      | `helicopter.svg`     | `1f681.svg`            |
+| rinoceronte     | `rhino.svg`          | `1f98f.svg`            |
+| semaforo        | `traffic-light.svg`  | `1f6a6.svg`            |
+| termometro      | `thermometer.svg`    | `1f321.svg`            |
+| pallacanestro   | `basketball.svg`     | `1f3c0.svg`            |
+| dinosauro       | `dinosaur.svg`       | `1f995.svg`            |
 
 ## Aggiunte di Little English (nuovi giochi)
 
