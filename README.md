@@ -320,7 +320,7 @@ Se una rotta fallisce, `src/app/error.tsx` mostra un messaggio in italiano con u
 
 ## Deploy su Vercel
 
-Importa il repository su Vercel, seleziona il preset **Next.js** e Node.js 22.x o successivo. Aggiungi `DATABASE_URL`, `DIRECT_URL` e `CRON_SECRET` alle variabili d'ambiente del progetto e applica le migrazioni con `npm run db:deploy` (una volta, o come passo del comando di build) — serve anche la nuova tabella `Round`. Comando build: `npm run build`. Le chiavi ElevenLabs servono solo in locale per generare gli MP3.
+Importa il repository su Vercel, seleziona il preset **Next.js** e Node.js 22.x o successivo. Aggiungi `DATABASE_URL`, `DIRECT_URL` e `CRON_SECRET` alle variabili d'ambiente del progetto Su Vercel le migrazioni si applicano da sole: lo script `vercel-build` (che Vercel usa al posto di `build`) esegue `prisma migrate deploy` e poi `next build`, quindi `DIRECT_URL` deve essere impostata anche per il build. Lascia il comando di build del progetto vuoto (predefinito), altrimenti `vercel-build` viene ignorato. La CI usa invece `npm run build`, senza database. Le chiavi ElevenLabs servono solo in locale per generare gli MP3.
 
 ## Crediti
 
