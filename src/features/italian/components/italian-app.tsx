@@ -257,6 +257,14 @@ function GameArt({ id }: { id: GameId }) {
           <span className="art-sticker">l&apos;amico e l&apos;ape</span>
         </>
       )}
+      {id === "sillabe" && (
+        <>
+          <Illustration asset="butterfly" className="art-main" />
+          <Illustration asset="clap" className="art-side" />
+          <span className="art-bubble">far-fal-la!</span>
+          <span className="art-sticker">batti le mani</span>
+        </>
+      )}
     </div>
   );
 }
@@ -408,6 +416,11 @@ function QuestionVisual({ entry, game }: { entry: Entry; game: Game }) {
             {entry.number}
           </span>
         )}
+        {entry.pattern && (
+          <span className="pattern-text word-pattern" lang="it">
+            {entry.pattern}
+          </span>
+        )}
         {entry.hint && <span className="pattern-hint">{entry.hint}</span>}
       </div>
     );
@@ -523,7 +536,7 @@ export function PlayGame({ game }: { game: Game }) {
         <AudioButton text={question.entry.spoken} />
       </div>
       {game.mode === "choices" ? (
-        <div className="answer-grid text-answers choices-answers" role="group" aria-label="Scegli la parola scritta bene">
+        <div className="answer-grid text-answers choices-answers" role="group" aria-label={game.prompt}>
           {question.options.map((option, index) => {
             const isSelected = selected === option;
             const isCorrect = isAnswerCorrect(game, question.entry, option);

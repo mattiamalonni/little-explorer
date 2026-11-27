@@ -348,6 +348,9 @@
 .subject-language .art-apostrophe {
   background-color: #f1e4ef;
 }
+.subject-language .art-sillabe {
+  background-color: #e3eee4;
+}
 .subject-language .card-ch .category-label,
 .subject-language .art-ch .art-spark {
   color: #a35267;
@@ -391,6 +394,10 @@
 .subject-language .card-apostrophe .category-label,
 .subject-language .art-apostrophe .art-spark {
   color: #97608f;
+}
+.subject-language .card-sillabe .category-label,
+.subject-language .art-sillabe .art-spark {
+  color: #4f8160;
 }
 /* Little English game artwork */
 .subject-language .art-colors {

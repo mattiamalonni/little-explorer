@@ -126,6 +126,45 @@ Attribuzione: “Little Italiano contributors — original illustrations, CC BY 
 Little Italiano riusa inoltre le illustrazioni locali di Little English per le
 schede dei giochi.
 
+## Aggiunte di Little Italiano (sillabe e parole tranello)
+
+Gli SVG seguenti sono stati copiati senza modifiche dalla revisione pinnata
+`b6b55fef1e8636b540a6d016a4729ca8cdf2e60b`, la stessa usata per il vocabolario
+esteso. Nessun servizio di generazione immagini è stato usato.
+
+| Parola italiana | File                 | Upstream               |
+| --------------- | -------------------- | ---------------------- |
+| Italia          | `italy.svg`          | `1f1ee-1f1f9.svg`      |
+| cavaliere       | `horse-rider.svg`    | `1f3c7.svg`            |
+| palloncino      | `balloon.svg`        | `1f388.svg`            |
+| scatola, pacchi | `box.svg`            | `1f4e6.svg`            |
+| quadro          | `framed-picture.svg` | `1f5bc.svg`            |
+| barattolo       | `jar.svg`            | `1fad9.svg`            |
+| cuoco           | `chef.svg`           | `1f9d1-200d-1f373.svg` |
+| scopa           | `broom.svg`          | `1f9f9.svg`            |
+| scala           | `ladder.svg`         | `1fa9c.svg`            |
+| insegnante      | `teacher.svg`        | `1f9d1-200d-1f3eb.svg` |
+| cigno           | `swan.svg`           | `1f9a2.svg`            |
+| ragnatela       | `spider-web.svg`     | `1f578.svg`            |
+| Spagna          | `spain.svg`          | `1f1ea-1f1f8.svg`      |
+| lingua          | `tongue.svg`         | `1f445.svg`            |
+| anello          | `ring.svg`           | `1f48d.svg`            |
+| conchiglia      | `shell.svg`          | `1f41a.svg`            |
+| sbadiglio       | `yawn.svg`           | `1f971.svg`            |
+| pagliaccio      | `clown.svg`          | `1f921.svg`            |
+| alieno          | `alien.svg`          | `1f47d.svg`            |
+| valigia         | `suitcase.svg`       | `1f9f3.svg`            |
+| cuffie          | `headphones.svg`     | `1f3a7.svg`            |
+| cubo            | `dice.svg`           | `1f3b2.svg`            |
+| tè              | `tea.svg`            | `1f375.svg`            |
+| gambero         | `shrimp.svg`         | `1f990.svg`            |
+| colomba         | `dove.svg`           | `1f54a.svg`            |
+| ambulanza       | `ambulance.svg`      | `1f691.svg`            |
+| zampa           | `paw-prints.svg`     | `1f43e.svg`            |
+| coccinella      | `ladybug.svg`        | `1f41e.svg`            |
+| cammello        | `camel.svg`          | `1f42b.svg`            |
+| gallo           | `rooster.svg`        | `1f413.svg`            |
+
 ## Aggiunte di Little English (nuovi giochi)
 
 Gli SVG seguenti sono stati copiati senza modifiche dalla revisione pinnata
