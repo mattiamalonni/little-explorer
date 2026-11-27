@@ -321,6 +321,9 @@
 .subject-language .art-gli {
   background-color: #f0e9df;
 }
+.subject-language .art-gli-li {
+  background-color: #f3e6d6;
+}
 .subject-language .art-sc {
   background-color: #e2eff5;
 }
@@ -362,6 +365,10 @@
 .subject-language .card-gli .category-label,
 .subject-language .art-gli .art-spark {
   color: #a4774d;
+}
+.subject-language .card-gli-li .category-label,
+.subject-language .art-gli-li .art-spark {
+  color: #9a6a3c;
 }
 .subject-language .card-sc .category-label,
 .subject-language .art-sc .art-spark {

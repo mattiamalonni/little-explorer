@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import { existsSync } from "node:fs";
 import test from "node:test";
-import { createRound, games, isAnswerCorrect, pickEntries, splitWord } from "../src/features/italian/data/games.ts";
+import { createRound, games, hasSound, isAnswerCorrect, pickEntries, splitWord } from "../src/features/italian/data/games.ts";
 
 const gli = games.find((game) => game.id === "gli")!;
 const sillabe = games.find((game) => game.id === "sillabe")!;
@@ -13,13 +13,13 @@ function seeded(seed: number) {
   };
 }
 
-test("Italiano: ogni voce ha id unici e tre alternative diverse dalla risposta", () => {
+test("Italiano: ogni voce ha id unici e alternative diverse dalla risposta", () => {
   for (const game of games) {
     const ids = game.entries.map((entry) => entry.id);
     assert.equal(new Set(ids).size, ids.length, `id duplicati in ${game.id}`);
     for (const entry of game.entries) {
-      assert.equal(entry.options.length, 3, `${game.id}/${entry.id}`);
-      assert.equal(new Set([entry.answer, ...entry.options]).size, 4, `${game.id}/${entry.id}`);
+      assert.equal(entry.options.length, game.id === "gli-li" ? 1 : 3, `${game.id}/${entry.id}`);
+      assert.equal(new Set([entry.answer, ...entry.options]).size, entry.options.length + 1, `${game.id}/${entry.id}`);
     }
   }
 });
@@ -62,16 +62,17 @@ for (const [gameId, sound] of [
   ["gn", ["GN"]],
   ["gli", ["GLI"]],
   ["sc", ["SC", "SCH"]],
+  ["gli-li", ["GLI"]],
 ] as const) {
   test(`${gameId.toUpperCase()}: ogni round mescola parole con il suono e parole tranello`, () => {
     const game = games.find((entry) => entry.id === gameId)!;
     assert.deepEqual(game.targets, sound);
-    const traps = game.entries.filter((entry) => !sound.includes(entry.answer as never));
+    const traps = game.entries.filter((entry) => !hasSound(game, entry));
     assert.ok(traps.length >= 10, `${gameId}: servono almeno 10 tranelli`);
     const random = seeded(7);
     for (let run = 0; run < 50; run++) {
       const round = createRound(gameId, { length: 6 }, undefined, random);
-      const withSound = round.questions.filter((question) => sound.includes(question.entry.answer as never)).length;
+      const withSound = round.questions.filter((question) => hasSound(game, question.entry)).length;
       assert.equal(round.questions.length, 6);
       assert.equal(withSound, 3);
     }
@@ -99,5 +100,17 @@ test("Sillabe: le stanghette del bambino diventano la divisione da controllare",
       cuts.push(position);
     }
     assert.ok(isAnswerCorrect(sillabe, entry, splitWord(entry.pattern, cuts)), entry.id);
+  }
+});
+
+test("GLI o LI: ogni parola ha una sola alternativa, uguale tranne GLI/LI", () => {
+  const game = games.find((entry) => entry.id === "gli-li")!;
+  for (const entry of game.entries) {
+    const [wrong] = entry.options;
+    const fixed = hasSound(game, entry)
+      ? wrong.replace(/li/i, (m) => (m === "LI" ? "GLI" : "gli"))
+      : wrong.replace(/gli/i, (m) => m.slice(1));
+    assert.equal(fixed, entry.answer, entry.id);
+    assert.equal(isAnswerCorrect(game, entry, wrong), false, entry.id);
   }
 });

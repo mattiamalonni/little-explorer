@@ -188,6 +188,14 @@ function GameArt({ id }: { id: GameId }) {
           <span className="art-sticker">coniglio e foglia</span>
         </>
       )}
+      {id === "gli-li" && (
+        <>
+          <Illustration asset="rock" className="art-main" />
+          <Illustration asset="horse-rider" className="art-side" />
+          <span className="art-bubble">Gli o li?</span>
+          <span className="art-sticker">scoglio e cavaliere</span>
+        </>
+      )}
       {id === "sc" && (
         <>
           <Illustration asset="fish" className="art-main" />
