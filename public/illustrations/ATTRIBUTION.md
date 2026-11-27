@@ -164,6 +164,9 @@ esteso. Nessun servizio di generazione immagini è stato usato.
 | coccinella      | `ladybug.svg`        | `1f41e.svg`            |
 | cammello        | `camel.svg`          | `1f42b.svg`            |
 | gallo           | `rooster.svg`        | `1f413.svg`            |
+| giocoliere      | `juggler.svg`        | `1f939.svg`            |
+| vigilia         | `christmas-tree.svg` | `1f384.svg`            |
+| Giulia          | `girl.svg`           | `1f467.svg`            |
 
 ## Aggiunte di Little English (nuovi giochi)
 

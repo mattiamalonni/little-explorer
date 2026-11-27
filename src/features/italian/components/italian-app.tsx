@@ -27,6 +27,7 @@ import {
   games,
   isAnswerCorrect,
   scoreRound,
+  splitWord,
   type Entry,
   type Game,
   type GameId,
@@ -403,8 +404,50 @@ function PatternText({ text }: { text: string }) {
   );
 }
 
+function SyllableSplitter({
+  word,
+  cuts,
+  onToggle,
+  locked,
+  state,
+}: {
+  word: string;
+  cuts: ReadonlySet<number>;
+  onToggle: (index: number) => void;
+  locked: boolean;
+  state: "" | "correct" | "wrong";
+}) {
+  const letters = Array.from(word);
+  return (
+    <div
+      className={`syllable-splitter ${letters.length > 8 ? "syllable-long" : ""} ${state ? `syllable-${state}` : ""}`}
+      role="group"
+      aria-label={`Dividi ${word.toLocaleLowerCase("it")} in sillabe`}
+      lang="it"
+    >
+      {letters.map((letter, index) => (
+        <span className="syllable-piece" key={index}>
+          <span className="syllable-letter">{letter}</span>
+          {index < letters.length - 1 && (
+            <button
+              type="button"
+              className="syllable-gap"
+              aria-pressed={cuts.has(index)}
+              aria-label={`Stanghetta tra ${letter} e ${letters[index + 1]}`}
+              disabled={locked}
+              onClick={() => onToggle(index)}
+            >
+              <span className="syllable-bar" aria-hidden="true" />
+            </button>
+          )}
+        </span>
+      ))}
+    </div>
+  );
+}
+
 function QuestionVisual({ entry, game }: { entry: Entry; game: Game }) {
-  if (game.mode === "choices") {
+  if (game.mode === "choices" || game.mode === "syllables") {
     return (
       <div className="question-visual choices-visual">
         {entry.image && <Illustration asset={entry.image} className="question-image" alt={entry.solution} />}
@@ -416,7 +459,7 @@ function QuestionVisual({ entry, game }: { entry: Entry; game: Game }) {
             {entry.number}
           </span>
         )}
-        {entry.pattern && (
+        {game.mode === "choices" && entry.pattern && (
           <span className="pattern-text word-pattern" lang="it">
             {entry.pattern}
           </span>
@@ -449,6 +492,7 @@ export function PlayGame({ game }: { game: Game }) {
   const router = useRouter();
   const [selected, setSelected] = useState<string | null>(null);
   const [typed, setTyped] = useState("");
+  const [cuts, setCuts] = useState<ReadonlySet<number>>(new Set());
   const nextLock = useRef(false);
   const titleRef = useRef<HTMLHeadingElement>(null);
   const nextRef = useRef<HTMLButtonElement>(null);
@@ -492,6 +536,7 @@ export function PlayGame({ game }: { game: Game }) {
             onStart={({ selected: chosen, roundLength }) => {
               setSelected(null);
               setTyped("");
+              setCuts(new Set());
               start(game.id, { selected: chosen, roundLength });
             }}
           />
@@ -510,6 +555,7 @@ export function PlayGame({ game }: { game: Game }) {
     answer(selected);
     setSelected(null);
     setTyped("");
+    setCuts(new Set());
     if (questionIndex === activeRound!.questions.length - 1) router.push(`/italian/play/${game.id}/result`);
   }
 
@@ -535,7 +581,36 @@ export function PlayGame({ game }: { game: Game }) {
         <QuestionVisual entry={question.entry} game={game} />
         <AudioButton text={question.entry.spoken} />
       </div>
-      {game.mode === "choices" ? (
+      {game.mode === "syllables" ? (
+        <form
+          className="write-answer"
+          onSubmit={(event) => {
+            event.preventDefault();
+            if (selected) return;
+            setSelected(splitWord(question.entry.pattern, cuts));
+          }}
+        >
+          <SyllableSplitter
+            key={question.entry.id}
+            word={question.entry.pattern}
+            cuts={cuts}
+            locked={!!selected}
+            state={selected ? (correct ? "correct" : "wrong") : ""}
+            onToggle={(index) =>
+              setCuts((current) => {
+                const next = new Set(current);
+                if (next.has(index)) next.delete(index);
+                else next.add(index);
+                return next;
+              })
+            }
+          />
+          <button type="submit" className="button button-primary write-answer-submit" disabled={!!selected || cuts.size === 0}>
+            <Check size={18} /> Controlla
+          </button>
+          <p className="write-answer-help">Tocca tra due lettere per mettere o togliere la stanghetta.</p>
+        </form>
+      ) : game.mode === "choices" ? (
         <div className="answer-grid text-answers choices-answers" role="group" aria-label={game.prompt}>
           {question.options.map((option, index) => {
             const isSelected = selected === option;

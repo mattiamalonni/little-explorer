@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import { existsSync } from "node:fs";
 import test from "node:test";
-import { createRound, games, isAnswerCorrect, pickEntries } from "../src/features/italian/data/games.ts";
+import { createRound, games, isAnswerCorrect, pickEntries, splitWord } from "../src/features/italian/data/games.ts";
 
 const gli = games.find((game) => game.id === "gli")!;
 const sillabe = games.find((game) => game.id === "sillabe")!;
@@ -36,7 +36,11 @@ test("Italiano: ogni immagine usata esiste in public/illustrations", () => {
 test("Italiano: nei giochi a lettere la parola completa la traccia", () => {
   for (const game of games.filter((entry) => entry.mode === "letters")) {
     for (const entry of game.entries) {
-      assert.equal(entry.pattern.replace("__", entry.answer).toLowerCase(), entry.solution, `${game.id}/${entry.id}`);
+      assert.equal(
+        entry.pattern.replace("__", entry.answer).toLowerCase(),
+        entry.solution.toLowerCase(),
+        `${game.id}/${entry.id}`,
+      );
     }
   }
 });
@@ -80,4 +84,20 @@ test("GLI: con poche voci scelte il round resta completo", () => {
   const picked = pickEntries(gli, [...onlyTargets, oneTrap], 5, () => 0.42);
   assert.equal(picked.length, 5);
   assert.equal(picked.filter((entry) => entry.answer !== "GLI").length, 1);
+});
+
+test("Sillabe: le stanghette del bambino diventano la divisione da controllare", () => {
+  assert.equal(splitWord("CASA", [1]), "ca-sa");
+  assert.equal(splitWord("GATTO", [2]), "gat-to");
+  assert.equal(splitWord("CASA", [1, 3]), "ca-sa");
+  assert.equal(splitWord("CASA", []), "casa");
+  for (const entry of sillabe.entries) {
+    const cuts: number[] = [];
+    let position = -1;
+    for (const syllable of entry.answer.split("-").slice(0, -1)) {
+      position += Array.from(syllable).length;
+      cuts.push(position);
+    }
+    assert.ok(isAnswerCorrect(sillabe, entry, splitWord(entry.pattern, cuts)), entry.id);
+  }
 });

@@ -1303,6 +1303,91 @@
   padding-inline: 26px;
   font-size: 15px;
 }
+.subject-language .syllable-splitter {
+  display: flex;
+  flex-wrap: nowrap;
+  justify-content: center;
+  align-items: stretch;
+  max-width: 100%;
+  padding: 10px 14px;
+  border: 2px solid #dfe5d9;
+  border-bottom-width: 4px;
+  border-radius: 8px;
+  background: white;
+}
+.subject-language .syllable-splitter.syllable-correct {
+  border-color: #62a279;
+  background: #edf7ed;
+}
+.subject-language .syllable-splitter.syllable-wrong {
+  border-color: #d59b7f;
+  background: #fff1e8;
+}
+.subject-language .syllable-piece {
+  display: flex;
+  align-items: stretch;
+}
+.subject-language .syllable-letter {
+  display: flex;
+  align-items: center;
+  color: var(--ink);
+  font-size: 48px;
+  font-weight: 900;
+  line-height: 1.2;
+}
+.subject-language .syllable-gap {
+  position: relative;
+  width: 26px;
+  min-height: 64px;
+  padding: 0;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  cursor: pointer;
+}
+.subject-language .syllable-gap:hover:not(:disabled) {
+  background: var(--mint);
+}
+.subject-language .syllable-gap:focus-visible {
+  outline: 3px solid #b9d4c0;
+  outline-offset: 1px;
+}
+.subject-language .syllable-gap:disabled {
+  cursor: default;
+}
+.subject-language .syllable-bar {
+  position: absolute;
+  inset: 10px 50%;
+  width: 2px;
+  margin-left: -1px;
+  border-radius: 2px;
+  background: #dfe5d9;
+}
+.subject-language .syllable-gap[aria-pressed="true"] .syllable-bar {
+  inset: 4px 50%;
+  width: 5px;
+  margin-left: -2.5px;
+  background: var(--green);
+}
+@media (max-width: 640px) {
+  .subject-language .syllable-letter {
+    font-size: 34px;
+  }
+  .subject-language .syllable-gap {
+    width: 20px;
+    min-height: 52px;
+  }
+  .subject-language .syllable-splitter {
+    padding-inline: 8px;
+  }
+  .subject-language .syllable-long .syllable-letter {
+    font-size: 25px;
+  }
+  .subject-language .syllable-long .syllable-gap {
+    width: 13px;
+    min-height: 44px;
+  }
+}
 .subject-language .write-answer-help {
   color: var(--muted);
   font-size: 12px;

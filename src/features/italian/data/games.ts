@@ -41,7 +41,11 @@ export type Game = {
   prompt: string;
   label: string;
   intro: string;
-  mode: "letters" | "words" | "choices";
+  /**
+   * letters: il bambino scrive la parola intera; words: scrive la parola che manca;
+   * choices: sceglie tra quattro parole; syllables: mette le stanghette tra le sillabe.
+   */
+  mode: "letters" | "words" | "choices" | "syllables";
   /**
    * Le risposte che contengono il suono su cui si allena il gioco. Se presente,
    * ogni round mescola in parti uguali parole con il suono e parole tranello senza.
@@ -830,8 +834,8 @@ export const games: Game[] = [
         pattern: "ITA__A",
         answer: "LI",
         options: ["GLI", "L", "GI"],
-        solution: "italia",
-        spoken: "italia",
+        solution: "Italia",
+        spoken: "Italia",
         image: "italy",
         hint: "È il nostro paese, a forma di stivale.",
         note: "ITALIA si scrive con LI, non con GLI.",
@@ -943,6 +947,208 @@ export const games: Game[] = [
         image: "suitcase",
         hint: "Ci metti i vestiti per il viaggio.",
         note: "VALIGIA si scrive con LI, non con GLI.",
+      },
+      {
+        id: "italiano",
+        pattern: "ITA__ANO",
+        answer: "LI",
+        options: ["GLI", "L", "GI"],
+        solution: "italiano",
+        spoken: "italiano",
+        image: "italy",
+        hint: "È la lingua che parliamo.",
+        note: "ITALIANO si scrive con LI, non con GLI.",
+      },
+      {
+        id: "petrolio",
+        pattern: "PETRO__O",
+        answer: "LI",
+        options: ["GLI", "L", "GI"],
+        solution: "petrolio",
+        spoken: "petrolio",
+        hint: "È nero e si estrae da sotto terra.",
+        note: "PETROLIO si scrive con LI, non con GLI.",
+      },
+      {
+        id: "miliardo",
+        pattern: "MI__ARDO",
+        answer: "LI",
+        options: ["GLI", "L", "GI"],
+        solution: "miliardo",
+        spoken: "miliardo",
+        hint: "È mille milioni!",
+        note: "MILIARDO si scrive con LI, non con GLI.",
+      },
+      {
+        id: "familiare",
+        pattern: "FAMI__ARE",
+        answer: "LI",
+        options: ["GLI", "L", "GI"],
+        solution: "familiare",
+        spoken: "familiare",
+        image: "family",
+        hint: "Vuol dire 'della famiglia'.",
+        note: "FAMILIARE si scrive con LI, anche se FAMIGLIA ha GLI.",
+      },
+      {
+        id: "mobilia",
+        pattern: "MOBI__A",
+        answer: "LI",
+        options: ["GLI", "L", "GI"],
+        solution: "mobilia",
+        spoken: "mobilia",
+        image: "chair",
+        hint: "Sono tutti i mobili di una casa.",
+        note: "MOBILIA si scrive con LI, non con GLI.",
+      },
+      {
+        id: "balia",
+        pattern: "BA__A",
+        answer: "LI",
+        options: ["GLI", "L", "GI"],
+        solution: "balia",
+        spoken: "balia",
+        image: "baby",
+        hint: "Una volta si prendeva cura dei neonati.",
+        note: "BALIA si scrive con LI, non con GLI.",
+      },
+      {
+        id: "giocoliere",
+        pattern: "GIOCO__ERE",
+        answer: "LI",
+        options: ["GLI", "L", "GI"],
+        solution: "giocoliere",
+        spoken: "giocoliere",
+        image: "juggler",
+        hint: "Lancia le palline al circo senza farle cadere.",
+        note: "GIOCOLIERE si scrive con LI, non con GLI.",
+      },
+      {
+        id: "allievo",
+        pattern: "AL__EVO",
+        answer: "LI",
+        options: ["GLI", "L", "GI"],
+        solution: "allievo",
+        spoken: "allievo",
+        image: "backpack",
+        hint: "Va a scuola e impara.",
+        note: "ALLIEVO si scrive con LI, non con GLI.",
+      },
+      {
+        id: "sollievo",
+        pattern: "SOL__EVO",
+        answer: "LI",
+        options: ["GLI", "L", "GI"],
+        solution: "sollievo",
+        spoken: "sollievo",
+        image: "calm",
+        hint: "Lo senti quando finisce la paura.",
+        note: "SOLLIEVO si scrive con LI, non con GLI.",
+      },
+      {
+        id: "esilio",
+        pattern: "ESI__O",
+        answer: "LI",
+        options: ["GLI", "L", "GI"],
+        solution: "esilio",
+        spoken: "esilio",
+        hint: "È quando si deve vivere lontano dal proprio paese.",
+        note: "ESILIO si scrive con LI, non con GLI.",
+      },
+      {
+        id: "ausilio",
+        pattern: "AUSI__O",
+        answer: "LI",
+        options: ["GLI", "L", "GI"],
+        solution: "ausilio",
+        spoken: "ausilio",
+        image: "help",
+        hint: "Vuol dire 'aiuto'.",
+        note: "AUSILIO si scrive con LI, non con GLI.",
+      },
+      {
+        id: "concilio",
+        pattern: "CONCI__O",
+        answer: "LI",
+        options: ["GLI", "L", "GI"],
+        solution: "concilio",
+        spoken: "concilio",
+        hint: "È una grande riunione di vescovi.",
+        note: "CONCILIO si scrive con LI: non confonderlo con CONSIGLIO.",
+      },
+      {
+        id: "domicilio",
+        pattern: "DOMICI__O",
+        answer: "LI",
+        options: ["GLI", "L", "GI"],
+        solution: "domicilio",
+        spoken: "domicilio",
+        image: "house",
+        hint: "È la casa dove si abita.",
+        note: "DOMICILIO si scrive con LI, non con GLI.",
+      },
+      {
+        id: "vigilia",
+        pattern: "VIGI__A",
+        answer: "LI",
+        options: ["GLI", "L", "GI"],
+        solution: "vigilia",
+        spoken: "vigilia",
+        image: "christmas-tree",
+        hint: "È il giorno prima di una festa, come Natale.",
+        note: "VIGILIA si scrive con LI, non con GLI.",
+      },
+      {
+        id: "emilia",
+        pattern: "EMI__A",
+        answer: "LI",
+        options: ["GLI", "L", "GI"],
+        solution: "Emilia",
+        spoken: "Emilia",
+        hint: "È un nome di bambina e anche una regione.",
+        note: "EMILIA si scrive con LI, non con GLI.",
+      },
+      {
+        id: "giulio",
+        pattern: "GIU__O",
+        answer: "LI",
+        options: ["GLI", "L", "GI"],
+        solution: "Giulio",
+        spoken: "Giulio",
+        image: "boy",
+        hint: "È un nome di bambino.",
+        note: "GIULIO si scrive con LI, non con GLI.",
+      },
+      {
+        id: "giulia",
+        pattern: "GIU__A",
+        answer: "LI",
+        options: ["GLI", "L", "GI"],
+        solution: "Giulia",
+        spoken: "Giulia",
+        image: "girl",
+        hint: "È un nome di bambina.",
+        note: "GIULIA si scrive con LI, non con GLI.",
+      },
+      {
+        id: "cecilia",
+        pattern: "CECI__A",
+        answer: "LI",
+        options: ["GLI", "L", "GI"],
+        solution: "Cecilia",
+        spoken: "Cecilia",
+        hint: "È un nome di bambina.",
+        note: "CECILIA si scrive con LI, non con GLI.",
+      },
+      {
+        id: "aurelio",
+        pattern: "AURE__O",
+        answer: "LI",
+        options: ["GLI", "L", "GI"],
+        solution: "Aurelio",
+        spoken: "Aurelio",
+        hint: "È un nome di bambino.",
+        note: "AURELIO si scrive con LI, non con GLI.",
       },
     ],
   },
@@ -4708,11 +4914,11 @@ export const games: Game[] = [
     id: "sillabe",
     title: "Dividi in sillabe",
     focus: "SIL-LA-BE",
-    description: "Batti le mani e conta: ca-sa, gat-to, fio-re. Dove si taglia la parola?",
-    prompt: "Come si divide in sillabe?",
+    description: "Batti le mani e metti le stanghette: ca | sa, gat | to, fio | re.",
+    prompt: "Dividi la parola in sillabe",
     label: "Batti le mani",
-    intro: "Una parola, quattro divisioni: solo una è giusta.",
-    mode: "choices",
+    intro: "Tocca tra due lettere per mettere la stanghetta, poi controlla.",
+    mode: "syllables",
     entries: [
       {
         id: "casa",
@@ -5303,6 +5509,16 @@ export type Answer = {
 /** La parola che il bambino deve scrivere per intero. */
 export function expectedAnswer(game: Game, entry: Entry): string {
   return game.mode === "letters" ? entry.solution : entry.answer;
+}
+
+/**
+ * Costruisce la divisione scritta dal bambino: `cuts` sono le posizioni dopo cui
+ * mettere la stanghetta (0 = dopo la prima lettera). Esempio: ("CASA", [1]) → "ca-sa".
+ */
+export function splitWord(word: string, cuts: Iterable<number>): string {
+  const letters = Array.from(word.toLocaleLowerCase("it"));
+  const after = new Set(cuts);
+  return letters.map((letter, index) => (after.has(index) && index < letters.length - 1 ? `${letter}-` : letter)).join("");
 }
 
 export function normalizeAnswer(value: string): string {
