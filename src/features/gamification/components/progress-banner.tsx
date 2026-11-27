@@ -10,6 +10,7 @@ const WORLD_COPY: Record<World, (count: number) => string> = {
   italian: (count) => `${count} risposte giuste in italiano`,
   time: (count) => `${count} orologi letti`,
   logic: (count) => `${count} sfide di logica risolte`,
+  geography: (count) => `${count} scoperte di geografia`,
 };
 
 export function ProgressBanner({ world }: { world: World }) {

@@ -176,6 +176,40 @@ esteso. Nessun servizio di generazione immagini è stato usato.
 | pallacanestro   | `basketball.svg`     | `1f3c0.svg`            |
 | dinosauro       | `dinosaur.svg`       | `1f995.svg`            |
 
+## Aggiunte di Little Geografia
+
+Gli SVG seguenti sono stati copiati senza modifiche dalla revisione pinnata
+`b6b55fef1e8636b540a6d016a4729ca8cdf2e60b`. Le bandiere di Italia e Spagna erano già
+presenti (`italy.svg`, `spain.svg`). Nessun servizio di generazione immagini è stato usato.
+
+| Concetto         | File                 | Upstream          |
+| ---------------- | -------------------- | ----------------- |
+| vulcano          | `volcano.svg`        | `1f30b.svg`       |
+| spiaggia         | `beach.svg`          | `1f3d6.svg`       |
+| il sole sorge    | `sunrise.svg`        | `1f305.svg`       |
+| il sole tramonta | `sunset.svg`         | `1f307.svg`       |
+| bussola          | `compass.svg`        | `1f9ed.svg`       |
+| Francia          | `france.svg`         | `1f1eb-1f1f7.svg` |
+| Germania         | `germany.svg`        | `1f1e9-1f1ea.svg` |
+| Regno Unito      | `united-kingdom.svg` | `1f1ec-1f1e7.svg` |
+| Stati Uniti      | `united-states.svg`  | `1f1fa-1f1f8.svg` |
+| Giappone         | `japan.svg`          | `1f1ef-1f1f5.svg` |
+| Brasile          | `brazil.svg`         | `1f1e7-1f1f7.svg` |
+| Svizzera         | `switzerland.svg`    | `1f1e8-1f1ed.svg` |
+| Grecia           | `greece.svg`         | `1f1ec-1f1f7.svg` |
+| Canada           | `canada.svg`         | `1f1e8-1f1e6.svg` |
+| Cina             | `china.svg`          | `1f1e8-1f1f3.svg` |
+| Messico          | `mexico.svg`         | `1f1f2-1f1fd.svg` |
+| Portogallo       | `portugal.svg`       | `1f1f5-1f1f9.svg` |
+| Argentina        | `argentina.svg`      | `1f1e6-1f1f7.svg` |
+| Austria          | `austria.svg`        | `1f1e6-1f1f9.svg` |
+| India            | `india.svg`          | `1f1ee-1f1f3.svg` |
+| Australia        | `australia.svg`      | `1f1e6-1f1fa.svg` |
+| Irlanda          | `ireland.svg`        | `1f1ee-1f1ea.svg` |
+| Paesi Bassi      | `netherlands.svg`    | `1f1f3-1f1f1.svg` |
+| Svezia           | `sweden.svg`         | `1f1f8-1f1ea.svg` |
+| Egitto           | `egypt.svg`          | `1f1ea-1f1ec.svg` |
+
 ## Aggiunte di Little English (nuovi giochi)
 
 Gli SVG seguenti sono stati copiati senza modifiche dalla revisione pinnata

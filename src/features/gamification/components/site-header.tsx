@@ -12,9 +12,10 @@ const worlds = [
   { href: "/italian", label: "Italiano" },
   { href: "/time", label: "Orologio" },
   { href: "/logic", label: "Logica" },
+  { href: "/geography", label: "Geografia" },
 ] as const;
 
-const audioWorlds = ["/english", "/math", "/italian", "/time", "/logic"] as const;
+const audioWorlds = ["/english", "/math", "/italian", "/time", "/logic", "/geography"] as const;
 
 function isActive(pathname: string, href: string) {
   return pathname === href || pathname.startsWith(`${href}/`);
@@ -42,7 +43,7 @@ export function SiteHeader() {
             </span>
           </Link>
           <div className="app-header-tools">
-            <nav className="app-nav" aria-label="I cinque mondi">
+            <nav className="app-nav" aria-label="I sei mondi">
               {worlds.map((world) => (
                 <Link key={world.href} href={world.href} aria-current={isActive(pathname, world.href) ? "page" : undefined}>
                   {world.label}

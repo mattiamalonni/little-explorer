@@ -1,0 +1,87 @@
+/* Little Geografia: riusa language.css e aggiunge colori, rosa dei venti e bandiere. */
+.subject-geography .art-paesaggi {
+  background-color: #e2eff5;
+}
+.subject-geography .art-orientamento {
+  background-color: #f4ead7;
+}
+.subject-geography .art-punti-cardinali {
+  background-color: #e9efd8;
+}
+.subject-geography .art-bandiere {
+  background-color: #f6e4dd;
+}
+.subject-geography .card-paesaggi .category-label,
+.subject-geography .art-paesaggi .art-spark {
+  color: #4f7f9c;
+}
+.subject-geography .card-orientamento .category-label,
+.subject-geography .art-orientamento .art-spark {
+  color: #9b7a3f;
+}
+.subject-geography .card-punti-cardinali .category-label,
+.subject-geography .art-punti-cardinali .art-spark {
+  color: #5f7f3e;
+}
+.subject-geography .card-bandiere .category-label,
+.subject-geography .art-bandiere .art-spark {
+  color: #a24d3c;
+}
+
+.subject-geography .art-compass {
+  display: grid;
+  place-items: center;
+}
+.subject-geography .compass-rose {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+.subject-geography .compass-ring {
+  fill: #fff;
+  stroke: #d8dfd3;
+  stroke-width: 3;
+}
+.subject-geography .compass-ring-inner {
+  fill: none;
+  stroke: #e6ebe2;
+  stroke-width: 2;
+  stroke-dasharray: 4 5;
+}
+.subject-geography .compass-arm {
+  fill: #c9d5c4;
+  stroke: #fff;
+  stroke-width: 2;
+}
+.subject-geography .compass-arm.is-highlight {
+  fill: var(--coral);
+}
+.subject-geography .compass-center {
+  fill: var(--ink);
+}
+.subject-geography .compass-letter {
+  fill: var(--green-dark);
+  font:
+    900 20px var(--font-nunito),
+    sans-serif;
+}
+.subject-geography .compass-letter.is-highlight {
+  fill: #b5523b;
+  font-size: 24px;
+}
+
+/* Le bandiere Twemoji sono larghe: niente ritaglio quadrato. */
+.subject-geography .geography-image {
+  object-fit: contain;
+}
+.subject-geography .review-geography-art {
+  display: grid;
+  place-items: center;
+  width: 56px;
+  height: 56px;
+  flex-shrink: 0;
+}
+.subject-geography .review-geography-art .small-word-art {
+  width: 52px;
+  height: 52px;
+}

@@ -1,6 +1,6 @@
-export type World = "english" | "math" | "italian" | "time" | "logic";
+export type World = "english" | "math" | "italian" | "time" | "logic" | "geography";
 
-export const WORLDS: readonly World[] = ["english", "math", "italian", "time", "logic"];
+export const WORLDS: readonly World[] = ["english", "math", "italian", "time", "logic", "geography"];
 
 export const STORAGE_KEY = "little-explorer:progress:v1";
 export const PERFECT_BONUS = 3;
@@ -49,6 +49,7 @@ export type BadgeIcon =
   | "languages"
   | "clock"
   | "puzzle"
+  | "globe"
   | "flame"
   | "medal"
   | "crown";
@@ -126,6 +127,13 @@ export const BADGES: readonly Badge[] = [
     isUnlocked: (progress) => progress.correct.logic >= 25,
   },
   {
+    id: "geography-25",
+    title: "Piccolo geografo",
+    description: "Trova 25 risposte giuste in geografia.",
+    icon: "globe",
+    isUnlocked: (progress) => progress.correct.geography >= 25,
+  },
+  {
     id: "streak-3",
     title: "Tre giorni di fila",
     description: "Torna a giocare per tre giorni di seguito.",
@@ -179,7 +187,7 @@ export function createDefaultProgress(): Progress {
     stars: 0,
     rounds: 0,
     perfectRounds: 0,
-    correct: { english: 0, math: 0, italian: 0, time: 0, logic: 0 },
+    correct: { english: 0, math: 0, italian: 0, time: 0, logic: 0, geography: 0 },
     games: [],
     streak: 0,
     lastPlayed: null,
@@ -305,6 +313,7 @@ export function normalizeProgress(value: unknown): Progress {
       italian: toCount(correct.italian),
       time: toCount(correct.time),
       logic: toCount(correct.logic),
+      geography: toCount(correct.geography),
     },
     games: Array.from(new Set(toStringList(value.games))).slice(0, 200),
     streak: toCount(value.streak),
@@ -329,6 +338,7 @@ export function reconcileMigration(value: unknown, today = dayKey()): Progress {
     italian: Math.floor(progress.correct.italian * scale),
     time: Math.floor(progress.correct.time * scale),
     logic: Math.floor(progress.correct.logic * scale),
+    geography: Math.floor(progress.correct.geography * scale),
   };
 
   const base: Progress = {

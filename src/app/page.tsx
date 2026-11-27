@@ -6,9 +6,11 @@ import { games as mathGames } from "@/features/math/data/games";
 import { games as italianGames } from "@/features/italian/data/games";
 import { games as timeGames } from "@/features/time/data/games";
 import { games as logicGames } from "@/features/logic/data/games";
+import { games as geographyGames } from "@/features/geography/data/games";
 import { LogicShape } from "@/features/logic/components/logic-shape";
 
-const totalGames = englishGames.length + mathGames.length + italianGames.length + timeGames.length + logicGames.length;
+const totalGames =
+  englishGames.length + mathGames.length + italianGames.length + timeGames.length + logicGames.length + geographyGames.length;
 
 const worlds = [
   {
@@ -55,6 +57,15 @@ const worlds = [
     description:
       "Sequenze, intrusi, dimensioni e percorsi: forme colorate per allenare lo sguardo e il pensiero, una piccola sfida alla volta.",
     games: `${logicGames.length} giochi`,
+  },
+  {
+    id: "geography",
+    href: "/geography",
+    kicker: "GEOGRAFIA",
+    title: "Il giro del mondo",
+    description:
+      "Paesaggi da riconoscere, sopra e sotto, punti cardinali e bandiere del mondo: per orientarsi e scoprire paesi lontani.",
+    games: `${geographyGames.length} giochi`,
   },
 ] as const;
 
@@ -117,6 +128,17 @@ function WorldArt({ id }: { id: (typeof worlds)[number]["id"] }) {
     );
   }
 
+  if (id === "geography") {
+    return (
+      <div className="hub-world-art" aria-hidden="true">
+        <Image className="art-globe" src="/illustrations/globe.svg" alt="" width={98} height={98} unoptimized />
+        <span className="hub-world-glyph hub-geography-glyph">N</span>
+        <Image className="art-flag" src="/illustrations/italy.svg" alt="" width={70} height={70} unoptimized />
+        <span className="hub-world-sticker">il mondo da scoprire</span>
+      </div>
+    );
+  }
+
   return (
     <div className="hub-world-art" aria-hidden="true">
       <LogicShape className="hub-shape hub-shape-a" token={{ kind: "circle", color: "sun", size: "large" }} size={62} />
@@ -135,7 +157,7 @@ export default function HubPage() {
         <section className="hub-hero" aria-labelledby="hub-title">
           <div className="hub-hero-copy">
             <span className="hub-eyebrow">
-              <Sparkles size={15} /> CINQUE MONDI, UN ESPLORATORE
+              <Sparkles size={15} /> SEI MONDI, UN ESPLORATORE
             </span>
             <h1 id="hub-title">
               Ciao, piccolo
@@ -143,7 +165,8 @@ export default function HubPage() {
               <span>esploratore!</span>
             </h1>
             <p>
-              Scegli un mondo e comincia a scoprire. Parole, numeri, suoni, ore e forme ti aspettano, un piccolo passo alla volta.
+              Scegli un mondo e comincia a scoprire. Parole, numeri, suoni, ore, forme e paesi lontani ti aspettano, un piccolo
+              passo alla volta.
             </p>
             <div className="hub-hero-meta">
               <span>
@@ -173,7 +196,7 @@ export default function HubPage() {
           <div className="hub-section-heading">
             <div>
               <span className="hub-eyebrow">DA DOVE VUOI PARTIRE?</span>
-              <h2 id="worlds-title">Cinque mondi da scoprire</h2>
+              <h2 id="worlds-title">Sei mondi da scoprire</h2>
             </div>
             <span className="hub-note">
               <Sprout size={16} /> Nessuna fretta, solo curiosità
@@ -215,7 +238,7 @@ export default function HubPage() {
 
       <footer className="hub-footer">
         <span>
-          <Sprout size={16} /> Cinque mondi, un piccolo esploratore.
+          <Sprout size={16} /> Sei mondi, un piccolo esploratore.
         </span>
         <span>
           Fatto per imparare, con <Heart size={13} /> /{" "}

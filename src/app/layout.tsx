@@ -25,11 +25,11 @@ const jakarta = Plus_Jakarta_Sans({
 
 export const metadata: Metadata = {
   title: {
-    default: "Little Explorer | Cinque mondi di piccole scoperte",
+    default: "Little Explorer | Sei mondi di piccole scoperte",
     template: "%s | Little Explorer",
   },
   description:
-    "Un solo posto per imparare giocando: inglese, matematica, italiano, orologio e logica con minigiochi per bambini. Crea il tuo nome: stelle e progressi ti seguono su ogni dispositivo.",
+    "Un solo posto per imparare giocando: inglese, matematica, italiano, orologio, logica e geografia con minigiochi per bambini. Crea il tuo nome: stelle e progressi ti seguono su ogni dispositivo.",
 };
 
 export const viewport: Viewport = {

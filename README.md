@@ -1,29 +1,32 @@
 # Little Explorer
 
-Cinque mondi di minigiochi per bambini in un'unica app: **inglese**, **matematica**, **italiano**, **orologio** e **logica**. Next.js App Router, React e TypeScript.
+Sei mondi di minigiochi per bambini in un'unica app: **inglese**, **matematica**, **italiano**, **orologio**, **logica** e **geografia**. Next.js App Router, React e TypeScript.
 
-La home è un hub con cinque mondi. Ogni mondo conserva il proprio carattere, i propri giochi e le proprie impostazioni, ma condivide infrastruttura, illustrazioni, stili di base e un unico sistema di **stelle, livelli e traguardi**.
+La home è un hub con sei mondi. Ogni mondo conserva il proprio carattere, i propri giochi e le proprie impostazioni, ma condivide infrastruttura, illustrazioni, stili di base e un unico sistema di **stelle, livelli e traguardi**.
 
 ## Rotte
 
-| Percorso                        | Contenuto                                |
-| ------------------------------- | ---------------------------------------- |
-| `/`                             | Hub con i cinque mondi                   |
-| `/english`                      | Dashboard di Little English (19 giochi)  |
-| `/english/play/[gameId]`        | Partita                                  |
-| `/english/play/[gameId]/result` | Riepilogo                                |
-| `/math`                         | Dashboard di Little Math (7 giochi)      |
-| `/math/play/[gameId]`           | Partita                                  |
-| `/math/play/[gameId]/result`    | Riepilogo                                |
-| `/italian`                      | Dashboard di Little Italiano (13 giochi) |
-| `/italian/play/[gameId]`        | Partita                                  |
-| `/italian/play/[gameId]/result` | Riepilogo                                |
-| `/time`                         | Dashboard di Little Orologio (5 giochi)  |
-| `/time/play/[gameId]`           | Partita                                  |
-| `/time/play/[gameId]/result`    | Riepilogo                                |
-| `/logic`                        | Dashboard di Little Logica (5 giochi)    |
-| `/logic/play/[gameId]`          | Partita                                  |
-| `/logic/play/[gameId]/result`   | Riepilogo                                |
+| Percorso                          | Contenuto                                |
+| --------------------------------- | ---------------------------------------- |
+| `/`                               | Hub con i sei mondi                      |
+| `/english`                        | Dashboard di Little English (19 giochi)  |
+| `/english/play/[gameId]`          | Partita                                  |
+| `/english/play/[gameId]/result`   | Riepilogo                                |
+| `/math`                           | Dashboard di Little Math (7 giochi)      |
+| `/math/play/[gameId]`             | Partita                                  |
+| `/math/play/[gameId]/result`      | Riepilogo                                |
+| `/italian`                        | Dashboard di Little Italiano (13 giochi) |
+| `/italian/play/[gameId]`          | Partita                                  |
+| `/italian/play/[gameId]/result`   | Riepilogo                                |
+| `/time`                           | Dashboard di Little Orologio (5 giochi)  |
+| `/time/play/[gameId]`             | Partita                                  |
+| `/time/play/[gameId]/result`      | Riepilogo                                |
+| `/logic`                          | Dashboard di Little Logica (5 giochi)    |
+| `/logic/play/[gameId]`            | Partita                                  |
+| `/logic/play/[gameId]/result`     | Riepilogo                                |
+| `/geography`                      | Dashboard di Little Geografia (4 giochi) |
+| `/geography/play/[gameId]`        | Partita                                  |
+| `/geography/play/[gameId]/result` | Riepilogo                                |
 
 Gli URL sono in inglese; l'interfaccia per i bambini resta in italiano. Le partite vivono nello stato React. Ogni bambino crea un **nome unico** con una password: stelle, livelli e traguardi vengono salvati su PostgreSQL (Neon) e restano legati al suo account.
 
@@ -32,7 +35,7 @@ Gli URL sono in inglese; l'interfaccia per i bambini resta in italiano. Le parti
 ```text
 src/
   app/
-    page.tsx                 hub dei cinque mondi
+    page.tsx                 hub dei sei mondi
     error.tsx                errore recuperabile di una rotta
     global-error.tsx         rete di sicurezza se fallisce il layout radice
     not-found.tsx            404 in italiano
@@ -48,6 +51,7 @@ src/
     italian/                 rotte di Little Italiano
     time/                    rotte di Little Orologio
     logic/                   rotte di Little Logica
+    geography/               rotte di Little Geografia
   features/
     auth/
       components/auth-screen.tsx
@@ -76,7 +80,7 @@ src/
       components/            accesso, pillola, banner, pannello traguardi, provider React
       components/game-setup.tsx  schermata pre-gioco condivisa
       components/progress-track.tsx  barra avanzamento domande condivisa
-      hooks/use-round-controller.ts  stato partita condiviso dai cinque mondi
+      hooks/use-round-controller.ts  stato partita condiviso da tutti i mondi
       lib/speech.ts          sintesi vocale: guard, voce italiana e errori in un posto solo
       lib/db-rounds.ts       registrazione partite in transazione e idempotente
       lib/round-input.ts     validazione del delta di partita (testabile da sola)
@@ -92,6 +96,7 @@ src/
     math.css                 stili Math, riusati da Orologio e Logica
     time.css                 override e orologio di Little Orologio
     logic.css                override e forme di Little Logica
+    geography.css            colori, rosa dei venti e bandiere di Little Geografia
 prisma/
   schema.prisma              modelli User, Progress, Round, GameSetting e Session
   migrations/                migrazioni SQL versionate
@@ -113,9 +118,9 @@ Ogni feature è autosufficiente: dati, componenti e audio vivono nella propria c
 
 ### Pezzi condivisi dai giochi
 
-I cinque mondi hanno grafica e domande diverse, ma la meccanica comune sta in un solo posto:
+I sei mondi hanno grafica e domande diverse, ma la meccanica comune sta in un solo posto:
 
-- `useRoundController<TRound, TStartArgs, TAnswerArgs>` gestisce lo stato della partita (`round`, `start`, `answer`). Ogni mondo passa soltanto il proprio `createRound` e il proprio `recordAnswer`: così correzioni e nuove behaviour non vanno replicate cinque volte.
+- `useRoundController<TRound, TStartArgs, TAnswerArgs>` gestisce lo stato della partita (`round`, `start`, `answer`). Ogni mondo passa soltanto il proprio `createRound` e il proprio `recordAnswer`: così correzioni e nuove behaviour non vanno replicate in ogni mondo.
 - `ProgressTrack` è la barra di avanzamento delle domande, con lo stesso markup e gli stessi attributi ARIA in tutti i mondi.
 - `speakItalian` / `stopSpeech` centralizzano il controllo `speechSynthesis`, la scelta della voce `it-*`, i messaggi di errore e la gestione di `interrupted`/`canceled`. English continua a usare i propri MP3 con lo stesso pattern di errore.
 
@@ -136,13 +141,14 @@ Le app originali usavano nomi di classe uguali (`.game-card`, `.dashboard`, `.qu
 - `language.css` è scritto tutto sotto `.subject-language`.
 - `math.css` è scritto tutto sotto `.subject-math`.
 - Il layout di English applica `subject-language subject-english`, quello di Italiano `subject-language subject-italian`, quello di Math `subject-math`.
+- Little Geografia riusa il layout di Italiano applicando `subject-language subject-geography`; `geography.css` aggiunge colori, rosa dei venti e bandiere.
 - Little Orologio e Little Logica riusano il layout di Math applicando `subject-math subject-time` e `subject-math subject-logic`; i file `time.css` e `logic.css` contengono solo override e i pezzi specifici (quadrante, forme, colori).
 
 Quando si modifica uno stile condiviso, mantenere il prefisso `.subject-language` o `.subject-math`. Le differenze di un solo mondo vanno aggiunte come override mirati, ad esempio `.subject-language.subject-english .welcome-letter` o `.subject-math.subject-time .hero-clock`.
 
 ## Stelle e traguardi
 
-La gamification è condivisa dai cinque mondi e vive sopra i layout delle singole feature:
+La gamification è condivisa da tutti i mondi e vive sopra i layout delle singole feature:
 
 - ogni risposta giusta vale **1 stella**; una partita perfetta aggiunge un **bonus di 3 stelle**;
 - le stelle fanno salire di **livello** (da “Primi passi” a “Leggenda curiosa”);
@@ -300,6 +306,7 @@ Il piano gratuito ElevenLabs non permette usi commerciali; l'app non commerciale
 - **Math:** `src/features/math/data/games.ts`. Addizioni, sottrazioni, moltiplicazioni e divisioni sono generate dai limiti 10, 20 e 100; il gioco del doppio e della metà usa gli stessi limiti e genera solo coppie `a + a` e divisioni per 2. Ogni partita ha sei domande e quattro risposte vicine al risultato.
 - **Orologio:** `src/features/time/data/games.ts`. Le ore sono limitate a `in punto`, `e un quarto`, `e mezza` e `meno un quarto` (minuti 0, 15, 30, 45). `timePhrase` costruisce la frase italiana, `spokenTime` aggiunge “È l'” o “Sono le” per la voce del dispositivo. I giochi leggono il quadrante, scelgono l'orologio, riconoscono il quarto o ascoltano l'ora; le partite ruotano sui quattro minuti.
 - **Logica:** `src/features/logic/data/games.ts`. Le sfide sono sequenze, intruso, dimensioni e percorsi su griglia; le forme sono descritte da tipo, colore e dimensione e disegnate da `logic-shape.tsx`. Le sequenze usano regole ripetute (AB, ABC, AAB), colori che cambiano ogni due forme, forme che crescono o rimpiccioliscono e riquadri vuoti anche nel mezzo. L'intruso può differire per colore, dimensione o forma; le dimensioni chiedono anche il secondo più grande/piccolo; i percorsi chiedono sequenze di 2-3 frecce su una griglia 4x3. Il gioco misto alterna i quattro tipi.
+- **Geografia:** `src/features/geography/data/games.ts`. Quattro giochi a scelta: paesaggi, posizioni (sopra, sotto, dentro, destra, sinistra con le illustrazioni `ball-*`), punti cardinali (rosa dei venti disegnata da `CompassRose`) e bandiere del mondo. Ogni voce ha `prompt`, `answer`, un'immagine o `compass`, e `note`; se mancano le `options`, le tre alternative vengono pescate tra le risposte delle altre voci dello stesso gioco.
 
 Dopo aver aggiunto parole inglesi, genera gli MP3 mancanti prima del deploy. I testi italiani non richiedono audio: vengono letti dal dispositivo.
 

@@ -16,7 +16,7 @@ test("accetta un delta valido e non trascina altri campi", () => {
 });
 
 test("accetta tutti i mondi conosciuti", () => {
-  for (const world of ["english", "math", "italian", "time", "logic"]) {
+  for (const world of ["english", "math", "italian", "time", "logic", "geography"]) {
     assert.equal(parseRoundInput({ ...valid, world })?.world, world);
   }
 });

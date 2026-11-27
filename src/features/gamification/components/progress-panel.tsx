@@ -15,6 +15,7 @@ import {
   LogOut,
   Medal,
   Puzzle,
+  Globe2,
   RefreshCw,
   Sparkles,
   Star,
@@ -33,6 +34,7 @@ const WORLD_STATS: { world: World; label: string; icon: LucideIcon }[] = [
   { world: "italian", label: "Italiano", icon: Languages },
   { world: "time", label: "Orologio", icon: Clock3 },
   { world: "logic", label: "Logica", icon: Puzzle },
+  { world: "geography", label: "Geografia", icon: Globe2 },
 ];
 
 export function ProgressPanel({ onClose }: { onClose: () => void }) {

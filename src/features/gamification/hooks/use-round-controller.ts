@@ -3,7 +3,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 
 /**
- * Stato condiviso di una partita per tutti e cinque i mondi.
+ * Stato condiviso di una partita per tutti i mondi.
  * Ogni mondo fornisce solo le proprie funzioni `createRound` e `recordAnswer`:
  * la logica di transizione (inizio, risposta, accumulo) resta identica ovunque.
  */

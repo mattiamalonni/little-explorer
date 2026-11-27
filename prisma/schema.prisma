@@ -8,12 +8,12 @@ datasource db {
 }
 
 model User {
-  id           String    @id @default(cuid())
+  id           String        @id @default(cuid())
   name         String
-  nameKey      String    @unique
+  nameKey      String        @unique
   passwordHash String
-  createdAt    DateTime  @default(now())
-  updatedAt    DateTime  @updatedAt
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
   progress     Progress?
   rounds       Round[]
   sessions     Session[]
@@ -21,23 +21,24 @@ model User {
 }
 
 model Progress {
-  id              String   @id @default(cuid())
-  userId          String   @unique
-  user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  stars           Int      @default(0)
-  rounds          Int      @default(0)
-  perfectRounds   Int      @default(0)
-  correctEnglish  Int      @default(0)
-  correctMath     Int      @default(0)
-  correctItalian  Int      @default(0)
-  correctTime     Int      @default(0)
-  correctLogic    Int      @default(0)
-  games           String[] @default([])
-  streak          Int      @default(0)
-  lastPlayed      String?
-  badges          String[] @default([])
-  createdAt       DateTime @default(now())
-  updatedAt       DateTime @updatedAt
+  id               String   @id @default(cuid())
+  userId           String   @unique
+  user             User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  stars            Int      @default(0)
+  rounds           Int      @default(0)
+  perfectRounds    Int      @default(0)
+  correctEnglish   Int      @default(0)
+  correctMath      Int      @default(0)
+  correctItalian   Int      @default(0)
+  correctTime      Int      @default(0)
+  correctLogic     Int      @default(0)
+  correctGeography Int      @default(0)
+  games            String[] @default([])
+  streak           Int      @default(0)
+  lastPlayed       String?
+  badges           String[] @default([])
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
 }
 
 /// Partita registrata in modo autorevole dal server: `roundId` è la chiave di idempotenza.
