@@ -407,6 +407,21 @@
   color: #4f8160;
 }
 /* Little English game artwork */
+.subject-language .art-words {
+  background-color: #fbeadb;
+}
+.subject-language .art-words .art-main {
+  width: 107px;
+  height: 107px;
+  left: calc(50% - 76px);
+  top: 36px;
+  transform: rotate(-9deg);
+}
+.subject-language .card-words .category-label,
+.subject-language .art-words .art-spark,
+.subject-language .art-words .art-bubble {
+  color: #b0663f;
+}
 .subject-language .art-colors {
   background-color: #fae8e1;
 }

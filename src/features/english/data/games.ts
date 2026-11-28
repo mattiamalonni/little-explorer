@@ -1,4 +1,5 @@
 export type GameId =
+  | "words"
   | "colors"
   | "animals"
   | "objects"
@@ -29,6 +30,8 @@ export type Word = {
   text?: string;
   /** Alternative fisse per i giochi di grammatica: con la risposta formano 4 opzioni. */
   options?: string[];
+  /** Nel gioco misto "Indovina la parola", la categoria da cui viene la parola. */
+  category?: GameId;
 };
 
 export type Game = {
@@ -44,7 +47,7 @@ export type Game = {
   words: Word[];
 };
 
-export const games: Game[] = [
+const sourceGames: Game[] = [
   {
     id: "colors",
     title: "Un mondo di colori",
@@ -966,6 +969,80 @@ export const games: Game[] = [
   },
 ];
 
+/** I giochi di parole singole che confluiscono in "Indovina la parola", nell'ordine del setup. */
+export const WORD_CATEGORY_IDS = [
+  "colors",
+  "numbers",
+  "animals",
+  "food",
+  "objects",
+  "classroom",
+  "body-parts",
+  "family",
+  "nature",
+  "weather",
+  "emotions",
+  "verbs",
+  "opposites",
+  "days",
+  "months",
+] as const satisfies readonly GameId[];
+
+const WORD_CATEGORY_NAMES: Record<(typeof WORD_CATEGORY_IDS)[number], string> = {
+  colors: "Colori",
+  numbers: "Numeri",
+  animals: "Animali",
+  food: "Cibo",
+  objects: "Oggetti",
+  classroom: "In classe",
+  "body-parts": "Il corpo",
+  family: "Famiglia",
+  nature: "Natura",
+  weather: "Il tempo",
+  emotions: "Emozioni",
+  verbs: "Azioni",
+  opposites: "Contrari",
+  days: "Giorni",
+  months: "Mesi",
+};
+
+/** Il nome breve di una categoria, mostrato nel setup e sopra la domanda. */
+export function wordCategoryName(id: GameId): string {
+  return WORD_CATEGORY_NAMES[id as keyof typeof WORD_CATEGORY_NAMES] ?? id;
+}
+
+/** Le categorie del gioco misto: conservano titolo, domanda e stile di presentazione. */
+export const wordCategories: readonly Game[] = WORD_CATEGORY_IDS.map((id) => {
+  const game = sourceGames.find((entry) => entry.id === id);
+  if (!game) throw new Error(`Missing word category ${id}`);
+  return game;
+});
+
+const wordsGame: Game = {
+  id: "words",
+  title: "Indovina la parola",
+  english: "Guess the word",
+  description: "Colori, animali, cibo, numeri e tanto altro: tutto mescolato.",
+  prompt: "Come si dice in inglese?",
+  label: "Un po' di tutto",
+  words: wordCategories.flatMap((category) => category.words.map((word) => ({ ...word, category: category.id }))),
+};
+
+export const games: Game[] = [
+  wordsGame,
+  ...sourceGames.filter((game) => !(WORD_CATEGORY_IDS as readonly GameId[]).includes(game.id)),
+];
+
+/** La categoria di una parola del gioco misto, se ne ha una. */
+export function categoryOf(word: Word): Game | undefined {
+  return word.category ? wordCategories.find((category) => category.id === word.category) : undefined;
+}
+
+/** Identificativo stabile di una parola: nel gioco misto la stessa parola può stare in due categorie. */
+export function wordKey(word: Word): string {
+  return word.category ? `${word.category}:${word.english}` : word.english;
+}
+
 export type Question = { word: Word; options: Word[] };
 export type Answer = { word: Word; selected: Word };
 export type Round = {
@@ -997,35 +1074,58 @@ export function createRound(gameId: GameId, options: RoundOptions = {}, previous
   const game = games.find((entry) => entry.id === gameId);
   if (!game) throw new Error("Unknown game");
   const chosen = options.words ? new Set(options.words) : null;
-  const available = chosen ? game.words.filter((word) => chosen.has(word.english)) : game.words;
+  const available = chosen ? game.words.filter((word) => chosen.has(wordKey(word))) : game.words;
   const pool = available.length >= 4 ? available : game.words;
-  const length = Math.min(Math.max(Math.floor(options.length ?? 6), 1), pool.length);
-  const words = shuffle(pool, random).slice(0, length);
+  // La stessa parola inglese può stare in due categorie (Book tra oggetti e classe): una volta sola per round.
+  const unique: Word[] = [];
+  for (const word of shuffle(pool, random)) {
+    if (!unique.some((entry) => entry.english === word.english)) unique.push(word);
+  }
+  const length = Math.min(Math.max(Math.floor(options.length ?? 6), 1), unique.length);
+  const words = unique.slice(0, length);
   if (words.length > 1 && previous?.questions[0]?.word.english === words[0].english) {
     [words[0], words[1]] = [words[1], words[0]];
   }
   return {
     id: `round-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
     gameId,
-    selection: pool.map((word) => word.english),
+    selection: pool.map(wordKey),
     roundLength: length,
     questions: words.map((word) => ({
       word,
       options: word.options
         ? shuffle([word, ...word.options.map((text) => ({ english: text, italian: "" }))], random)
-        : shuffle(
-            [
-              word,
-              ...shuffle(
-                pool.filter((entry) => entry.english !== word.english),
-                random,
-              ).slice(0, 3),
-            ],
-            random,
-          ),
+        : shuffle([word, ...distractors(word, pool, random)], random),
     })),
     answers: [],
   };
+}
+
+/**
+ * Tre alternative sbagliate. Nel gioco misto vengono dalla stessa categoria, prima tra le parole scelte
+ * e poi tra le altre della categoria: un colore si confonde con un altro colore, non con un animale.
+ */
+function distractors(word: Word, pool: readonly Word[], random: () => number): Word[] {
+  const category = categoryOf(word);
+  const candidates = category
+    ? [
+        ...shuffle(
+          pool.filter((entry) => entry.category === word.category),
+          random,
+        ),
+        ...shuffle(
+          category.words.map((entry) => ({ ...entry, category: category.id })),
+          random,
+        ),
+      ]
+    : shuffle(pool, random);
+  const result: Word[] = [];
+  for (const entry of candidates) {
+    if (result.length === 3) break;
+    if (entry.english === word.english || result.some((other) => other.english === entry.english)) continue;
+    result.push(entry);
+  }
+  return result;
 }
 
 export function scoreRound(answers: Answer[]) {

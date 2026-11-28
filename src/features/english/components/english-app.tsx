@@ -21,7 +21,19 @@ import {
   Volume2,
   X,
 } from "lucide-react";
-import { createRound, games, scoreRound, type Game, type GameId, type Round, type Word } from "@/features/english/data/games";
+import {
+  categoryOf,
+  createRound,
+  games,
+  scoreRound,
+  wordCategories,
+  wordCategoryName,
+  wordKey,
+  type Game,
+  type GameId,
+  type Round,
+  type Word,
+} from "@/features/english/data/games";
 import { wordAudioPath } from "@/features/english/lib/audio";
 import { ProgressBanner } from "@/features/gamification/components/progress-banner";
 import { RoundRewards } from "@/features/gamification/components/round-rewards";
@@ -207,6 +219,15 @@ function GameArt({ id }: { id: GameId }) {
         <Sparkles />
       </span>
       <span className="art-spark spark-two">+</span>
+      {id === "words" && (
+        <>
+          <Illustration asset="lion" className="art-main" />
+          <Illustration asset="strawberry" className="art-side" />
+          <span className="paint-dot paint-yellow" />
+          <span className="art-bubble">Guess!</span>
+          <span className="art-sticker">a bit of everything</span>
+        </>
+      )}
       {id === "colors" && (
         <>
           <span className="paint-dot paint-red" />
@@ -545,7 +566,8 @@ export function PlayGame({ game }: { game: Game }) {
 
   if (!activeRound) {
     const setupItems = game.words.map((word) => ({
-      id: word.english,
+      id: wordKey(word),
+      group: word.category,
       label: word.english,
       lang: "en",
       hint: word.italian,
@@ -571,6 +593,11 @@ export function PlayGame({ game }: { game: Game }) {
             world="english"
             gameId={game.id}
             items={setupItems}
+            sections={
+              game.id === "words"
+                ? wordCategories.map((category) => ({ id: category.id, label: wordCategoryName(category.id) }))
+                : undefined
+            }
             onStart={({ selected: chosen, roundLength }) => {
               setSelected(null);
               start(game.id, { selected: chosen, roundLength });
@@ -584,7 +611,10 @@ export function PlayGame({ game }: { game: Game }) {
   const question = activeRound.questions[questionIndex];
   const total = activeRound.questions.length;
   const listenOnly = Boolean(game.listenOnly);
-  const visualChoices = listenOnly || ["colors", "objects", "food", "emotions"].includes(game.id);
+  // Nel gioco misto ogni parola si presenta come nel gioco della sua categoria.
+  const category = categoryOf(question.word);
+  const style = category ?? game;
+  const visualChoices = listenOnly || ["colors", "objects", "food", "emotions"].includes(style.id);
   const correct = selected?.english === question.word.english;
 
   function nextQuestion() {
@@ -608,9 +638,9 @@ export function PlayGame({ game }: { game: Game }) {
       </div>
       <ProgressTrack index={questionIndex} total={total} />
       <div className="question-heading">
-        <span className="eyebrow">{game.label}</span>
+        <span className="eyebrow">{category ? wordCategoryName(category.id) : game.label}</span>
         <h1 ref={titleRef} tabIndex={-1}>
-          {game.prompt}
+          {style.prompt}
         </h1>
       </div>
       <div className={`question-stage ${visualChoices ? "word-stage" : "picture-stage"} ${listenOnly ? "listen-stage" : ""}`}>
@@ -628,7 +658,7 @@ export function PlayGame({ game }: { game: Game }) {
         ) : (
           <>
             <WordArt word={question.word} />
-            {game.showItalianPrompt && <span className="italian-prompt">{question.word.italian}</span>}
+            {style.showItalianPrompt && <span className="italian-prompt">{question.word.italian}</span>}
           </>
         )}
         <AudioButton word={question.word.english} hideWord={listenOnly} />
@@ -644,7 +674,7 @@ export function PlayGame({ game }: { game: Game }) {
           const feedbackClass = selected ? (isCorrect ? "answer-correct" : isSelected ? "answer-wrong" : "answer-muted") : "";
           return (
             <button
-              key={`${question.word.english}-${option.english}`}
+              key={`${wordKey(question.word)}-${option.english}`}
               className={`answer-option ${feedbackClass}`}
               disabled={!!selected}
               aria-label={visualChoices ? option.italian : option.english}
@@ -786,7 +816,7 @@ export function Results({ game }: { game: Game }) {
             visibleAnswers.map((entry) => {
               const isCorrect = entry.word.english === entry.selected.english;
               return (
-                <div className="review-row" key={entry.word.english}>
+                <div className="review-row" key={wordKey(entry.word)}>
                   <WordArt word={entry.word} small />
                   <div className="review-word">
                     <strong lang="en">{entry.word.english}</strong>
