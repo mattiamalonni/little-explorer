@@ -210,6 +210,54 @@ presenti (`italy.svg`, `spain.svg`). Nessun servizio di generazione immagini è 
 | Svezia           | `sweden.svg`         | `1f1f8-1f1ea.svg` |
 | Egitto           | `egypt.svg`          | `1f1ea-1f1ec.svg` |
 
+## Aggiunte di Little Italiano (sillabe con GN, NI, GLI, LI e SC)
+
+Gli SVG seguenti sono stati copiati senza modifiche dalla revisione pinnata
+`b6b55fef1e8636b540a6d016a4729ca8cdf2e60b`. Nessun servizio di generazione immagini è stato usato.
+
+| Parola italiana | File                       | Upstream                          |
+| --------------- | -------------------------- | --------------------------------- |
+| magnete         | `magnet.svg`               | `1f9f2.svg`                       |
+| insegna         | `placard.svg`              | `1faa7.svg`                       |
+| compagno        | `people-holding-hands.svg` | `1f9d1-200d-1f91d-200d-1f9d1.svg` |
+| segnalibro      | `bookmark.svg`             | `1f516.svg`                       |
+| ingegnere       | `construction-worker.svg`  | `1f477.svg`                       |
+| genio           | `genie.svg`                | `1f9de.svg`                       |
+| matrimonio      | `wedding.svg`              | `1f492.svg`                       |
+| giardiniere     | `farmer.svg`               | `1f9d1-200d-1f33e.svg`            |
+| carabiniere     | `police-officer.svg`       | `1f46e.svg`                       |
+| Polonia         | `poland.svg`               | `1f1f5-1f1f1.svg`                 |
+| Albania         | `albania.svg`              | `1f1e6-1f1f1.svg`                 |
+| Slovenia        | `slovenia.svg`             | `1f1f8-1f1ee.svg`                 |
+| moglie          | `bride.svg`                | `1f470.svg`                       |
+| biglietto       | `ticket.svg`               | `1f3ab.svg`                       |
+| ventaglio       | `folding-fan.svg`          | `1faad.svg`                       |
+| foglio          | `page.svg`                 | `1f4c4.svg`                       |
+| petrolio        | `oil-drum.svg`             | `1f6e2.svg`                       |
+| mobilia         | `couch.svg`                | `1f6cb.svg`                       |
+| allievo         | `student.svg`              | `1f9d1-200d-1f393.svg`            |
+| sollievo        | `relieved.svg`             | `1f60c.svg`                       |
+| biblioteca      | `books.svg`                | `1f4da.svg`                       |
+| candeliere      | `candle.svg`               | `1f56f.svg`                       |
+| Mongolia        | `mongolia.svg`             | `1f1f2-1f1f3.svg`                 |
+| scienziato      | `scientist.svg`            | `1f9d1-200d-1f52c.svg`            |
+| scena           | `theater.svg`              | `1f3ad.svg`                       |
+| sceriffo        | `cowboy.svg`               | `1f920.svg`                       |
+| sciatore        | `skier.svg`                | `26f7.svg`                        |
+| ascia           | `axe.svg`                  | `1fa93.svg`                       |
+| pesciolino      | `tropical-fish.svg`        | `1f420.svg`                       |
+
+### Illustrazioni originali per le sillabe
+
+Create appositamente per Little Italiano, con uno stile vettoriale piatto e un
+viewBox 36 × 36. Non sono Twemoji e nessun servizio di generazione immagini è
+stato usato. Licenza CC BY 4.0, attribuzione “Little Italiano contributors —
+original illustrations, CC BY 4.0”.
+
+- Cibo: `lasagna.svg`, `gnocchi.svg`.
+- Natura: `pinecone.svg`, `geranium.svg`.
+- Oggetti: `sweater.svg`, `swing.svg`, `washing-machine.svg`, `scarecrow.svg`.
+
 ## Aggiunte di Little English (nuovi giochi)
 
 Gli SVG seguenti sono stati copiati senza modifiche dalla revisione pinnata
